@@ -12482,7 +12482,7 @@ a.btn.btn_error{
   width: 100%;
   overflow: hidden;
   cursor: pointer;
-  background-image: url(../images/team/upload_photo.jpg);
+  /* background-image: url(../images/team/upload_photo.jpg); */
   border-radius: 5px;
   -webkit-transition: -webkit-transform 0.4s;
   transition: -webkit-transform 0.4s;
@@ -15954,17 +15954,17 @@ canvas {
   width: 90px;
 }
 .single_product_slider.owl-theme .owl-dots .owl-dot:first-child span{
-  background-image: url(../images/shop/ss1.png);
+  /* background-image: url(../images/shop/ss1.png); */
   background-position: center center;
   background-size: cover;
 }
 .single_product_slider.owl-theme .owl-dots .owl-dot:nth-child(2) span{
-  background-image: url(../images/shop/ss2.png);
+  /* background-image: url(../images/shop/ss2.png); */
   background-position: center center;
   background-size: cover;
 }
 .single_product_slider.owl-theme .owl-dots .owl-dot:nth-child(3) span{
-  background-image: url(../images/shop/ss3.png);
+  /* background-image: url(../images/shop/ss3.png); */
   background-position: center center;
   background-size: cover;
 }
