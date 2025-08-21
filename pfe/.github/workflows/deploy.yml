@@ -1,0 +1,59 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Create env file for deployment
+      run: |
+        echo "${{ secrets.PROD_ENV_FILE }}" > .env.production
+    
+    - name: Deploy to Ubuntu Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        source: "./"
+        target: "/var/www/goimmo/GoImmo"
+        
+    - name: Execute deployment commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+          cd /var/www/goimmo/GoImmo
+          
+          # Copy environment file
+          cp .env.production .env
+          
+          # Install all dependencies (including dev for build)
+          npm install
+          
+          # Build the project
+          npm run build
+          
+          # Create PM2 ecosystem file
+          echo 'module.exports = {{ apps : [{{ name: "real-estate-backend", script: "dist/server/app.js", cwd: "/var/www/goimmo/GoImmo/", env: {{ "NODE_ENV": "production", "PORT": 3001 }} }}] }}' > ecosystem.config.js
+          
+          # Stop the old process and start with the new ecosystem file
+          pm2 delete real-estate-backend || true
+          pm2 start ecosystem.config.js
+          
+          # Save the process list
+          pm2 save
+          # Clean up dangling images and containers
+          docker image prune -f || true
+          docker container prune -f || true 
