@@ -1,0 +1,28 @@
+<!-- Our Error Page -->
+<section class="our-error bgc-f7">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1 text-center">
+        <div class="error_page footer_apps_widget">
+          <div class="error_illustration">
+            <h1>404</h1>
+          </div>
+          <h2>Oops! Page Not Found</h2>
+          <p>
+            The page you are looking for might have been removed, had its name changed, 
+            or is temporarily unavailable. Don't worry, it happens to the best of us.
+          </p>
+          <p>
+            Here are some helpful links to get you back on track:
+          </p>
+          <div class="error_links mb-4">
+            <a [routerLink]="['/home']" class="btn btn-outline-primary me-3">Go to Home</a>
+            <a [routerLink]="['/properties']" class="btn btn-outline-primary me-3">Browse Properties</a>
+            <a [routerLink]="['/contact']" class="btn btn-outline-primary">Contact Us</a>
+          </div>
+        </div>
+        <a class="btn btn_error btn-thm" [routerLink]="['/home']">Back To Home</a>
+      </div>
+    </div>
+  </div>
+</section>

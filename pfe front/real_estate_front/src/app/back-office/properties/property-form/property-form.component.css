@@ -1,0 +1,67 @@
+#featuresTags .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(231, 24, 10);
+    color: white;
+    box-shadow: 0 2px 4px rgba(221, 4, 4, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+  
+  #featuresTags .badge:hover {
+    background-color: rgb(255, 90, 95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 149, 45, 0.15);
+  }
+  
+  #featuresTags .btn-close {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-left: 8px;
+    padding: 2px;
+    background-color: rgba(255, 90, 95);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  #featuresTags .btn-close:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  
+  /* Input field styling */
+  #featuresInput {
+    border: 2px solid rgba(29, 41, 62, 0.2);
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+  }
+  
+  #featuresInput:focus {
+    border-color: rgb(255, 90, 95);
+    box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.2);
+    outline: none;
+  }
+  
+  /* Placeholder text for adding animation */
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+  
+  #featuresInput::placeholder {
+    color: rgba(29, 41, 62, 0.5);
+    animation: pulse 2s infinite;
+  }

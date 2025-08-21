@@ -1,0 +1,120 @@
+<section class="similar-properties-section pb30">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="main-title text-center">
+          <h2>Similar Properties</h2>
+          <p>Properties you might also like</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="row" *ngIf="isLoading">
+      <div class="col-lg-12 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="row" *ngIf="error && !isLoading">
+      <div class="col-lg-12 text-center">
+        <div class="alert alert-danger">
+          <p>{{ error }}</p>
+          <button class="btn btn-primary" (click)="loadSimilarProperties()">
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Similar Properties Slider -->
+    <div class="row" *ngIf="!isLoading && !error && similarProperties.length > 0">
+      <div class="col-lg-12">
+        <div class="feature_property_slider similar_property_slider owl-carousel owl-theme">
+          <div class="item" *ngFor="let similarProperty of similarProperties; trackBy: trackBySimilarPropertyId">
+            <div class="feat_property" (click)="onPropertyClick(similarProperty.property_id)" style="cursor: pointer;">
+              <div class="thumb">
+                <img class="img-whp" [src]="getPropertyImageUrl(similarProperty.property)" [alt]="similarProperty.property?.title || 'Property'">
+                <div class="thmb_cntnt">
+                  <ul class="tag mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ similarProperty.property?.listingType === 'rent' ? 'For Rent' : 'For Sale' }}</a>
+                    </li>
+                    <li class="list-inline-item" *ngIf="similarProperty.property?.featured">
+                      <a href="#" (click)="$event.stopPropagation()">Featured</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ (similarProperty.similarity_score * 100).toFixed(0) }}% Match</a>
+                    </li>
+                  </ul>
+                  <ul class="icon mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-transfer-1"></span></a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-heart"></span></a>
+                    </li>
+                  </ul>
+                  <a class="fp_price" href="#" (click)="$event.stopPropagation()">
+                    {{ formatPrice(similarProperty.property?.pricing?.price || similarProperty.price) }}
+                  </a>
+                </div>
+              </div>
+              <div class="details">
+                <div class="tc_content">
+                  <p class="text-thm">{{ similarProperty.property?.type || similarProperty.type }}</p>
+                  <h4>
+                    <a [routerLink]="getPropertyRouterLink(similarProperty)" (click)="$event.stopPropagation()">
+                      {{ similarProperty.property?.title || 'Property' }}
+                    </a>
+                  </h4>
+                  <p>
+                    <span class="flaticon-placeholder"></span> 
+                    {{ similarProperty.property?.address?.street || '' }}, {{ similarProperty.property?.address?.city || similarProperty.location }}
+                  </p>
+                  <ul class="prop_details mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Beds: {{ similarProperty.property?.bedrooms || similarProperty.bedrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Baths: {{ similarProperty.property?.bathrooms || similarProperty.bathrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Sq Ft: {{ similarProperty.property?.size?.total || 'N/A' }}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="fp_footer">
+                  <ul class="fp_meta float-left mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">
+                        <img class="owner-avatar" src="/assets/images/team/lc1.png" alt="Owner">
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Agent Name</a>
+                    </li>
+                  </ul>
+                  <div class="fp_pdate float-right">{{ getSimilarityReason(similarProperty) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="row" *ngIf="!isLoading && !error && similarProperties.length === 0">
+      <div class="col-lg-12 text-center">
+        <div class="alert alert-info">
+          <h4>No similar properties found</h4>
+          <p>We couldn't find properties similar to this one at the moment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

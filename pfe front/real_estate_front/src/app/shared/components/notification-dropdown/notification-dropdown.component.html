@@ -1,0 +1,101 @@
+<div class="notification-dropdown">
+  <!-- Notification Bell Icon -->
+  <div class="notification-trigger" (click)="toggleDropdown()">
+    <i class="fas fa-bell notification-icon"></i>
+    <span
+      *ngIf="unreadCount > 0"
+      class="notification-badge"
+      [textContent]="unreadCount > 99 ? '99+' : unreadCount">
+    </span>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <div
+    class="notification-menu"
+    [class.show]="isDropdownOpen">
+    <!-- clickOutside temporarily removed for debugging -->
+    
+    <!-- Header -->
+    <div class="notification-header">
+      <h3>Notifications</h3>
+      <div class="notification-actions">
+        <!-- Test button for debugging -->
+        <button
+          (click)="addTestNotifications()"
+          class="btn-mark-all"
+          title="Add test notifications"
+          style="background-color: #28a745; margin-right: 8px;">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button
+          *ngIf="notifications.length > 0 && unreadCount > 0"
+          (click)="markAllAsRead()"
+          class="btn-mark-all"
+          title="Mark all as read">
+          <i class="fas fa-check-double"></i>
+        </button>
+        <button
+          *ngIf="notifications.length > 0"
+          (click)="deleteAllNotifications()"
+          class="btn-clear-all"
+          title="Clear all">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="notification-list">
+      <div
+        *ngIf="notifications.length === 0"
+        class="no-notifications">
+        <i class="fas fa-bell-slash"></i>
+        <p>No notifications yet</p>
+      </div>
+
+      <div
+        *ngFor="let notification of notifications; trackBy: trackByNotificationId"
+        class="notification-item"
+        [class.unread]="!notification.isRead"
+        [class.priority-high]="notification.priority === 'high'"
+        [class.priority-medium]="notification.priority === 'medium'"
+        (click)="handleNotificationClick(notification)">
+        
+        <div class="notification-icon">
+          <i [class]="'fas fa-' + getNotificationIcon(notification.type)"></i>
+        </div>
+        
+        <div class="notification-content">
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-time">{{ getTimeAgo(notification.createdAt) }}</div>
+        </div>
+        
+        <div class="notification-actions-menu">
+          <button
+            *ngIf="!notification.isRead"
+            (click)="markAsRead(getNotificationId(notification), $event)"
+            class="btn-mark-read"
+            title="Mark as read">
+            <i class="fas fa-check"></i>
+          </button>
+          <button
+            (click)="deleteNotification(getNotificationId(notification), $event)"
+            class="btn-delete"
+            title="Delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div
+      *ngIf="notifications.length > 5"
+      class="notification-footer">
+      <a [routerLink]="['/notifications']" class="view-all-link" (click)="closeDropdown()">
+        View all notifications
+      </a>
+    </div>
+  </div>
+</div>

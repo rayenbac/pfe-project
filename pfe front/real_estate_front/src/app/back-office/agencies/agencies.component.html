@@ -1,0 +1,217 @@
+<div class="agencies-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="flaticon-building"></i>
+        Agencies Management
+      </h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" routerLink="/admin/agencies/create">
+          <i class="flaticon-plus"></i>
+          Add New Agency
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="flaticon-search"></i>
+      <input 
+        type="text" 
+        placeholder="Search agencies..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input">
+    </div>
+    
+    <div class="filter-controls">
+      <select [(ngModel)]="statusFilter" (change)="onFilterChange()" class="filter-select">
+        <option value="">All Status</option>
+        <option value="verified">Verified</option>
+        <option value="unverified">Unverified</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+      
+      <select [(ngModel)]="itemsPerPage" (change)="onFilterChange()" class="filter-select">
+        <option value="10">10 per page</option>
+        <option value="25">25 per page</option>
+        <option value="50">50 per page</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <i class="flaticon-warning"></i>
+    {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading agencies...</p>
+  </div>
+
+  <!-- Agencies Table -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th (click)="onSort('name')" class="sortable">
+            Agency Name
+            <i class="sort-icon" 
+               [class.active]="sortField === 'name'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th (click)="onSort('email')" class="sortable">
+            Contact Email
+            <i class="sort-icon" 
+               [class.active]="sortField === 'email'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th (click)="onSort('phone')" class="sortable">
+            Phone
+            <i class="sort-icon" 
+               [class.active]="sortField === 'phone'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Location</th>
+          <th>Agents</th>
+          <th>Properties</th>
+          <th (click)="onSort('createdAt')" class="sortable">
+            Established
+            <i class="sort-icon" 
+               [class.active]="sortField === 'createdAt'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let agency of getPaginatedAgencies(); trackBy: trackByAgencyId" class="table-row">
+          <td class="agency-info">
+            <div class="agency-logo">
+              <img [src]="agency.logo || '/assets/images/default-agency-logo.png'" 
+                   [alt]="agency.name">
+            </div>
+            <div class="agency-details">
+              <div class="agency-name">{{ agency.name }}</div>
+              <div class="agency-id">ID: {{ agency._id }}</div>
+            </div>
+          </td>
+          <td>
+            <a [href]="'mailto:' + agency.email" class="email-link">{{ agency.email }}</a>
+          </td>
+          <td>
+            <a [href]="'tel:' + agency.phone" class="phone-link">{{ agency.phone || 'N/A' }}</a>
+          </td>
+          <td>
+            <div class="location-info">
+              <div class="city">{{ agency.address?.city || 'N/A' }}</div>
+              <div class="country">{{ agency.address?.country || '' }}</div>
+            </div>
+          </td>
+          <td>
+            <span class="count-badge agent-count">{{ agency.agentCount || 0 }}</span>
+          </td>
+          <td>
+            <span class="count-badge property-count">{{ agency.propertyCount || 0 }}</span>
+          </td>
+          <td>
+            <span class="date">{{ agency.createdAt | date:'MMM d, y' }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(agency)">
+              {{ getStatusText(agency) }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                [routerLink]="['/admin/agencies', agency._id]"
+                title="View Details">
+                <i class="flaticon-eye"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-secondary" 
+                [routerLink]="['/admin/agencies', agency._id, 'edit']"
+                title="Edit">
+                <i class="flaticon-edit"></i>
+              </button>
+              <button 
+                *ngIf="!agency.isVerified"
+                class="btn btn-sm btn-outline-success" 
+                (click)="verifyAgency(agency)"
+                title="Verify Agency">
+                <i class="flaticon-check"></i>
+              </button>
+              <button 
+                class="btn btn-sm" 
+                [class.btn-outline-warning]="agency.isActive"
+                [class.btn-outline-success]="!agency.isActive"
+                (click)="toggleAgencyStatus(agency)"
+                [title]="agency.isActive ? 'Deactivate' : 'Activate'">
+                <i [class.flaticon-pause]="agency.isActive" [class.flaticon-play]="!agency.isActive"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="deleteAgency(agency)"
+                title="Delete">
+                <i class="flaticon-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredAgencies.length === 0" class="empty-state">
+      <i class="flaticon-building"></i>
+      <h3>No agencies found</h3>
+      <p>No agencies match your current filters.</p>
+      <button class="btn btn-primary" (click)="searchTerm = ''; statusFilter = ''; onFilterChange()">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="pagination-container">
+    <div class="pagination-info">
+      Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+      {{ Math.min(currentPage * itemsPerPage, filteredAgencies.length) }} 
+      of {{ filteredAgencies.length }} agencies
+    </div>
+    
+    <nav class="pagination">
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === 1"
+        (click)="changePage(currentPage - 1)">
+        <i class="flaticon-left-arrow"></i>
+      </button>
+      
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-btn"
+        [class.active]="page === currentPage"
+        (click)="changePage(page)">
+        {{ page }}
+      </button>
+      
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === totalPages"
+        (click)="changePage(currentPage + 1)">
+        <i class="flaticon-right-arrow"></i>
+      </button>
+    </nav>
+  </div>
+</div>

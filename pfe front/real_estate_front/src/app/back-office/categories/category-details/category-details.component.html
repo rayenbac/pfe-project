@@ -1,0 +1,97 @@
+<section class="our-dashbord dashbord bgc-f7 pb50">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-xl-2 dn-992 pl0"></div>
+      <div class="col-sm-12 col-lg-8 col-xl-10 maxw100flex-992">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="breadcrumb_content style2 mb30-991">
+              <h2 class="breadcrumb_title">Category Details</h2>
+              <p>View and manage category information</p>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="my_dashboard_review mb40">
+              <div class="property_table">
+                <div class="table-responsive mt0">
+                  <div *ngIf="loading" class="text-center">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+
+                  <div *ngIf="error" class="alert alert-danger">
+                    {{ error }}
+                  </div>
+
+                  <div *ngIf="!loading && !error && category" class="property_details">
+                    <div class="row">
+                      <div class="col-lg-8">
+                        <div class="property_table">
+                          <div class="table-responsive mt0">
+                            <table class="table">
+                              <tbody>
+                                <tr>
+                                  <th scope="row">Name</th>
+                                  <td>{{ category.name }}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Description</th>
+                                  <td>{{ category.description }}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Properties Count</th>
+                                  <td>{{ category.properties?.length || 0 }}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Created At</th>
+                                  <td>{{ category.createdAt | date: 'mediumDate' }}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Last Updated</th>
+                                  <td>{{ category.updatedAt | date: 'mediumDate' }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="property_table">
+                          <div class="table-responsive mt0">
+                            <div class="property_actions">
+                              <h4>Actions</h4>
+                              <ul class="view_edit_delete_list mb0">
+                                <li class="list-inline-item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                  <a [routerLink]="['/back-office/categories/edit', category._id]">
+                                    <span class="flaticon-edit"></span> Edit Category
+                                  </a>
+                                </li>
+                                <li class="list-inline-item" data-toggle="tooltip" data-placement="top" title="Delete">
+                                  <a href="javascript:void(0)" (click)="onDelete()">
+                                    <span class="flaticon-garbage"></span> Delete Category
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt10">
+          <div class="col-lg-12">
+            <div class="copyright-widget text-center">
+              <p>© 2025 Property Management System. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

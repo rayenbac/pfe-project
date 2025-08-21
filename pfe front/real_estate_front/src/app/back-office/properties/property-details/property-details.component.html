@@ -1,0 +1,216 @@
+<section class="listing-title-area">
+    <div class="container">
+        <div class="row mb30">
+            <div class="col-lg-7 col-xl-8">
+                <div class="single_property_title mt30-767">
+                    <h2>{{ property?.title }}</h2>
+                    <p>{{ property?.address?.street }}, {{ property?.address?.city }}, {{ property?.address?.state }} {{ property?.address?.postalCode }}</p>
+                </div>
+            </div>
+            <div class="col-lg-5 col-xl-4">
+                <div class="single_property_social_share">
+                    <div class="price float-left fn-400">
+                        <h2>{{ property?.pricing?.price | currency:property?.pricing?.currency }}<small>/{{ property?.listingType === 'rent' ? 'mo' : '' }}</small></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-7 col-lg-8">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="spls_style_two mb30-520">
+                            <img *ngIf="getMainImage()" class="img-fluid w100" [src]="getMainImage()?.url" [alt]="property?.title">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 col-lg-4">
+                <div class="row">
+                    <ng-container *ngFor="let media of getAdditionalImages(); let i = index">
+                    <div class="col-sm-6 col-lg-6">
+                        <div class="spls_style_two mb30">
+                                <img class="img-fluid w100" [src]="media.url" [alt]="media.title || 'Property image'">
+                    </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="our-agent-single bgc-f7 pb30-991">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-lg-8">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="listing_single_description">
+                            <div class="lsd_list">
+                                <ul class="mb0">
+                                    <li class="list-inline-item"><a href="#">{{ property?.type }}</a></li>
+                                    <li class="list-inline-item"><a href="#">Beds: {{ property?.bedrooms }}</a></li>
+                                    <li class="list-inline-item"><a href="#">Baths: {{ property?.bathrooms }}</a></li>
+                                    <li class="list-inline-item"><a href="#">Sq Ft: {{ property?.size?.total }} {{ property?.size?.unit }}</a></li>
+                                </ul>
+                            </div>
+                            <h4 class="mb30">Description</h4>
+                            <p class="mb25">{{ property?.description }}</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="additional_details">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h4 class="mb15">Property Details</h4>
+                                </div>
+                                <div class="col-md-6 col-lg-6 col-xl-4">
+                                    <ul class="list-inline-item">
+                                        <li><p>Property ID :</p></li>
+                                        <li><p>Price :</p></li>
+                                        <li><p>Property Size :</p></li>
+                                        <li><p>Year Built :</p></li>
+                                    </ul>
+                                    <ul class="list-inline-item">
+                                        <li><p><span>{{ property?._id }}</span></p></li>
+                                        <li><p><span>{{ property?.pricing?.price | currency:property?.pricing?.currency }}</span></p></li>
+                                        <li><p><span>{{ property?.size?.total }} {{ property?.size?.unit }}</span></p></li>
+                                        <li><p><span>{{ property?.yearBuilt }}</span></p></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 col-lg-6 col-xl-4">
+                                    <ul class="list-inline-item">
+                                        <li><p>Bedrooms :</p></li>
+                                        <li><p>Bathrooms :</p></li>
+                                        <li><p>Garage :</p></li>
+                                        <li><p>Garage Size :</p></li>
+                                    </ul>
+                                    <ul class="list-inline-item">
+                                        <li><p><span>{{ property?.bedrooms }}</span></p></li>
+                                        <li><p><span>{{ property?.bathrooms }}</span></p></li>
+                                        <li><p><span>{{ property?.parking?.spaces }}</span></p></li>
+                                        <li><p><span>{{ property?.parking?.type }}</span></p></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 col-lg-6 col-xl-4">
+                                    <ul class="list-inline-item">
+                                        <li><p>Property Type :</p></li>
+                                        <li><p>Property Status :</p></li>
+                                        <li><p>Listing Type :</p></li>
+                                    </ul>
+                                    <ul class="list-inline-item">
+                                        <li><p><span>{{ property?.type }}</span></p></li>
+                                        <li><p><span>{{ property?.status | titlecase }}</span></p></li>
+                                        <li><p><span>{{ property?.listingType | titlecase }}</span></p></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="additional_details">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h4 class="mb15">Additional details</h4>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <ul class="list-inline-item">
+                                        <li><p>Construction Status :</p></li>
+                                        <li><p>Furnishing Status :</p></li>
+                                        <li><p>Facing :</p></li>
+                                    </ul>
+                                    <ul class="list-inline-item">
+                                        <li><p><span>{{ property?.constructionStatus | titlecase }}</span></p></li>
+                                        <li><p><span>{{ property?.furnishingStatus | titlecase }}</span></p></li>
+                                        <li><p><span>{{ property?.facing | titlecase }}</span></p></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <ul class="list-inline-item">
+                                        <li><p>Availability Date :</p></li>
+                                        <li><p>Availability Status :</p></li>
+                                        <li><p>Last Updated :</p></li>
+                                    </ul>
+                                    <ul class="list-inline-item">
+                                        <li><p><span>{{ property?.availability?.date | date }}</span></p></li>
+                                        <li><p><span>{{ property?.availability?.status | titlecase }}</span></p></li>
+                                        <li><p><span>{{ property?.updatedAt | date }}</span></p></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="property_attachment_area">
+                            <h4 class="mb30">Property Attachments</h4>
+                            <div class="iba_container style2">
+                                <ng-container *ngFor="let attachment of property?.attachments">
+                                <div class="icon_box_area style2">
+                                        <div class="score">
+                                            <span [class]="'flaticon-' + (attachment.type === 'document' ? 'document' : 'pdf') + ' text-thm fz30'"></span>
+                                        </div>
+                                    <div class="details">
+                                            <h5>
+                                                <a [href]="getAttachmentUrl(attachment)" target="_blank" download>
+                                                    <span class="flaticon-download text-thm pr10"></span>
+                                                    {{ attachment.title }}
+                                                </a>
+                                            </h5>
+                                </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="application_statics mt30">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h4 class="mb10">Features</h4>
+                                </div>
+                                <ng-container *ngFor="let amenityGroup of groupAmenities(); let i = index">
+                                <div class="col-sm-6 col-md-6 col-lg-4">
+                                    <ul class="order_list list-inline-item">
+                                            <li *ngFor="let amenity of amenityGroup">
+                                                <a href="#"><span class="flaticon-tick"></span>{{ amenity.name }}</a>
+                                            </li>
+                                    </ul>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="application_statics mt30">
+                            <h4 class="mb30">Location 
+                                <small class="float-right">
+                                    {{ property?.address?.street }}, {{ property?.address?.city }}, 
+                                    {{ property?.address?.state }} {{ property?.address?.postalCode }}
+                                </small>
+                            </h4>
+                            <div id="propertyMap" class="property-map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-xl-4">
+                <div class="sidebar_listing_list">
+                    <div class="sidebar_advanced_search_widget">
+                        <div class="sl_creator">
+                            <h4 class="mb25">Property Actions</h4>
+                            <div class="d-flex flex-column">
+                                <button class="btn btn-thm mb-2" (click)="onEdit()">
+                                    <span class="flaticon-edit"></span> Edit Property
+                                </button>
+                                <button class="btn btn-danger" (click)="onDelete()">
+                                    <span class="flaticon-garbage"></span> Delete Property
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

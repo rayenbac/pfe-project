@@ -1,0 +1,41 @@
+<div class="sidebar_feature_listing">
+  <h4 class="title">Recently Viewed</h4>
+  
+  <div *ngIf="loading" class="text-center py-3">
+    <p class="text-muted">Loading recently viewed properties...</p>
+  </div>
+
+  <div *ngIf="error" class="text-center py-3">
+    <p class="text-danger">{{ error }}</p>
+    <button class="btn btn-sm btn-secondary" (click)="loadRecentlyViewedProperties()">Try Again</button>
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div class="media" *ngFor="let property of getRecentlyViewedForDisplay(); let last = last" 
+         (click)="goToPropertyDetails(property)" style="cursor: pointer;">
+      <img 
+        class="align-self-start mr-3" 
+        [src]="getPropertyImageUrl(property)" 
+        [alt]="property.title"
+        (error)="onImageError($event)">
+      <div class="media-body">
+        <h5 class="mt-0 post_title">{{ property.title }}</h5>
+        <a href="javascript:void(0)">
+          ${{ formatPrice(property.price) }}
+          <small *ngIf="property.listingType === 'rent'">/mo</small>
+        </a>
+        <ul class="mb0">
+          <li class="list-inline-item">Beds: {{ property.bedrooms || 'N/A' }}</li>
+          <li class="list-inline-item">Baths: {{ property.bathrooms || 'N/A' }}</li>
+          <li class="list-inline-item" *ngIf="property.area">Sq Ft: {{ property.area }}</li>
+          <li class="list-inline-item" *ngIf="!property.area && property.type">Type: {{ property.type }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div *ngIf="getRecentlyViewedForDisplay().length === 0" class="text-center py-3">
+      <p class="text-muted">No recently viewed properties.</p>
+      <small class="text-muted">Properties you visit will appear here.</small>
+    </div>
+  </div>
+</div>

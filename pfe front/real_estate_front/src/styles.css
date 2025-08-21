@@ -1,0 +1,133 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.ql-editor {
+  min-height: 200px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+}
+
+.ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: none;
+  background-color: #f8f9fa;
+}
+
+.ql-container {
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: none;
+  background-color: #fff;
+}
+
+.ql-snow .ql-editor {
+  padding: 12px 15px;
+}
+
+.ql-snow .ql-toolbar {
+  padding: 8px 9px;
+}
+
+.quill-editor-container {
+  margin-bottom: 15px;
+}
+
+.quill-editor-container .ql-container {
+  border-radius: 0 0 4px 4px;
+}
+
+.quill-editor-container .ql-toolbar {
+  border-radius: 4px 4px 0 0;
+}
+
+/* Additional Quill customizations */
+.ql-editor {
+  min-height: 200px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: none;
+}
+
+.ql-container {
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: none;
+}
+
+.ql-snow .ql-editor {
+  padding: 12px 15px;
+}
+
+.ql-snow .ql-toolbar {
+  padding: 8px 9px;
+}
+
+/* Global Quill fixes */
+.ql-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+}
+
+.ql-toolbar .ql-formats {
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 15px !important;
+}
+
+.ql-toolbar button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 14px !important;
+}
+
+.ql-toolbar .ql-picker {
+  display: inline-block !important;
+}
+
+.ql-toolbar .ql-picker-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 32px !important;
+  padding: 0 8px !important;
+}
+
+.ql-container {
+  display: block !important;
+  position: relative !important;
+}
+
+.ql-editor {
+  display: block !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+}
+
+/* Ensure Quill icons display properly */
+.ql-toolbar button svg {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.ql-toolbar .ql-picker-label svg {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+}

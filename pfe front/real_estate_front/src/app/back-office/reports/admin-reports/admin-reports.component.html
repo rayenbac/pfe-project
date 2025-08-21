@@ -1,0 +1,358 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Reports Management</h2>
+        <div class="d-flex gap-2">
+          <button 
+            class="btn btn-outline-primary"
+            (click)="loadReports()">
+            <i class="fas fa-refresh"></i> Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4" *ngIf="statistics">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Total Reports</h5>
+              <h3>{{ statistics.totalReports }}</h3>
+            </div>
+            <i class="fas fa-flag fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Pending</h5>
+              <h3>{{ statistics.pendingReports }}</h3>
+            </div>
+            <i class="fas fa-clock fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Resolved</h5>
+              <h3>{{ statistics.resolvedReports }}</h3>
+            </div>
+            <i class="fas fa-check fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card bg-danger text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">High Priority</h5>
+              <h3>{{ statistics.highPriorityReports }}</h3>
+            </div>
+            <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Status</label>
+          <select 
+            class="form-select" 
+            [(ngModel)]="filters.status"
+            (change)="onFilterChange()">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="resolved">Resolved</option>
+            <option value="dismissed">Dismissed</option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <label class="form-label">Target Type</label>
+          <select 
+            class="form-select" 
+            [(ngModel)]="filters.targetType"
+            (change)="onFilterChange()">
+            <option value="">All Types</option>
+            <option value="post">Posts</option>
+            <option value="property">Properties</option>
+            <option value="agent">Agents</option>
+            <option value="agency">Agencies</option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <label class="form-label">Priority</label>
+          <select 
+            class="form-select" 
+            [(ngModel)]="filters.priority"
+            (change)="onFilterChange()">
+            <option value="">All Priorities</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <label class="form-label">Search</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Search reports..."
+            [(ngModel)]="filters.search"
+            (input)="onSearchChange()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions -->
+  <div class="card mb-4" *ngIf="selectedReports.size > 0">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>{{ selectedReports.size }} reports selected</span>
+        <div class="btn-group">
+          <button 
+            class="btn btn-outline-success btn-sm"
+            (click)="bulkUpdateStatus('reviewed')">
+            Mark as Reviewed
+          </button>
+          <button 
+            class="btn btn-outline-primary btn-sm"
+            (click)="bulkUpdateStatus('resolved')">
+            Mark as Resolved
+          </button>
+          <button 
+            class="btn btn-outline-secondary btn-sm"
+            (click)="bulkUpdateStatus('dismissed')">
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports Table -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>
+                <input 
+                  type="checkbox" 
+                  class="form-check-input"
+                  [checked]="selectAll"
+                  (change)="toggleSelectAll()">
+              </th>
+              <th 
+                class="sortable"
+                (click)="onSort('reporterId')">
+                Reporter
+                <i class="fas fa-sort ms-1"></i>
+              </th>
+              <th 
+                class="sortable"
+                (click)="onSort('targetType')">
+                Target Type
+                <i class="fas fa-sort ms-1"></i>
+              </th>
+              <th>Category</th>
+              <th 
+                class="sortable"
+                (click)="onSort('priority')">
+                Priority
+                <i class="fas fa-sort ms-1"></i>
+              </th>
+              <th 
+                class="sortable"
+                (click)="onSort('status')">
+                Status
+                <i class="fas fa-sort ms-1"></i>
+              </th>
+              <th 
+                class="sortable"
+                (click)="onSort('createdAt')">
+                Date
+                <i class="fas fa-sort ms-1"></i>
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="8" class="text-center py-4">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </td>
+            </tr>
+            
+            <tr *ngIf="!loading && filteredReports.length === 0">
+              <td colspan="8" class="text-center py-4 text-muted">
+                No reports found
+              </td>
+            </tr>
+            
+            <tr *ngFor="let report of filteredReports" class="align-middle">
+              <td>
+                <input 
+                  type="checkbox" 
+                  class="form-check-input"
+                  [checked]="selectedReports.has(report._id)"
+                  (change)="toggleSelectReport(report._id)">
+              </td>
+              
+              <td>
+                <div class="d-flex align-items-center">
+                  <img 
+                    [src]="report.reporterId.profileImage || '/assets/images/default-avatar.png'" 
+                    class="rounded-circle me-2"
+                    width="32" height="32"
+                    [alt]="report.reporterId.firstName + ' ' + report.reporterId.lastName">
+                  <div>
+                    <div class="fw-medium">
+                      {{ report.reporterId.firstName }} {{ report.reporterId.lastName }}
+                    </div>
+                    <small class="text-muted">{{ report.reporterId.email }}</small>
+                  </div>
+                </div>
+              </td>
+              
+              <td>
+                <span class="badge bg-info text-dark">
+                  {{ report.targetType | titlecase }}
+                </span>
+              </td>
+              
+              <td>
+                <span *ngIf="report.category">
+                  {{ reportService.getReportCategoryDisplayName(report.category) }}
+                </span>
+                <span *ngIf="!report.category" class="text-muted">-</span>
+              </td>
+              
+              <td>
+                <span [class]="getPriorityBadgeClass(report.priority)">
+                  {{ report.priority | titlecase }}
+                </span>
+              </td>
+              
+              <td>
+                <span [class]="getStatusBadgeClass(report.status)">
+                  {{ reportService.getStatusDisplayName(report.status) }}
+                </span>
+              </td>
+              
+              <td>
+                <small>{{ formatDate(report.createdAt) }}</small>
+              </td>
+              
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button 
+                    class="btn btn-outline-primary"
+                    (click)="viewReportDetails(report)"
+                    title="View Details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  
+                  <div class="dropdown">
+                    <button 
+                      class="btn btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown">
+                      <i class="fas fa-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li *ngIf="report.status === 'pending'">
+                        <a class="dropdown-item" 
+                           (click)="updateReportStatus(report, 'reviewed')">
+                          <i class="fas fa-eye text-warning me-2"></i>
+                          Mark as Reviewed
+                        </a>
+                      </li>
+                      <li *ngIf="report.status !== 'resolved'">
+                        <a class="dropdown-item" 
+                           (click)="updateReportStatus(report, 'resolved')">
+                          <i class="fas fa-check text-success me-2"></i>
+                          Mark as Resolved
+                        </a>
+                      </li>
+                      <li *ngIf="report.status !== 'dismissed'">
+                        <a class="dropdown-item" 
+                           (click)="updateReportStatus(report, 'dismissed')">
+                          <i class="fas fa-times text-secondary me-2"></i>
+                          Dismiss
+                        </a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <a class="dropdown-item text-danger" 
+                           (click)="deleteReport(report)">
+                          <i class="fas fa-trash me-2"></i>
+                          Delete Report
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <nav *ngIf="totalPages > 1" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="onPageChange(currentPage - 1)">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          </li>
+          
+          <li 
+            *ngFor="let page of getPageNumbers()"
+            class="page-item"
+            [class.active]="page === currentPage">
+            <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="onPageChange(currentPage + 1)">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

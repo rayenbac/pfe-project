@@ -1,0 +1,245 @@
+<div class="booking-calendar-container">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="page-title">
+        <i class="fas fa-calendar-alt me-2"></i>
+        My Reservations
+      </h2>
+      <p class="text-muted">Manage your property bookings</p>
+    </div>
+    <div class="filter-actions">
+      <select class="form-select">
+        <option value="">All Bookings</option>
+        <option value="PENDING">Pending</option>
+        <option value="CONFIRMED">Confirmed</option>
+        <option value="COMPLETED">Completed</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Message Alert -->
+  <div *ngIf="message" class="alert alert-dismissible fade show" 
+       [class.alert-success]="messageType === 'success'"
+       [class.alert-danger]="messageType === 'error'">
+    <i class="fas" [class.fa-check-circle]="messageType === 'success'" 
+       [class.fa-exclamation-circle]="messageType === 'error'"></i>
+    {{ message }}
+    <button type="button" class="btn-close" (click)="clearMessage()"></button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading reservations...</p>
+  </div>
+
+  <!-- Bookings List -->
+  <div *ngIf="!loading" class="bookings-grid">
+    <div *ngFor="let booking of bookings" class="booking-card" (click)="openBookingDetails(booking)">
+      <div class="booking-header">
+        <div class="property-info">
+          <img 
+            [src]="booking.property.images?.[0] || 'https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=120&h=80&fit=crop'"
+            alt="{{ booking.property.title }}"
+            class="property-thumb">
+          <div class="property-details">
+            <h5 class="property-title">{{ booking.property.title }}</h5>
+            <p class="property-location">
+              <i class="fas fa-map-marker-alt me-1"></i>
+              {{ booking.property.location.city }}, {{ booking.property.location.state }}
+            </p>
+          </div>
+        </div>
+        <div class="booking-status">
+          <span class="badge" [ngClass]="getStatusClass(booking.status)">
+            {{ booking.status }}
+          </span>
+        </div>
+      </div>
+
+      <div class="booking-details">
+        <div class="date-range">
+          <div class="date-item">
+            <span class="date-label">Check-in</span>
+            <span class="date-value">{{ formatDate(booking.checkIn || booking.startDate) }}</span>
+          </div>
+          <div class="date-separator">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+          <div class="date-item">
+            <span class="date-label">Check-out</span>
+            <span class="date-value">{{ formatDate(booking.checkOut || booking.endDate) }}</span>
+          </div>
+        </div>
+
+        <div class="booking-info">
+          <div class="info-item">
+            <i class="fas fa-clock me-2"></i>
+            <span>{{ getDaysBetween(booking.checkIn || booking.startDate, booking.checkOut || booking.endDate) }} nights</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-dollar-sign me-2"></i>
+            <span>{{ formatPrice(booking.totalPrice || booking.totalAmount) }}</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-credit-card me-2"></i>
+            <span class="badge" [ngClass]="getPaymentStatusClass(booking.paymentStatus)">
+              {{ booking.paymentStatus }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-footer">
+        <small class="text-muted">
+          Booked on {{ formatDate(booking.createdAt) }}
+        </small>
+        <button class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-eye me-1"></i>
+          View Details
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="bookings.length === 0" class="empty-state">
+      <i class="fas fa-calendar-times"></i>
+      <h4>No Reservations Yet</h4>
+      <p>Start exploring properties and make your first booking!</p>
+      <button class="btn btn-primary">
+        <i class="fas fa-search me-2"></i>
+        Browse Properties
+      </button>
+    </div>
+  </div>
+
+  <!-- Booking Details Modal -->
+  <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" *ngIf="selectedBooking">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Booking Details
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <!-- Property Info -->
+          <div class="property-section">
+            <img 
+              [src]="selectedBooking.property.images?.[0] || 'https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=400&h=200&fit=crop'"
+              alt="{{ selectedBooking.property.title }}"
+              class="property-image">
+            <div class="property-info">
+              <h4>{{ selectedBooking.property.title }}</h4>
+              <p class="text-muted">
+                <i class="fas fa-map-marker-alt me-1"></i>
+                {{ selectedBooking.property.location.address }}, 
+                {{ selectedBooking.property.location.city }}, 
+                {{ selectedBooking.property.location.state }}
+              </p>
+              <div class="property-features">
+                <span class="feature">
+                  <i class="fas fa-bed me-1"></i>
+                  {{ selectedBooking.property.bedrooms }} bed
+                </span>
+                <span class="feature">
+                  <i class="fas fa-bath me-1"></i>
+                  {{ selectedBooking.property.bathrooms }} bath
+                </span>
+                <span class="feature">
+                  <i class="fas fa-ruler-combined me-1"></i>
+                  {{ selectedBooking.property.area }} sqft
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Info -->
+          <div class="booking-section">
+            <h6>Booking Information</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="info-group">
+                  <label>Check-in Date</label>
+                  <p>{{ formatDate(selectedBooking.checkIn || selectedBooking.startDate) }}</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-group">
+                  <label>Check-out Date</label>
+                  <p>{{ formatDate(selectedBooking.checkOut || selectedBooking.endDate) }}</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-group">
+                  <label>Duration</label>
+                  <p>{{ getDaysBetween(selectedBooking.checkIn || selectedBooking.startDate, selectedBooking.checkOut || selectedBooking.endDate) }} nights</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-group">
+                  <label>Total Price</label>
+                  <p class="price">{{ formatPrice(selectedBooking.totalPrice || selectedBooking.totalAmount) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Info -->
+          <div class="status-section">
+            <h6>Status</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="info-group">
+                  <label>Booking Status</label>
+                  <span class="badge" [ngClass]="getStatusClass(selectedBooking.status)">
+                    {{ selectedBooking.status }}
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-group">
+                  <label>Payment Status</label>
+                  <span class="badge" [ngClass]="getPaymentStatusClass(selectedBooking.paymentStatus)">
+                    {{ selectedBooking.paymentStatus }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            Close
+          </button>
+          <button 
+            *ngIf="selectedBooking.status === 'pending'" 
+            type="button" 
+            class="btn btn-success"
+            (click)="updateBookingStatus(selectedBooking, 'confirmed')">
+            <i class="fas fa-check me-1"></i>
+            Confirm Booking
+          </button>
+          <button 
+            *ngIf="selectedBooking.status !== 'cancelled' && selectedBooking.status !== 'completed'" 
+            type="button" 
+            class="btn btn-danger"
+            (click)="cancelBooking(selectedBooking)">
+            <i class="fas fa-times me-1"></i>
+            Cancel Booking
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backdrop -->
+  <div *ngIf="showModal" class="modal-backdrop fade show" (click)="closeModal()"></div>
+</div>

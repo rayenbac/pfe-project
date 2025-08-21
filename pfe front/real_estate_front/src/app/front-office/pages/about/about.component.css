@@ -1,0 +1,75 @@
+/* About Component Styles */
+.about-section {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.about-content {
+  margin-bottom: 40px;
+}
+
+.about-feature {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-feature .icon {
+  font-size: 2.5rem;
+  color: #007bff;
+  margin-bottom: 15px;
+}
+
+.about-feature h4 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.about-feature p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.team-section {
+  padding: 80px 0;
+  background-color: #fff;
+}
+
+.team-member {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.team-member img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.team-member h5 {
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.team-member p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.breadcrumb_content {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.breadcrumb_content h4 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.breadcrumb_content p {
+  color: #666;
+}

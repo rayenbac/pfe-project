@@ -1,0 +1,112 @@
+<section class="our-dashbord dashbord bgc-f7 pb50">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-xl-2 dn-992 pl0"></div>
+      <div class="col-sm-12 col-lg-8 col-xl-10 maxw100flex-992">
+        <div class="row">
+          <div class="col-lg-4 col-xl-4 mb10">
+            <div class="breadcrumb_content style2 mb30-991">
+              <h2 class="breadcrumb_title">User Management</h2>
+              <p>Manage your users efficiently!</p>
+            </div>
+          </div>
+          <div class="col-lg-8 col-xl-8">
+            <div class="user_search_filter style2 text-right mb30-991">
+              <ul class="mb0">
+                <li class="list-inline-item">
+                  <div class="user_search_box fn-520">
+                    <form class="form-inline my-2">
+                      <input class="form-control mr-sm-2" type="search" placeholder="Search Users" aria-label="Search">
+                      <button class="btn my-2 my-sm-0" type="submit"><span class="flaticon-magnifying-glass"></span></button>
+                    </form>
+                  </div>
+                </li>
+                <li class="list-inline-item">
+                  <select class="selectpicker show-tick">
+                    <option>Newest First</option>
+                    <option>Oldest First</option>
+                    <option>Verified Users</option>
+                  </select>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="user_dashboard_review mb40">
+              <div class="user_table">
+                <div class="table-responsive mt0">
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">Profile</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let user of users">
+                        <td>
+                          <img class="img-profile" [src]="user.profileImage || 'assets/images/default-profile.jpg'" alt="user-profile">
+                        </td>
+                        <td>{{ user.firstName }} {{ user.lastName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td><span class="status_tag badge" [class.verified]="user.isVerified">{{ user.isVerified ? 'Verified' : 'Not Verified' }}</span></td>
+                        <td>
+                          <ul class="view_edit_delete_list mb0">
+                            <li class="list-inline-item" data-toggle="tooltip" data-placement="top" title="View">
+                              <a [routerLink]="['/admin/users/details', user._id]">
+                                <span class="flaticon-view"></span>
+                              </a>
+                            </li>
+                            <li class="list-inline-item" data-toggle="tooltip" data-placement="top" title="Edit">
+                              <a [routerLink]="['/admin/users/edit', user._id]">
+                                <span class="flaticon-edit"></span>
+                              </a>
+                            </li>
+                            <li class="list-inline-item" data-toggle="tooltip" data-placement="top" title="Delete">
+                              <a href="javascript:void(0)" (click)="deleteUser(user._id)">
+                                <span class="flaticon-garbage"></span>
+                              </a>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="mbp_pagination">
+                  <ul class="page_navigation">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1" aria-disabled="true"> <span class="flaticon-left-arrow"></span> Prev</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active" aria-current="page">
+                      <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">10</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#"><span class="flaticon-right-arrow"></span></a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt10">
+          <div class="col-lg-12">
+            <div class="copyright-widget text-center">
+              <p>© 2025 User Management System. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

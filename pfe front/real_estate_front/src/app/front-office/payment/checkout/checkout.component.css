@@ -1,0 +1,42 @@
+.amount-display {
+  text-align: center;
+  padding: 1rem;
+}
+
+.amount-display label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+}
+
+.amount-display .h5 {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.card-title i {
+  margin-right: 0.5rem;
+}
+
+.conversion-info {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .amount-display {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+  }
+  
+  .amount-display:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+}

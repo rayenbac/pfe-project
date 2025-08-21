@@ -1,0 +1,174 @@
+<div class="invoices-container">
+  <div class="header">
+    <h2>Invoice Management</h2>
+    <p>Manage all property booking invoices</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="row">
+      <div class="col-md-3">
+        <label>Status:</label>
+        <select class="form-control" [(ngModel)]="filters.status" (change)="onFilterChange()">
+          <option value="">All Statuses</option>
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ status | titlecase }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label>Start Date:</label>
+        <input type="date" class="form-control" [(ngModel)]="filters.startDate" (change)="onFilterChange()">
+      </div>
+      <div class="col-md-3">
+        <label>End Date:</label>
+        <input type="date" class="form-control" [(ngModel)]="filters.endDate" (change)="onFilterChange()">
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button class="btn btn-secondary" (click)="clearFilters()">Clear Filters</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Invoices Table -->
+  <div *ngIf="!loading && !error" class="table-section">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>User</th>
+            <th>Property</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Due Date</th>
+            <th>PDF</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let invoice of invoices">
+            <td>
+              <strong>{{ invoice.invoiceNumber }}</strong>
+            </td>
+            <td>
+              <div class="user-info">
+                <strong>{{ invoice.user?.firstName }} {{ invoice.user?.lastName }}</strong>
+                <br>
+                <small class="text-muted">{{ invoice.user?.email }}</small>
+              </div>
+            </td>
+            <td>
+              <div class="property-info">
+                <strong>{{ invoice.property?.title }}</strong>
+                <br>
+                <small class="text-muted">{{ invoice.metadata.nights }} nights</small>
+              </div>
+            </td>
+            <td>
+              <strong>{{ formatCurrency(invoice.amount.total) }}</strong>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(invoice.status)">
+                {{ invoice.status | titlecase }}
+              </span>
+            </td>
+            <td>{{ formatDate(invoice.invoiceDate) }}</td>
+            <td>{{ formatDate(invoice.dueDate) }}</td>
+            <td>
+              <div *ngIf="invoice.pdfUrl; else noPdf">
+                <button class="btn btn-sm btn-outline-primary" 
+                        (click)="downloadPDF(invoice._id, invoice.invoiceNumber)">
+                  <i class="fas fa-download"></i> Download
+                </button>
+              </div>
+              <ng-template #noPdf>
+                <button class="btn btn-sm btn-outline-secondary" 
+                        (click)="generatePDF(invoice._id)">
+                  <i class="fas fa-file-pdf"></i> Generate
+                </button>
+              </ng-template>
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <button *ngIf="invoice.status !== 'paid'" 
+                        class="btn btn-sm btn-success" 
+                        (click)="updateInvoiceStatus(invoice._id, 'paid')"
+                        title="Mark as Paid">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button *ngIf="invoice.status === 'sent'" 
+                        class="btn btn-sm btn-warning" 
+                        (click)="updateInvoiceStatus(invoice._id, 'overdue')"
+                        title="Mark as Overdue">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </button>
+                <button *ngIf="invoice.status !== 'cancelled'" 
+                        class="btn btn-sm btn-danger" 
+                        (click)="updateInvoiceStatus(invoice._id, 'cancelled')"
+                        title="Cancel Invoice">
+                  <i class="fas fa-times"></i>
+                </button>
+                <a [routerLink]="['/admin/invoices', invoice._id]" 
+                   class="btn btn-sm btn-info"
+                   title="View Details">
+                  <i class="fas fa-eye"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="invoices.length === 0" class="empty-state">
+      <i class="fas fa-file-invoice fa-3x text-muted"></i>
+      <h4>No Invoices Found</h4>
+      <p>No invoices match your current filters.</p>
+    </div>
+
+    <!-- Pagination -->
+    <nav *ngIf="totalPages > 1" class="pagination-nav">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+            Previous
+          </button>
+        </li>
+        
+        <li *ngFor="let page of getPageNumbers()" 
+            class="page-item" 
+            [ngClass]="{ active: page === currentPage }">
+          <button class="page-link" (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+        </li>
+        
+        <li class="page-item" [ngClass]="{ disabled: currentPage === totalPages }">
+          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Next
+          </button>
+        </li>
+      </ul>
+      
+      <div class="pagination-info">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalItems) }} 
+        of {{ totalItems }} entries
+      </div>
+    </nav>
+  </div>
+</div>

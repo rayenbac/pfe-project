@@ -1,0 +1,408 @@
+/* Agent Details Component Styles */
+
+.agent-stats {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.agent-stats .col-4 {
+  border-right: 1px solid #dee2e6;
+}
+
+.agent-stats .col-4:last-child {
+  border-right: none;
+}
+
+.agent-stats h5 {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.agent-stats small {
+  color: #6c757d;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.agent-details-grid ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.agent-details-grid ul li:last-child {
+  border-bottom: none;
+}
+
+.agent-contact-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.agency-info {
+  background: white;
+}
+
+.agency-info h6 {
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.agency-info ul li {
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.agency-info ul li i {
+  width: 20px;
+  color: #007bff;
+}
+
+.bsc_item {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.bsc_content h5 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.rating {
+  margin-bottom: 10px;
+}
+
+.rating .fa-star {
+  color: #ddd;
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.rating .fa-star.color-golden {
+  color: #ffc107;
+}
+
+.quick-contact-info p {
+  margin-bottom: 8px;
+}
+
+.quick-contact-info i {
+  width: 20px;
+  color: #007bff;
+}
+
+.social-links .btn {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.feat_property.agent .thumb {
+  min-height: 200px;
+}
+
+.feat_property.agent .thumb img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.tab-content {
+  padding: 30px 0;
+}
+
+.tab-pane {
+  min-height: 400px;
+}
+
+.blog_single_comment_form {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.blog_single_comment_form h4 {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.product_single_content2 {
+  padding: 20px 0;
+}
+
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-state i {
+  color: #ddd;
+  margin-bottom: 20px;
+}
+
+.empty-state h4 {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.empty-state p {
+  color: #999;
+}
+
+.sidebar_listing_grid1 .widget_list ul li {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar_listing_grid1 .widget_list ul li:last-child {
+  border-bottom: none;
+}
+
+.sidebar_listing_grid1 .widget_list ul li span {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.breadcrumb_content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.breadcrumb {
+  margin-bottom: 10px;
+}
+
+.breadcrumb_title {
+  margin-bottom: 0;
+  color: #333;
+}
+
+/* Star rating styles */
+.star_list .fa-star {
+  color: #ddd;
+  transition: color 0.2s ease;
+}
+
+.star_list .fa-star.filled {
+  color: #ff6922;
+}
+
+.sspd_review .fa-star {
+  color: #ddd;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.sspd_review .fa-star.filled {
+  color: #ff6922;
+}
+
+.sspd_review .fa-star:hover {
+  color: #ff6922;
+}
+
+/* Review section styles */
+.mbp_pagination_comments .media {
+  margin-bottom: 20px;
+}
+
+.mbp_pagination_comments .media img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sspd_postdate {
+  color: #777;
+  font-size: 14px;
+}
+
+.review_rating_para {
+  color: #666;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+/* No reviews message */
+.text-muted {
+  color: #777 !important;
+}
+
+/* Review form improvements */
+.mbp_comment_form.style2 h4 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.mbp_comment_form.style2 .form-group {
+  margin-bottom: 20px;
+}
+
+.mbp_comment_form.style2 .form-control {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px 15px;
+  font-size: 14px;
+}
+
+.mbp_comment_form.style2 .form-control:focus {
+  border-color: #ff6922;
+  box-shadow: 0 0 0 0.2rem rgba(255, 105, 34, 0.25);
+}
+
+.mbp_comment_form.style2 .btn-thm {
+  background-color: #ff6922;
+  border-color: #ff6922;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.mbp_comment_form.style2 .btn-thm:hover {
+  background-color: #e55a1e;
+  border-color: #e55a1e;
+  transform: translateY(-2px);
+}
+
+/* Login alert styles */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert-info {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.alert-info a {
+  color: #245269;
+  text-decoration: underline;
+}
+
+.alert-info a:hover {
+  color: #1a3a47;
+}
+
+/* Disabled button styles */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Review form improvements */
+.comments_form p {
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 14px;
+}
+
+.comments_form strong {
+  color: #333;
+}
+
+/* Agent description styles */
+.agent-description {
+  line-height: 1.6;
+  color: #555;
+  font-size: 15px;
+  white-space: pre-line; /* Preserve line breaks */
+}
+
+/* No properties message styles */
+.no-properties-message {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 40px 20px;
+  margin: 20px 0;
+  border: 1px solid #e9ecef;
+}
+
+.no-properties-message i {
+  color: #6c757d !important;
+  margin-bottom: 15px;
+}
+
+.no-properties-message h4 {
+  color: #6c757d !important;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.no-properties-message p {
+  color: #6c757d !important;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* Tab content improvements */
+.tab-content {
+  min-height: 300px;
+}
+
+.tab-pane {
+  padding-top: 20px;
+}
+
+/* About section styling */
+.product_single_content h4 {
+  color: #333;
+  font-weight: 600;
+  border-bottom: 2px solid #ff6922;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+/* Media query for mobile responsiveness */
+@media (max-width: 768px) {
+  .agent-stats .col-4 {
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+  
+  .agent-stats .col-4:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .feat_property.agent .row {
+    flex-direction: column;
+  }
+  
+  .feat_property.agent .thumb {
+    margin-bottom: 20px;
+  }
+  
+  .no-properties-message {
+    padding: 30px 15px;
+  }
+  
+  .no-properties-message i {
+    font-size: 2rem !important;
+  }
+  
+  .agent-description {
+    font-size: 14px;
+  }
+}

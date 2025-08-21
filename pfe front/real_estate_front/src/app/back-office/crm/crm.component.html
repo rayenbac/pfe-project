@@ -1,0 +1,826 @@
+<div class="crm-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-users"></i>
+        CRM & Lead Management
+      </h1>
+      <div class="header-actions">
+        <button class="btn btn-outline" (click)="exportData()">
+          <i class="fas fa-download"></i>
+          Export Data
+        </button>
+        <button class="btn btn-primary" (click)="openLeadModal()" *ngIf="activeTab === 'leads'">
+          <i class="fas fa-plus"></i>
+          Add Lead
+        </button>
+        <button class="btn btn-primary" (click)="openContactModal()" *ngIf="activeTab === 'contacts'">
+          <i class="fas fa-plus"></i>
+          Add Contact
+        </button>
+        <button class="btn btn-primary" (click)="openCampaignModal()" *ngIf="activeTab === 'campaigns'">
+          <i class="fas fa-plus"></i>
+          Create Campaign
+        </button>
+        <button class="btn btn-primary" (click)="openTaskModal()" *ngIf="activeTab === 'tasks'">
+          <i class="fas fa-plus"></i>
+          Add Task
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading CRM data...</p>
+  </div>
+
+  <!-- CRM Content -->
+  <div class="crm-content" *ngIf="!loading">
+    <!-- Navigation Tabs -->
+    <div class="crm-nav">
+      <button 
+        class="nav-item" 
+        [class.active]="activeTab === 'leads'"
+        (click)="setActiveTab('leads')">
+        <i class="fas fa-user-plus"></i>
+        Leads
+        <span class="count">{{ leads.length }}</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="activeTab === 'contacts'"
+        (click)="setActiveTab('contacts')">
+        <i class="fas fa-address-book"></i>
+        Contacts
+        <span class="count">{{ contacts.length }}</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="activeTab === 'campaigns'"
+        (click)="setActiveTab('campaigns')">
+        <i class="fas fa-bullhorn"></i>
+        Campaigns
+        <span class="count">{{ campaigns.length }}</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="activeTab === 'tasks'"
+        (click)="setActiveTab('tasks')">
+        <i class="fas fa-tasks"></i>
+        Tasks
+        <span class="count">{{ tasks.length }}</span>
+      </button>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="filters-section">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="loadData()"
+          placeholder="Search..."
+          class="search-input"
+        >
+      </div>
+      
+      <div class="filters-grid">
+        <select [(ngModel)]="statusFilter" (change)="loadData()" class="filter-select" *ngIf="activeTab === 'leads' || activeTab === 'campaigns' || activeTab === 'tasks'">
+          <option value="">All Status</option>
+          <option *ngFor="let status of leadStatuses" [value]="status.value">{{ status.label }}</option>
+        </select>
+
+        <select [(ngModel)]="sourceFilter" (change)="loadData()" class="filter-select" *ngIf="activeTab === 'leads'">
+          <option value="">All Sources</option>
+          <option *ngFor="let source of leadSources" [value]="source.value">{{ source.label }}</option>
+        </select>
+
+        <select [(ngModel)]="priorityFilter" (change)="loadData()" class="filter-select" *ngIf="activeTab === 'leads' || activeTab === 'tasks'">
+          <option value="">All Priorities</option>
+          <option *ngFor="let priority of priorities" [value]="priority.value">{{ priority.label }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Leads Tab -->
+    <div class="tab-content" *ngIf="activeTab === 'leads'">
+      <div class="leads-grid">
+        <div class="lead-card" *ngFor="let lead of getPaginatedData()">
+          <div class="lead-header">
+            <div class="lead-info">
+              <h3 class="lead-name">{{ lead.name }}</h3>
+              <span class="lead-email">{{ lead.email }}</span>
+            </div>
+            <div class="lead-actions">
+              <button class="btn-icon" (click)="openLeadModal(lead)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-icon delete" (click)="deleteLead(lead.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="lead-details">
+            <div class="detail-row">
+              <span class="label">Status:</span>
+              <span class="badge" [ngClass]="getStatusBadgeClass(lead.status)">
+                {{ lead.status | titlecase }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Priority:</span>
+              <span class="badge" [ngClass]="getPriorityBadgeClass(lead.priority)">
+                {{ lead.priority | titlecase }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Budget:</span>
+              <span class="value">{{ formatCurrency(lead.budget) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Interested In:</span>
+              <span class="value">{{ lead.interestedIn }}</span>
+            </div>
+          </div>
+
+          <div class="lead-meta">
+            <div class="meta-item">
+              <i class="fas fa-phone"></i>
+              {{ lead.phone }}
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ lead.location }}
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-calendar"></i>
+              {{ lead.createdAt | date:'short' }}
+            </div>
+          </div>
+
+          <div class="conversion-meter" *ngIf="lead.conversionProbability">
+            <div class="meter-label">Conversion Probability: {{ lead.conversionProbability }}%</div>
+            <div class="meter-bar">
+              <div class="meter-fill" [style.width.%]="lead.conversionProbability"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contacts Tab -->
+    <div class="tab-content" *ngIf="activeTab === 'contacts'">
+      <div class="data-table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Company</th>
+              <th>Type</th>
+              <th>Total Value</th>
+              <th>Last Contact</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-row" *ngFor="let contact of getPaginatedData()">
+              <td>
+                <div class="contact-info">
+                  <strong>{{ contact.name }}</strong>
+                  <small *ngIf="contact.position">{{ contact.position }}</small>
+                </div>
+              </td>
+              <td>{{ contact.email }}</td>
+              <td>{{ contact.phone }}</td>
+              <td>{{ contact.company || '-' }}</td>
+              <td>
+                <span class="badge type-{{ contact.type }}">
+                  {{ contact.type | titlecase }}
+                </span>
+              </td>
+              <td>{{ formatCurrency(contact.totalValue) }}</td>
+              <td>{{ contact.lastContact | date:'short' }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-icon" (click)="openContactModal(contact)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-icon delete" (click)="deleteContact(contact.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Campaigns Tab -->
+    <div class="tab-content" *ngIf="activeTab === 'campaigns'">
+      <div class="campaigns-grid">
+        <div class="campaign-card" *ngFor="let campaign of getPaginatedData()">
+          <div class="campaign-header">
+            <div class="campaign-info">
+              <h3 class="campaign-name">{{ campaign.name }}</h3>
+              <span class="campaign-type">{{ campaign.type | titlecase }}</span>
+            </div>
+            <span class="badge status-{{ campaign.status }}">
+              {{ campaign.status | titlecase }}
+            </span>
+          </div>
+
+          <div class="campaign-stats">
+            <div class="stat-item">
+              <span class="stat-value">{{ campaign.leads }}</span>
+              <span class="stat-label">Leads</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ campaign.conversions }}</span>
+              <span class="stat-label">Conversions</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ campaign.roi }}%</span>
+              <span class="stat-label">ROI</span>
+            </div>
+          </div>
+
+          <div class="campaign-budget">
+            <div class="budget-info">
+              <span class="spent">{{ formatCurrency(campaign.spent) }}</span>
+              <span class="total">/ {{ formatCurrency(campaign.budget) }}</span>
+            </div>
+            <div class="budget-bar">
+              <div class="budget-fill" [style.width.%]="(campaign.spent / campaign.budget) * 100"></div>
+            </div>
+          </div>
+
+          <div class="campaign-actions">
+            <button class="btn btn-outline" (click)="openCampaignModal(campaign)">
+              <i class="fas fa-edit"></i>
+              Edit
+            </button>
+            <button class="btn btn-danger" (click)="deleteCampaign(campaign.id)">
+              <i class="fas fa-trash"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasks Tab -->
+    <div class="tab-content" *ngIf="activeTab === 'tasks'">
+      <div class="tasks-list">
+        <div class="task-item" *ngFor="let task of getPaginatedData()">
+          <div class="task-checkbox">
+            <input 
+              type="checkbox" 
+              [checked]="task.status === 'completed'"
+              (change)="completeTask(task.id)"
+            >
+          </div>
+
+          <div class="task-content">
+            <div class="task-header">
+              <h4 class="task-title" [class.completed]="task.status === 'completed'">
+                {{ task.title }}
+              </h4>
+              <span class="badge priority-{{ task.priority }}">
+                {{ task.priority | titlecase }}
+              </span>
+            </div>
+
+            <div class="task-details">
+              <span class="task-type">{{ task.type | titlecase }}</span>
+              <span class="task-assignee">Assigned to: {{ task.assignedTo }}</span>
+              <span class="task-due">Due: {{ task.dueDate | date:'short' }}</span>
+            </div>
+
+            <p class="task-description" *ngIf="task.description">
+              {{ task.description }}
+            </p>
+          </div>
+
+          <div class="task-actions">
+            <button class="btn-icon" (click)="openTaskModal(task)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete" (click)="deleteTask(task.id)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="getTotalPages() > 1">
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      
+      <span class="pagination-info">
+        Page {{ currentPage }} of {{ getTotalPages() }}
+      </span>
+      
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === getTotalPages()"
+        (click)="goToPage(currentPage + 1)">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Lead Modal -->
+  <div class="modal-overlay" *ngIf="showLeadModal" (click)="closeLeadModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingItem ? 'Edit Lead' : 'Add New Lead' }}</h2>
+        <button class="close-btn" (click)="closeLeadModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form [formGroup]="leadForm" (ngSubmit)="saveLead()">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="leadName">Name *</label>
+              <input 
+                type="text" 
+                id="leadName" 
+                formControlName="name"
+                class="form-control"
+                placeholder="Lead name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="leadEmail">Email *</label>
+              <input 
+                type="email" 
+                id="leadEmail" 
+                formControlName="email"
+                class="form-control"
+                placeholder="lead@email.com"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="leadPhone">Phone *</label>
+              <input 
+                type="tel" 
+                id="leadPhone" 
+                formControlName="phone"
+                class="form-control"
+                placeholder="+1 234 567 8900"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="leadStatus">Status</label>
+              <select id="leadStatus" formControlName="status" class="form-control">
+                <option *ngFor="let status of leadStatuses" [value]="status.value">
+                  {{ status.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="leadSource">Source</label>
+              <select id="leadSource" formControlName="source" class="form-control">
+                <option *ngFor="let source of leadSources" [value]="source.value">
+                  {{ source.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="leadPriority">Priority</label>
+              <select id="leadPriority" formControlName="priority" class="form-control">
+                <option *ngFor="let priority of priorities" [value]="priority.value">
+                  {{ priority.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="leadBudget">Budget</label>
+              <input 
+                type="number" 
+                id="leadBudget" 
+                formControlName="budget"
+                class="form-control"
+                placeholder="0"
+                min="0"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="leadLocation">Location</label>
+              <input 
+                type="text" 
+                id="leadLocation" 
+                formControlName="location"
+                class="form-control"
+                placeholder="City, State"
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <label for="leadInterestedIn">Interested In</label>
+              <input 
+                type="text" 
+                id="leadInterestedIn" 
+                formControlName="interestedIn"
+                class="form-control"
+                placeholder="Property type or specific property"
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <label for="leadNotes">Notes</label>
+              <textarea 
+                id="leadNotes" 
+                formControlName="notes"
+                class="form-control"
+                rows="3"
+                placeholder="Additional notes about the lead"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="closeLeadModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!leadForm.valid">
+            {{ editingItem ? 'Update Lead' : 'Add Lead' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div class="modal-overlay" *ngIf="showContactModal" (click)="closeContactModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingItem ? 'Edit Contact' : 'Add New Contact' }}</h2>
+        <button class="close-btn" (click)="closeContactModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="contactName">Name *</label>
+              <input 
+                type="text" 
+                id="contactName" 
+                formControlName="name"
+                class="form-control"
+                placeholder="Contact name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="contactEmail">Email *</label>
+              <input 
+                type="email" 
+                id="contactEmail" 
+                formControlName="email"
+                class="form-control"
+                placeholder="contact@email.com"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="contactPhone">Phone *</label>
+              <input 
+                type="tel" 
+                id="contactPhone" 
+                formControlName="phone"
+                class="form-control"
+                placeholder="+1 234 567 8900"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="contactType">Type</label>
+              <select id="contactType" formControlName="type" class="form-control">
+                <option *ngFor="let type of contactTypes" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contactCompany">Company</label>
+              <input 
+                type="text" 
+                id="contactCompany" 
+                formControlName="company"
+                class="form-control"
+                placeholder="Company name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="contactPosition">Position</label>
+              <input 
+                type="text" 
+                id="contactPosition" 
+                formControlName="position"
+                class="form-control"
+                placeholder="Job title"
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <h4>Address</h4>
+              <div class="address-grid">
+                <input 
+                  type="text" 
+                  formControlName="street"
+                  class="form-control"
+                  placeholder="Street address"
+                >
+                <input 
+                  type="text" 
+                  formControlName="city"
+                  class="form-control"
+                  placeholder="City"
+                >
+                <input 
+                  type="text" 
+                  formControlName="state"
+                  class="form-control"
+                  placeholder="State"
+                >
+                <input 
+                  type="text" 
+                  formControlName="zipCode"
+                  class="form-control"
+                  placeholder="ZIP Code"
+                >
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="contactNotes">Notes</label>
+              <textarea 
+                id="contactNotes" 
+                formControlName="notes"
+                class="form-control"
+                rows="3"
+                placeholder="Additional notes about the contact"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="closeContactModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!contactForm.valid">
+            {{ editingItem ? 'Update Contact' : 'Add Contact' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Campaign Modal -->
+  <div class="modal-overlay" *ngIf="showCampaignModal" (click)="closeCampaignModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingItem ? 'Edit Campaign' : 'Create New Campaign' }}</h2>
+        <button class="close-btn" (click)="closeCampaignModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form [formGroup]="campaignForm" (ngSubmit)="saveCampaign()">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="campaignName">Campaign Name *</label>
+              <input 
+                type="text" 
+                id="campaignName" 
+                formControlName="name"
+                class="form-control"
+                placeholder="Campaign name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="campaignType">Type</label>
+              <select id="campaignType" formControlName="type" class="form-control">
+                <option *ngFor="let type of campaignTypes" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="campaignBudget">Budget</label>
+              <input 
+                type="number" 
+                id="campaignBudget" 
+                formControlName="budget"
+                class="form-control"
+                placeholder="0"
+                min="0"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="campaignStartDate">Start Date</label>
+              <input 
+                type="date" 
+                id="campaignStartDate" 
+                formControlName="startDate"
+                class="form-control"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="campaignEndDate">End Date</label>
+              <input 
+                type="date" 
+                id="campaignEndDate" 
+                formControlName="endDate"
+                class="form-control"
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <label for="campaignTarget">Target Audience *</label>
+              <input 
+                type="text" 
+                id="campaignTarget" 
+                formControlName="targetAudience"
+                class="form-control"
+                placeholder="e.g., Young professionals, Families, etc."
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <label for="campaignDescription">Description</label>
+              <textarea 
+                id="campaignDescription" 
+                formControlName="description"
+                class="form-control"
+                rows="3"
+                placeholder="Campaign description and goals"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="closeCampaignModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!campaignForm.valid">
+            {{ editingItem ? 'Update Campaign' : 'Create Campaign' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingItem ? 'Edit Task' : 'Add New Task' }}</h2>
+        <button class="close-btn" (click)="closeTaskModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form [formGroup]="taskForm" (ngSubmit)="saveTask()">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="taskTitle">Title *</label>
+              <input 
+                type="text" 
+                id="taskTitle" 
+                formControlName="title"
+                class="form-control"
+                placeholder="Task title"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="taskType">Type</label>
+              <select id="taskType" formControlName="type" class="form-control">
+                <option *ngFor="let type of taskTypes" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="taskPriority">Priority</label>
+              <select id="taskPriority" formControlName="priority" class="form-control">
+                <option *ngFor="let priority of priorities" [value]="priority.value">
+                  {{ priority.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="taskAssignee">Assigned To *</label>
+              <input 
+                type="text" 
+                id="taskAssignee" 
+                formControlName="assignedTo"
+                class="form-control"
+                placeholder="Assignee name"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="taskDue">Due Date *</label>
+              <input 
+                type="datetime-local" 
+                id="taskDue" 
+                formControlName="dueDate"
+                class="form-control"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="taskRelated">Related To</label>
+              <input 
+                type="text" 
+                id="taskRelated" 
+                formControlName="relatedTo"
+                class="form-control"
+                placeholder="Lead/Contact ID"
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <label for="taskDescription">Description</label>
+              <textarea 
+                id="taskDescription" 
+                formControlName="description"
+                class="form-control"
+                rows="3"
+                placeholder="Task description"
+              ></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="taskNotes">Notes</label>
+              <textarea 
+                id="taskNotes" 
+                formControlName="notes"
+                class="form-control"
+                rows="2"
+                placeholder="Additional notes"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" (click)="closeTaskModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!taskForm.valid">
+            {{ editingItem ? 'Update Task' : 'Add Task' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

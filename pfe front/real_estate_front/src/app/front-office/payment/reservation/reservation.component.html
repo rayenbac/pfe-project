@@ -1,0 +1,240 @@
+<section class="shop-checkouts bgc-f7">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="breadcrumb_content style2">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Properties</a></li>
+              <li class="breadcrumb-item active text-thm" aria-current="page">Reservation</li>
+            </ol>
+            <h4 class="breadcrumb_title">Property Reservation</h4>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="loading">
+        <div class="col-lg-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="error">
+        <div class="col-lg-12">
+          <div class="alert alert-danger">
+            {{ error }}
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="!loading && !error && property">
+        <div class="col-md-12 col-lg-8 col-xl-8">
+          <!-- Calendar Section -->
+          <div class="checkout_form mb-4" *ngIf="showCalendar">
+            <div class="heading text-center">
+              <h4>Select Your Dates</h4>
+              <p>Choose your check-in and check-out dates from the calendar below</p>
+            </div>
+            
+            <app-availability-calendar
+              [propertyId]="property._id"
+              [selectedStartDate]="reservationForm.get('startDate')?.value"
+              [selectedEndDate]="reservationForm.get('endDate')?.value"
+              [selectionMode]="'range'"
+              (dateRangeSelected)="onDateRangeSelected($event)"
+              (dateRangeCleared)="onDateRangeCleared()">
+            </app-availability-calendar>
+          </div>
+
+          <!-- Selected Dates Summary -->
+          <div class="selected-dates-summary mb-4" *ngIf="selectedDates && !showCalendar">
+            <div class="alert alert-info">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <strong>Selected Dates:</strong>
+                  {{ selectedDates.startDate | date:'mediumDate' }} - {{ selectedDates.endDate | date:'mediumDate' }}
+                  <br>
+                  <span class="text-muted">{{ selectedDates.nights }} nights selected</span>
+                </div>
+                <div class="col-md-4 text-right">
+                  <button type="button" class="btn btn-outline-primary btn-sm" (click)="showCalendarAgain()">
+                    Change Dates
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reservation Form -->
+          <div class="checkout_form" *ngIf="selectedDates || !showCalendar">
+            <div class="heading text-center">
+              <h4>Reservation for {{ property.title }}</h4>
+              <p>Please fill in your details to proceed with the reservation</p>
+            </div>
+
+            <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()" class="form2">
+              <div class="row">
+                <!-- Date inputs (now readonly since selected from calendar) -->
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="startDate">Check-in Date *</label>
+                    <input 
+                      id="startDate" 
+                      name="startDate" 
+                      class="form-control" 
+                      type="date" 
+                      formControlName="startDate" 
+                      readonly
+                      required>
+                    <div *ngIf="reservationForm.get('startDate')?.invalid && reservationForm.get('startDate')?.touched" class="text-danger">
+                      Start date is required
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="endDate">Check-out Date *</label>
+                    <input 
+                      id="endDate" 
+                      name="endDate" 
+                      class="form-control" 
+                      type="date" 
+                      formControlName="endDate" 
+                      readonly
+                      required>
+                    <div *ngIf="reservationForm.get('endDate')?.invalid && reservationForm.get('endDate')?.touched" class="text-danger">
+                      End date is required
+                    </div>
+                    <div *ngIf="reservationForm.get('startDate')?.value && reservationForm.get('endDate')?.value && reservationForm.get('endDate')?.value <= reservationForm.get('startDate')?.value" class="text-danger">
+                      End date must be after start date
+                    </div>
+                  </div>
+                </div>
+                <!-- Show calculated rental days (readonly) -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label>Rental Days</label>
+                    <input class="form-control" type="number" [value]="rentalDays" readonly>
+                  </div>
+                </div>
+  
+                <!-- Rental Period (Days) -->
+
+                <!-- Guest Count -->
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="guestCount">Number of Guests *</label>
+                    <input id="guestCount" name="guestCount" class="form-control" type="number" min="1" formControlName="guestCount" required>
+                    <div *ngIf="reservationForm.get('guestCount')?.invalid && reservationForm.get('guestCount')?.touched" class="text-danger">
+                      Guest count must be at least 1
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Personal Information -->
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input id="firstName" name="firstName" class="form-control" type="text" formControlName="firstName" required>
+                    <div *ngIf="reservationForm.get('firstName')?.invalid && reservationForm.get('firstName')?.touched" class="text-danger">
+                      First name is required
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input id="lastName" name="lastName" class="form-control" type="text" formControlName="lastName" required>
+                    <div *ngIf="reservationForm.get('lastName')?.invalid && reservationForm.get('lastName')?.touched" class="text-danger">
+                      Last name is required
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input id="email" name="email" class="form-control" type="email" formControlName="email" required>
+                    <div *ngIf="reservationForm.get('email')?.invalid && reservationForm.get('email')?.touched" class="text-danger">
+                      Valid email is required
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="phone">Phone *</label>
+                    <input id="phone" name="phone" class="form-control" type="tel" formControlName="phone" required>
+                    <div *ngIf="reservationForm.get('phone')?.invalid && reservationForm.get('phone')?.touched" class="text-danger">
+                      Phone number is required
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Special Requests -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="specialRequests">Special Requests</label>
+                    <textarea id="specialRequests" name="specialRequests" class="form-control" rows="5" formControlName="specialRequests"></textarea>
+                  </div>
+                </div>
+  
+                <div class="col-sm-12">
+                  <div class="form-group mb0">
+                    <button type="submit" class="btn btn-thm btn-block" [disabled]="reservationForm.invalid || loading">
+                      Proceed to Checkout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+  
+        <div class="col-lg-4 col-xl-4">
+          <div class="order_sidebar_widget mb30">
+            <h4 class="title">Property Details</h4>
+            <div class="media">
+              <img class="align-self-start mr-3" 
+                   [src]="property.media && property.media.length > 0 ? 'http://localhost:3000' + property.media[0].url : '/assets/images/property-placeholder.jpg'" 
+                   [alt]="property.title" 
+                   style="width: 100px; height: 80px; object-fit: cover;">
+              <div class="media-body">
+                <h5 class="mt-0 post_title">{{ property.title }}</h5>
+                <p><span class="flaticon-placeholder"></span> {{ property.address.city }}, {{ property.address.state }}</p>
+              </div>
+            </div>
+            <ul class="mb0">
+              <li class="subtitle"><p>Property Type <span class="float-right">{{ property.type }}</span></p></li>
+              <li class="subtitle"><p>Bedrooms <span class="float-right">{{ property.bedrooms }}</span></p></li>
+              <li class="subtitle"><p>Bathrooms <span class="float-right">{{ property.bathrooms }}</span></p></li>
+              <li class="subtitle"><p>Size <span class="float-right">{{ property.size.total }} {{ property.size.unit }}</span></p></li>
+              <li class="subtitle"><p>Price per Day <span class="float-right">{{ property.pricing.currency }}{{ property.pricing.price | number }}</span></p></li>
+              <li class="subtitle"><p>Rental Days <span class="float-right">{{ rentalDays }}</span></p></li>
+              <li class="subtitle"><p>Guests <span class="float-right">{{ guestCount }}</span></p></li>
+              <li class="subtitle" *ngIf="extraGuestSurcharge > 0"><p>Extra Guest Surcharge <span class="float-right">+{{ property.pricing.currency }}{{ extraGuestSurcharge | number:'1.2-2' }}</span></p></li>
+              <li class="subtitle"><p>Total <span class="float-right totals color-orose">{{ property.pricing.currency }}{{ totalAmount | number:'1.2-2' }}</span></p></li>
+            </ul>
+          </div>
+          <div class="payment_widget">
+            <div class="ui_kit_checkbox style2">
+              <h4 class="mb20">Payment Methods</h4>
+              <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" class="custom-control-input" id="stripeInfo" checked disabled>
+                <label class="custom-control-label" for="stripeInfo">Credit Card (Stripe)</label>
+              </div>
+              <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" class="custom-control-input" id="konnectInfo" checked disabled>
+                <label class="custom-control-label" for="konnectInfo">Konnect (Tunisia)</label>
+              </div>
+              <div class="payment_details">
+                <p>Pay securely with Stripe or Konnect. You will select your payment method at checkout.</p>
+                <img class="pr15" src="assets/images/resource/payment.png" alt="payment.png">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

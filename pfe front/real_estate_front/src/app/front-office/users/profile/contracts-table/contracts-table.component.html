@@ -1,0 +1,241 @@
+<div class="contracts-container">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="page-title">
+        <i class="fas fa-file-contract me-2"></i>
+        My Contracts
+      </h2>
+      <p class="text-muted">View and manage your rental contracts</p>
+    </div>
+    <div class="filter-section">
+      <select class="form-select">
+        <option value="">All Contracts</option>
+        <option value="ACTIVE">Active</option>
+        <option value="DRAFT">Draft</option>
+        <option value="EXPIRED">Expired</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Message Alert -->
+  <div *ngIf="message" class="alert alert-dismissible fade show" 
+       [class.alert-success]="messageType === 'success'"
+       [class.alert-danger]="messageType === 'error'">
+    <i class="fas" [class.fa-check-circle]="messageType === 'success'" 
+       [class.fa-exclamation-circle]="messageType === 'error'"></i>
+    {{ message }}
+    <button type="button" class="btn-close" (click)="clearMessage()"></button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading contracts...</p>
+  </div>
+
+  <!-- Contracts Table -->
+  <div *ngIf="!loading" class="contracts-table-container">
+    <div class="table-responsive">
+      <table class="table contracts-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Landlord</th>
+            <th>Period</th>
+            <th>Monthly Rent</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let contract of contracts" (click)="openContractDetails(contract)" class="contract-row">
+            <td>
+              <div class="property-cell">
+                <div class="property-title">{{ contract.property.title }}</div>
+                <div class="property-location">{{ contract.property.location.city }}, {{ contract.property.location.state }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="landlord-cell">
+                <div class="landlord-name">{{ contract.landlord?.name || 'N/A' }}</div>
+                <div class="landlord-email">{{ contract.landlord?.email || 'N/A' }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="period-cell">
+                <div class="period-dates">
+                  {{ formatDate(contract.startDate) }} - {{ formatDate(contract.endDate) }}
+                </div>
+                <div class="period-duration">{{ getDuration(contract.startDate, contract.endDate) }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="rent-amount">{{ formatCurrency(contract.monthlyRent) }}</div>
+              <div class="deposit-info">Deposit: {{ formatCurrency(contract.deposit) }}</div>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(contract.status)">
+                {{ contract.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="openContractDetails(contract); $event.stopPropagation()"
+                  title="View Details">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-success"
+                  (click)="downloadContract(contract); $event.stopPropagation()"
+                  title="Download">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="contracts.length === 0" class="empty-state">
+      <i class="fas fa-file-contract"></i>
+      <h4>No Contracts Yet</h4>
+      <p>Your rental contracts will appear here once they're created.</p>
+    </div>
+  </div>
+
+  <!-- Contract Details Modal -->
+  <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" *ngIf="selectedContract">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-file-contract me-2"></i>
+            Contract Details
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <!-- Contract Status -->
+          <div class="contract-status-section mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="section-title">Contract Status</h6>
+              <span class="badge" [ngClass]="getStatusClass(selectedContract.status)">
+                {{ selectedContract.status }}
+              </span>
+            </div>
+            <div *ngIf="selectedContract.signedAt" class="signed-info">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Signed on {{ formatDate(selectedContract.signedAt) }}
+            </div>
+          </div>
+
+          <!-- Property Information -->
+          <div class="property-section mb-4">
+            <h6 class="section-title">Property Information</h6>
+            <div class="property-details">
+              <h5>{{ selectedContract.property.title }}</h5>
+              <p class="text-muted">
+                <i class="fas fa-map-marker-alt me-1"></i>
+                {{ selectedContract.property.location.address }}, 
+                {{ selectedContract.property.location.city }}, 
+                {{ selectedContract.property.location.state }}
+              </p>
+              <div class="property-features">
+                <span class="feature">
+                  <i class="fas fa-bed me-1"></i>
+                  {{ selectedContract.property.bedrooms }} bed
+                </span>
+                <span class="feature">
+                  <i class="fas fa-bath me-1"></i>
+                  {{ selectedContract.property.bathrooms }} bath
+                </span>
+                <span class="feature">
+                  <i class="fas fa-ruler-combined me-1"></i>
+                  {{ selectedContract.property.area }} sqft
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parties Information -->
+          <div class="parties-section mb-4">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="section-title">Tenant</h6>
+                <div class="party-info">
+                  <div class="party-name">{{ selectedContract.tenant?.name || 'N/A' }}</div>
+                  <div class="party-email">{{ selectedContract.tenant?.email || 'N/A' }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h6 class="section-title">Landlord</h6>
+                <div class="party-info">
+                  <div class="party-name">{{ selectedContract.landlord?.name || 'N/A' }}</div>
+                  <div class="party-email">{{ selectedContract.landlord?.email || 'N/A' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contract Terms -->
+          <div class="terms-section mb-4">
+            <h6 class="section-title">Contract Terms</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="term-item">
+                  <label>Start Date</label>
+                  <div class="term-value">{{ formatDate(selectedContract.startDate) }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="term-item">
+                  <label>End Date</label>
+                  <div class="term-value">{{ formatDate(selectedContract.endDate) }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="term-item">
+                  <label>Monthly Rent</label>
+                  <div class="term-value price">{{ formatCurrency(selectedContract.monthlyRent) }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="term-item">
+                  <label>Security Deposit</label>
+                  <div class="term-value price">{{ formatCurrency(selectedContract.deposit) }}</div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="term-item">
+                  <label>Duration</label>
+                  <div class="term-value">{{ getDuration(selectedContract.startDate, selectedContract.endDate) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            Close
+          </button>
+          <button type="button" class="btn btn-success" (click)="downloadContract(selectedContract)">
+            <i class="fas fa-download me-1"></i>
+            Download Contract
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backdrop -->
+  <div *ngIf="showModal" class="modal-backdrop fade show" (click)="closeModal()"></div>
+</div>

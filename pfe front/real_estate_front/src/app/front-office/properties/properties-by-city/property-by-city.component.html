@@ -1,0 +1,551 @@
+<section class="our-listing bgc-f7 pb30-991">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <!-- Mobile/Sidebar Search Form -->
+        <div class="listing_sidebar dn db-991">
+          <div class="sidebar_content_details style3">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="sidebar_listing_list style2 mobile_sytle_sidebar mb0">
+              <div class="sidebar_advanced_search_widget">
+                <h4 class="mb25">Advanced Search <a class="filter_closed_btn float-right" href="#"><small>Hide Filter</small> <span class="flaticon-close"></span></a></h4>
+                <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                  <ul class="sasw_list style2 mb0">
+                    <li class="search_area">
+                      <div class="form-group">
+                        <input type="text" class="form-control" formControlName="keyword" placeholder="keyword">
+                        <label><span class="flaticon-magnifying-glass"></span></label>
+                      </div>
+                    </li>
+                    <li class="search_area">
+                      <div class="form-group">
+                        <input type="text" class="form-control" formControlName="location" placeholder="Location">
+                        <label><span class="flaticon-maps-and-flags"></span></label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_two">
+                        <div class="candidate_revew_select">
+                          <select class="selectpicker w100 show-tick" formControlName="status" data-live-search="false">
+                            <option value="">Status</option>
+                            <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_two">
+                        <div class="candidate_revew_select">
+                          <select class="selectpicker w100 show-tick" formControlName="propertyType" data-live-search="false">
+                            <option value="">Property Type</option>
+                            <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="small_dropdown2">
+                        <div id="prncgs" class="btn dd_btn">
+                          <span>Price</span>
+                          <label><span class="fa fa-angle-down"></span></label>
+                        </div>
+                        <div class="dd_content2">
+                          <div class="pricing_acontent">
+                            <input type="number" class="amount" placeholder="Min Price" formControlName="minPrice">
+                            <input type="number" class="amount2" placeholder="Max Price" formControlName="maxPrice">
+                            <div class="slider-range"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_two">
+                        <div class="candidate_revew_select">
+                          <select class="selectpicker w100 show-tick" formControlName="bathrooms" data-live-search="false">
+                            <option value="">Bathrooms</option>
+                            <option *ngFor="let num of bathrooms" [value]="num">{{ num }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_two">
+                        <div class="candidate_revew_select">
+                          <select class="selectpicker w100 show-tick" formControlName="bedrooms" data-live-search="false">
+                            <option value="">Bedrooms</option>
+                            <option *ngFor="let num of bedrooms" [value]="num">{{ num }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_two">
+                        <div class="candidate_revew_select">
+                          <select class="selectpicker w100 show-tick" formControlName="garages" data-live-search="false">
+                            <option value="">Garages</option>
+                            <option *ngFor="let garage of garagesList" [value]="garage">{{ garage }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_two">
+                        <div class="candidate_revew_select">
+                          <select class="selectpicker w100 show-tick" formControlName="yearBuilt" data-live-search="false">
+                            <option value="">Year built</option>
+                            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="min_area style2 list-inline-item">
+                      <div class="form-group">
+                        <input type="number" class="form-control" formControlName="minArea" placeholder="Min Area">
+                      </div>
+                    </li>
+                    <li class="max_area list-inline-item">
+                      <div class="form-group">
+                        <input type="number" class="form-control" formControlName="maxArea" placeholder="Max Area">
+                      </div>
+                    </li>
+                    <li>
+                      <div id="accordion" class="panel-group">
+                        <div class="panel">
+                          <div class="panel-heading">
+                            <h4 class="panel-title">
+                              <a href="#panelBodyRating" class="accordion-toggle link" data-toggle="collapse" data-parent="#accordion"><i class="flaticon-more"></i> Advanced features</a>
+                            </h4>
+                          </div>
+                          <div id="panelBodyRating" class="panel-collapse collapse">
+                            <div class="panel-body row">
+                              <div class="col-lg-12">
+                                <ul class="ui_kit_checkbox selectable-list float-left fn-400">
+                                  <li *ngFor="let amenity of amenities.slice(0, 8); let i = index">
+                                    <div class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" [id]="'amenity' + i" [checked]="isAmenitySelected(amenity)" (change)="onAmenityChange(amenity, $event)">
+                                      <label class="custom-control-label" [for]="'amenity' + i">{{ amenity }}</label>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <ul class="ui_kit_checkbox selectable-list float-right fn-400">
+                                  <li *ngFor="let amenity of amenities.slice(8); let i = index">
+                                    <div class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" [id]="'amenity' + (i+8)" [checked]="isAmenitySelected(amenity)" (change)="onAmenityChange(amenity, $event)">
+                                      <label class="custom-control-label" [for]="'amenity' + (i+8)">{{ amenity }}</label>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="search_option_button">
+                        <button type="submit" class="btn btn-block btn-thm">Search</button>
+                      </div>
+                    </li>
+                   
+                  </ul>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="breadcrumb_content style2 mb0-991">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active text-thm" aria-current="page">Properties in {{ city }}</li>
+          </ol>
+          <h2 class="breadcrumb_title">Properties in {{ city }}</h2>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="listing_list_style mb20-xsd tal-991">
+          <ul class="mb0">
+            <li class="list-inline-item"><a href="#"><span class="fa fa-th-large"></span></a></li>
+            <li class="list-inline-item"><a href="#"><span class="fa fa-th-list"></span></a></li>
+          </ul>
+        </div>
+        <div class="dn db-991 mt30 mb0">
+          <div id="main2">
+            <span id="open2" class="flaticon-filter-results-button filter_open_btn style2"> Show Filter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-4 col-xl-4">
+        <!-- Desktop Search Form - Now properly bound to reactive form -->
+        <div class="sidebar_listing_grid1 dn-991">
+          <div class="sidebar_listing_list">
+            <div class="sidebar_advanced_search_widget">
+              <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                <ul class="sasw_list mb0">
+                  <li class="search_area">
+                      <div class="form-group">
+                        <input type="text" class="form-control" formControlName="keyword" placeholder="keyword">
+                        <label><span class="flaticon-magnifying-glass"></span></label>
+                      </div>
+                  </li>
+                  <li class="search_area">
+                      <div class="form-group">
+                        <input type="text" class="form-control" formControlName="location" placeholder="Location">
+                        <label><span class="flaticon-maps-and-flags"></span></label>
+                      </div>
+                  </li>
+                  <li>
+                    <div class="search_option_two">
+                      <div class="candidate_revew_select">
+                        <select class="selectpicker w100 show-tick" formControlName="status" data-live-search="false">
+                          <option value="">Status</option>
+                          <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="search_option_two">
+                      <div class="candidate_revew_select">
+                        <select class="selectpicker w100 show-tick" formControlName="propertyType" data-live-search="false">
+                          <option value="">Property Type</option>
+                          <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="small_dropdown2">
+                        <div id="prncgs2" class="btn dd_btn">
+                          <span>Price</span>
+                          <label><span class="fa fa-angle-down"></span></label>
+                        </div>
+                        <div class="dd_content2 style2">
+                          <div class="pricing_acontent">
+                            <input type="number" class="amount" placeholder="Min Price" formControlName="minPrice"> 
+                            <input type="number" class="amount2" placeholder="Max Price" formControlName="maxPrice">
+                            <div class="slider-range"></div>
+                          </div>
+                        </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="search_option_two">
+                      <div class="candidate_revew_select">
+                        <select class="selectpicker w100 show-tick" formControlName="bathrooms" data-live-search="false">
+                          <option value="">Bathrooms</option>
+                          <option *ngFor="let num of bathrooms" [value]="num">{{ num }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="search_option_two">
+                      <div class="candidate_revew_select">
+                        <select class="selectpicker w100 show-tick" formControlName="bedrooms" data-live-search="false">
+                          <option value="">Bedrooms</option>
+                          <option *ngFor="let num of bedrooms" [value]="num">{{ num }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="search_option_two">
+                      <div class="candidate_revew_select">
+                        <select class="selectpicker w100 show-tick" formControlName="garages" data-live-search="false">
+                          <option value="">Garages</option>
+                          <option *ngFor="let garage of garagesList" [value]="garage">{{ garage }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="search_option_two">
+                      <div class="candidate_revew_select">
+                        <select class="selectpicker w100 show-tick" formControlName="yearBuilt" data-live-search="false">
+                          <option value="">Year built</option>
+                          <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="min_area list-inline-item">
+                      <div class="form-group">
+                        <input type="number" class="form-control" formControlName="minArea" placeholder="Min Area">
+                      </div>
+                  </li>
+                  <li class="max_area list-inline-item">
+                      <div class="form-group">
+                        <input type="number" class="form-control" formControlName="maxArea" placeholder="Max Area">
+                      </div>
+                  </li>
+                  <li>
+                      <div id="accordion2" class="panel-group">
+                        <div class="panel">
+                            <div class="panel-heading">
+                              <h4 class="panel-title">
+                                <a href="#panelBodyRating2" class="accordion-toggle link" data-toggle="collapse" data-parent="#accordion2"><i class="flaticon-more"></i> Advanced features</a>
+                              </h4>
+                            </div>
+                          <div id="panelBodyRating2" class="panel-collapse collapse">
+                              <div class="panel-body row">
+                                <div class="col-lg-12">
+                                      <ul class="ui_kit_checkbox selectable-list float-left fn-400">
+                                        <li *ngFor="let amenity of amenities.slice(0, 8); let i = index">
+                                          <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" [id]="'desktop-amenity' + i" [checked]="isAmenitySelected(amenity)" (change)="onAmenityChange(amenity, $event)">
+                                            <label class="custom-control-label" [for]="'desktop-amenity' + i">{{ amenity }}</label>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                      <ul class="ui_kit_checkbox selectable-list float-right fn-400">
+                                        <li *ngFor="let amenity of amenities.slice(8); let i = index">
+                                          <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" [id]="'desktop-amenity' + (i+8)" [checked]="isAmenitySelected(amenity)" (change)="onAmenityChange(amenity, $event)">
+                                            <label class="custom-control-label" [for]="'desktop-amenity' + (i+8)">{{ amenity }}</label>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="search_option_button">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                  </li>
+                 
+                </ul>
+              </form>
+            </div>
+          </div>
+          <div class="terms_condition_widget">
+            <h4 class="title">Featured Properties</h4>
+            <div class="sidebar_feature_property_slider">
+              <div class="item">
+                <div class="feat_property home7">
+                  <div class="thumb">
+                    <img class="img-whp" src="images/property/fp1.jpg" alt="fp1.jpg">
+                    <div class="thmb_cntnt">
+                      <ul class="tag mb0">
+                        <li class="list-inline-item"><a href="#">For Rent</a></li>
+                        <li class="list-inline-item"><a href="#">Featured</a></li>
+                      </ul>
+                      <a class="fp_price" href="#">$13,000<small>/mo</small></a>
+                      <h4 class="posr color-white">Renovated Apartment</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="terms_condition_widget">
+            <h4 class="title">Categories Property</h4>
+            <div class="widget_list">
+              <ul class="list_details">
+                <li><a href="#"><i class="fa fa-caret-right mr10"></i>Apartment <span class="float-right">6 properties</span></a></li>
+                <li><a href="#"><i class="fa fa-caret-right mr10"></i>Condo <span class="float-right">12 properties</span></a></li>
+                <li><a href="#"><i class="fa fa-caret-right mr10"></i>Family House <span class="float-right">8 properties</span></a></li>
+                <li><a href="#"><i class="fa fa-caret-right mr10"></i>Modern Villa <span class="float-right">26 properties</span></a></li>
+                <li><a href="#"><i class="fa fa-caret-right mr10"></i>Town House <span class="float-right">89 properties</span></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sidebar_feature_listing">
+            <h4 class="title">Recently Viewed</h4>
+            <div class="media">
+              <img class="align-self-start mr-3" src="images/blog/fls1.jpg" alt="fls1.jpg">
+              <div class="media-body">
+                  <h5 class="mt-0 post_title">Nice Room With View</h5>
+                  <a href="#">$13,000/<small>/mo</small></a>
+                  <ul class="mb0">
+                    <li class="list-inline-item">Beds: 4</li>
+                    <li class="list-inline-item">Baths: 2</li>
+                    <li class="list-inline-item">Sq Ft: 5280</li>
+                  </ul>
+              </div>
+            </div>
+            <div class="media">
+              <img class="align-self-start mr-3" src="images/blog/fls2.jpg" alt="fls2.jpg">
+              <div class="media-body">
+                  <h5 class="mt-0 post_title">Villa called Archangel</h5>
+                  <a href="#">$13,000<small>/mo</small></a>
+                  <ul class="mb0">
+                    <li class="list-inline-item">Beds: 4</li>
+                    <li class="list-inline-item">Baths: 2</li>
+                    <li class="list-inline-item">Sq Ft: 5280</li>
+                  </ul>
+              </div>
+            </div>
+            <div class="media">
+              <img class="align-self-start mr-3" src="images/blog/fls3.jpg" alt="fls3.jpg">
+              <div class="media-body">
+                  <h5 class="mt-0 post_title">Sunset Studio</h5>
+                  <a href="#">$13,000<small>/mo</small></a>
+                  <ul class="mb0">
+                    <li class="list-inline-item">Beds: 4</li>
+                    <li class="list-inline-item">Baths: 2</li>
+                    <li class="list-inline-item">Sq Ft: 5280</li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-8">
+        <div class="row">
+          <div class="grid_list_search_result">
+            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-5">
+              <div class="left_area tac-xsd">
+                <p>{{ totalResults }} Search results</p>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-8 col-lg-8 col-xl-7">
+              <div class="right_area text-right tac-xsd">
+                <ul>
+                  <li class="list-inline-item"><span class="stts">Status:</span>
+                    <select class="selectpicker show-tick" [(ngModel)]="sortStatus" (ngModelChange)="applySort()">
+                      <option value="">All Status</option>
+                      <option value="recent">Recent</option>
+                      <option value="old">Oldest</option>
+                    </select>
+                  </li>
+										<li class="list-inline-item"><span class="shrtby">Sort by:</span>
+                    <select class="selectpicker show-tick" [(ngModel)]="sortBy" (ngModelChange)="applySort()">
+                      <option value="featured">Featured First</option>
+                      <option value="priceAsc">Price Ascending</option>
+                      <option value="priceDesc">Price Descending</option>
+                    </select>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <ng-container *ngIf="paginatedProperties.length > 0; else noResultsBlock">
+            <div class="col-md-6 col-lg-6" *ngFor="let property of paginatedProperties">
+              <div class="feat_property home7 style4" (click)="navigateToProperty(property)" style="cursor: pointer;">
+                <div class="thumb">
+                  <div class="fp_single_item_slider">
+                    <div class="item">
+            <img class="img-whp" [src]="getImageUrl(property.media)" [alt]="property.title">
+                    </div>
+                    <!-- Add more images if available -->
+                    <div class="item" *ngIf="property.media && property.media.length > 1">
+              <img class="img-whp" [src]="'http://localhost:3000' + property.media[1].url" [alt]="property.title">
+            </div>
+                  </div>
+                  <div class="thmb_cntnt style2">
+                    <ul class="tag mb0">
+                      <li class="list-inline-item">
+                        <a href="#" [ngClass]="{
+                          'bg-success': getStatus(property) === 'For Rent',
+                          'bg-primary': getStatus(property) === 'For Sale',
+                          'bg-warning': getStatus(property) === 'Featured'
+                        }">{{ getStatus(property) }}</a>
+                      </li>
+                      <li class="list-inline-item" *ngIf="property.featured">
+                        <a href="#" class="bg-warning">Featured</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="thmb_cntnt style3">
+                    <ul class="icon mb0">
+                      <li class="list-inline-item">
+                        <a href="#"><span class="flaticon-transfer-1"></span></a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a href="#"><span class="flaticon-heart"></span></a>
+                      </li>
+                    </ul>
+                    <a class="fp_price" href="#">
+                      {{ getPrice(property) | currency:'USD':'symbol':'1.0-0' }}
+                      <small *ngIf="getStatus(property) === 'For Rent'">/mo</small>
+                    </a>
+                  </div>
+                </div>
+                <div class="details">
+                  <div class="tc_content">
+                    <p class="text-thm">{{ property.type }}</p>
+                    <h4>
+                      <a [routerLink]="getPropertyUrl(property)">{{ property.title }}</a>
+                    </h4>
+                    <p>
+                      <span class="flaticon-placeholder"></span> 
+                      {{ property.address?.street }}, {{ property.address?.city }}
+                    </p>
+                    <ul class="prop_details mb0">
+                      <li class="list-inline-item">
+                        <a href="#">Beds: {{ property.bedrooms || 0 }}</a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a href="#">Baths: {{ property.bathrooms || 0 }}</a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a href="#">Sq Ft: {{ getArea(property) || 0 }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="fp_footer">
+                    <ul class="fp_meta float-left mb0">
+                      <li class="list-inline-item">
+                        <a href="#">
+                          <img [src]="getOwnerImage(property.owner)" 
+                               [alt]="getOwnerName(property.owner)"
+                               class="owner-avatar"
+                               style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        </a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a href="#">{{ getOwnerName(property.owner) }}</a>
+                      </li>
+                    </ul>
+                    <div class="fp_pdate float-right">
+                      {{ property.createdAt | date:'shortDate' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          
+          <ng-template #noResultsBlock>
+            <div class="col-12">
+              <div class="no-results text-center p-5">
+                <h4>No Properties Found</h4>
+                <p>Try adjusting your search criteria.</p>
+                <button type="button" class="btn btn-primary" (click)="resetSearch()">Reset Search</button>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 mt20" *ngIf="totalPages > 1">
+            <div class="mbp_pagination">
+              <ul class="page_navigation">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" href="#" (click)="goToPage(currentPage-1)"><span class="flaticon-left-arrow"></span> Prev</a>
+                </li>
+                <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === (i+1)">
+                  <a class="page-link" href="#" (click)="goToPage(i+1)">{{ i+1 }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" href="#" (click)="goToPage(currentPage+1)"><span class="flaticon-right-arrow"></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

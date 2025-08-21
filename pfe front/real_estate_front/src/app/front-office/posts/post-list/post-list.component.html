@@ -1,0 +1,183 @@
+<section class="blog_post_container bgc-f7">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-6">
+					<div class="breadcrumb_content style2">
+						<ol class="breadcrumb">
+						    <li class="breadcrumb-item"><a href="#">Home</a></li>
+						    <li class="breadcrumb-item active text-thm" aria-current="page">Blog</li>
+						</ol>
+						<h2 class="breadcrumb_title">Blog</h2>
+					</div>
+				</div>			<div class="col-xl-6">
+				<div class="text-right">
+					<button class="btn btn-thm" (click)="goToCreate()" *ngIf="isAuthenticated">
+						<span class="flaticon-plus"></span> Create Post
+					</button>
+				</div>
+			</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="main_blog_post_content">
+						<!-- Loading State -->
+						<div *ngIf="loading" class="text-center">
+							<p>Loading posts...</p>
+						</div>
+						
+						<!-- Error State -->
+						<div *ngIf="error" class="alert alert-danger">
+							{{ error }}
+						</div>
+						
+						<!-- Posts -->
+						<div *ngFor="let post of paginatedPosts" class="for_blog feat_property">
+							<div class="thumb">
+								<img class="img-whp" [src]="getPostImageUrl(post)" [alt]="post.title" style="width: 729px; height: 400px; object-fit: cover;">
+								<div class="blog_tag">{{ post.category || 'General' }}</div>
+							</div>
+							<div class="details">
+								<div class="tc_content">
+									<h4 class="mb15"><a href="#" (click)="goToDetails(post); $event.preventDefault()" class="text-dark">{{ post.title }}</a></h4>
+									<p>{{ stripHtmlTags(post.description) | slice:0:200 }}{{ stripHtmlTags(post.description) && stripHtmlTags(post.description).length > 200 ? '...' : '' }}</p>
+								</div>
+								<div class="fp_footer">
+									<ul class="fp_meta float-left mb0">
+										<li class="list-inline-item">
+											<a href="#" (click)="$event.preventDefault()">
+												<img [src]="getAuthorAvatar(post)" [alt]="getAuthorName(post)" 
+													 (error)="onImageError($event)"
+													 style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+											</a>
+										</li>
+										<li class="list-inline-item">
+											<a href="#" (click)="$event.preventDefault()" class="text-dark">
+												{{ getAuthorName(post) }}
+											</a>
+										</li>
+										<li class="list-inline-item">
+											<a href="#" (click)="$event.preventDefault()" class="text-muted">
+												<span class="flaticon-calendar pr10"></span> 
+												{{ post.createdAt | date:'MMMM d, yyyy' }}
+											</a>
+										</li>
+									</ul>
+									<a class="fp_pdate float-right text-thm" href="#" 
+									   (click)="goToDetails(post); $event.preventDefault()">
+									   Read More <span class="flaticon-next"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Pagination -->
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="mbp_pagination mt20">
+									<ul class="page_navigation">
+									    <li class="page-item" [class.disabled]="currentPage === 1">
+									    	<a class="page-link" href="#" tabindex="-1" [attr.aria-disabled]="currentPage === 1" (click)="changePage(currentPage - 1); $event.preventDefault()">
+									    		<span class="flaticon-left-arrow"></span> Prev
+									    	</a>
+									    </li>
+									    <li *ngFor="let page of totalPagesArray" class="page-item" [class.active]="page === currentPage">
+									    	<a class="page-link" href="#" (click)="changePage(page); $event.preventDefault()">{{ page }}</a>
+									    </li>
+									    <li class="page-item" [class.disabled]="currentPage === totalPages">
+									    	<a class="page-link" href="#" (click)="changePage(currentPage + 1); $event.preventDefault()">
+									    		<span class="flaticon-right-arrow"></span>
+									    	</a>
+									    </li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-xl-4">
+					<div class="sidebar_search_widget">
+						<div class="blog_search_widget">
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Search Here" 
+									   [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" 
+									   aria-label="Search" aria-describedby="button-addon2">
+								<div class="input-group-append">
+							    	<button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="onSearch()">
+							    		<span class="flaticon-magnifying-glass"></span>
+							    	</button>
+							    </div>
+							</div>
+						</div>
+					</div>
+					<div class="terms_condition_widget">
+						<h4 class="title">Categories</h4>
+						<div class="widget_list">
+							<ul class="list_details">
+								<li>
+									<a href="#" (click)="filterByCategory(''); $event.preventDefault()" 
+									   [class.active]="selectedCategory === ''">
+									   <i class="fa fa-caret-right mr10"></i>All Posts
+										<span class="float-right">{{ allPosts.length }} posts</span>
+									</a>
+								</li>
+								<li *ngFor="let category of categories">
+									<a href="#" (click)="filterByCategory(category.name); $event.preventDefault()" 
+									   [class.active]="selectedCategory === category.name">
+									   <i class="fa fa-caret-right mr10"></i>{{ category.name }} 
+										<span class="float-right">{{ category.count }} posts</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="sidebar_feature_listing">
+						<h4 class="title">Featured Posts</h4>
+						<div *ngFor="let post of featuredPosts" class="media">
+							<img class="align-self-start mr-3" [src]="getPostImageUrl(post)" 
+								 [alt]="post.title" (error)="onImageError($event)"
+								 style="width: 80px; height: 60px; object-fit: cover;">
+							<div class="media-body">
+						    	<h5 class="mt-0 post_title">
+						    		<a href="#" (click)="goToFeaturedPost(post); $event.preventDefault()" 
+						    		   class="text-dark">{{ post.title }}</a>
+						    	</h5>
+						    	<a href="#" (click)="goToFeaturedPost(post); $event.preventDefault()" 
+						    	   class="text-thm">{{ post.category || 'Blog Post' }}</a>
+						    	<ul class="mb0">
+						    		<li class="list-inline-item">{{ post.createdAt | date:'MMM d' }}</li>
+						    		<li class="list-inline-item">{{ getAuthorName(post) }}</li>
+						    	</ul>
+							</div>
+						</div>
+						<div *ngIf="featuredPosts.length === 0" class="text-center text-muted">
+							<p>No featured posts available</p>
+						</div>
+					</div>
+					<div class="blog_tag_widget">
+						<h4 class="title">Tags</h4>
+						<div class="mb-3" *ngIf="selectedTags.length > 0">
+							<small class="text-muted">Selected tags:</small>
+							<div class="selected-tags">
+								<span *ngFor="let tag of selectedTags" class="badge badge-primary mr-1">
+									{{ tag }}
+									<button type="button" class="btn-close" (click)="toggleTag(tag)">×</button>
+								</span>
+							</div>
+							<button class="btn btn-sm btn-outline-secondary mt-2" (click)="clearAllFilters()">
+								Clear All Filters
+							</button>
+						</div>
+						<ul class="tag_list">
+							<li *ngFor="let tag of allTags" class="list-inline-item">
+								<a href="#" 
+								   [class.active]="isTagSelected(tag)"
+								   (click)="toggleTag(tag); $event.preventDefault()">
+								   {{ tag }}
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>

@@ -1,0 +1,101 @@
+/* Desktop (screens larger than 991px) */
+@media (min-width: 992px) {
+  /* Hide mobile elements on desktop */
+  #open2, 
+  .filter_open_btn, 
+  .closebtn,
+  .filter_closed_btn,
+  .listing_sidebar.dn.db-991 {
+    display: none !important;
+  }
+  
+  /* Show desktop sidebar */
+  .sidebar_listing_grid1.dn-991 {
+    display: block !important;
+  }
+}
+
+/* Mobile (screens 991px and smaller) */
+@media (max-width: 991px) {
+  /* Hide desktop sidebar */
+  .sidebar_listing_grid1.dn-991 {
+    display: none !important;
+  }
+  
+  /* Show mobile filter button */
+  #open2,
+  .filter_open_btn {
+    display: inline-block !important;
+  }
+  
+  /* By default hide mobile sidebar - target the correct classes */
+  .listing_sidebar.dn.db-991 {
+    display: none !important;
+  }
+  
+  /* When active, show it as overlay - with MUCH higher specificity to override global .dn class */
+  body .listing_sidebar.dn.db-991.active,
+  body div.listing_sidebar.dn.db-991.active,
+  section .listing_sidebar.dn.db-991.active {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    background: #ffffff !important;
+    overflow-y: auto !important;
+    padding: 20px !important;
+    margin: 0 !important;
+    border: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+  
+  /* Ensure content inside the overlay is visible */
+  body .listing_sidebar.dn.db-991.active .sidebar_content_details,
+  body div.listing_sidebar.dn.db-991.active .sidebar_content_details,
+  section .listing_sidebar.dn.db-991.active .sidebar_content_details {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Ensure form elements are visible */
+  body .listing_sidebar.dn.db-991.active form,
+  body .listing_sidebar.dn.db-991.active ul,
+  body .listing_sidebar.dn.db-991.active li,
+  body .listing_sidebar.dn.db-991.active input,
+  body .listing_sidebar.dn.db-991.active select,
+  body .listing_sidebar.dn.db-991.active button {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Override any template CSS that might hide elements */
+  body .listing_sidebar.dn.db-991.active * {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* Clean, production-ready styles */
+body .listing_sidebar.dn.db-991.active,
+section .listing_sidebar.dn.db-991.active {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+body .listing_sidebar.dn.db-991.active .sidebar_content_details,
+section .listing_sidebar.dn.db-991.active .sidebar_content_details {
+  background: #ffffff !important;
+  padding: 20px !important;
+  margin: 0 !important;
+  border: none !important;
+}

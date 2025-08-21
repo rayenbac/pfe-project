@@ -1,0 +1,14 @@
+.failed-icon {
+  margin-bottom: 30px;
+}
+.text-danger {
+  color: #dc3545 !important;
+}
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+.btn-area .btn {
+  min-width: 180px;
+} 

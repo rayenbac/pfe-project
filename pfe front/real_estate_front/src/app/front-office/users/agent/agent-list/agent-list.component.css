@@ -1,0 +1,151 @@
+/* Agent List Component Styles */
+
+/* Fix card height consistency for grid view */
+.our_agent.style2 {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.our_agent.style2 .thumb {
+  flex: 0 0 auto;
+}
+
+.our_agent.style2 .details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure consistent card sizing */
+.our_agent.style2 .thumb img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.our_agent.list_view {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.our_agent.list_view:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.our_agent .thumb img {
+  border-radius: 8px;
+}
+
+.agent-contact-info .prop_details li {
+  margin-bottom: 5px;
+}
+
+.agent-contact-info .prop_details li a {
+  color: #666;
+  font-size: 14px;
+}
+
+.agent-contact-info .prop_details li a:hover {
+  color: #007bff;
+}
+
+.agent-badges .badge {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.empty-state {
+  padding: 60px 20px;
+}
+
+.empty-state i {
+  color: #ddd;
+}
+
+.page_control_shorting .btn {
+  margin: 0 2px;
+}
+
+.page_control_shorting .btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.sidebar_listing_grid1 .widget_list .media {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar_listing_grid1 .widget_list .media:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sidebar_listing_grid1 .widget_list .media img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.sidebar_listing_grid1 .widget_list ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar_listing_grid1 .widget_list ul li:last-child {
+  border-bottom: none;
+}
+
+.sidebar_listing_grid1 .widget_list ul li a {
+  color: #666;
+  text-decoration: none;
+}
+
+.sidebar_listing_grid1 .widget_list ul li a:hover {
+  color: #007bff;
+}
+
+.sfl_thumb img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.sfl_details {
+  padding: 10px 0;
+}
+
+.sfl_details h5 {
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.sfl_details ul.list-inline {
+  margin-top: 5px;
+}
+
+.sfl_details ul.list-inline li {
+  font-size: 12px;
+  color: #666;
+}
+
+@media (max-width: 991px) {
+  .our_agent.list_view .row {
+    align-items: center;
+  }
+  
+  .our_agent.list_view .thumb {
+    margin-bottom: 15px;
+  }
+}

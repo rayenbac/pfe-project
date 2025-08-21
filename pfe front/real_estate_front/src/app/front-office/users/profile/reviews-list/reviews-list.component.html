@@ -1,0 +1,159 @@
+<p>reviews-list works!</p>
+<div class="reviews-container">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="page-title">
+        <i class="fas fa-star me-2"></i>
+        My Reviews
+      </h2>
+      <p class="text-muted">Reviews you've written for properties</p>
+    </div>
+    <button class="btn btn-primary" (click)="openWriteReview()">
+      <i class="fas fa-plus me-2"></i>
+      Write Review
+    </button>
+  </div>
+
+  <!-- Message Alert -->
+  <div *ngIf="message" class="alert alert-dismissible fade show" 
+       [class.alert-success]="messageType === 'success'"
+       [class.alert-danger]="messageType === 'error'">
+    <i class="fas" [class.fa-check-circle]="messageType === 'success'" 
+       [class.fa-exclamation-circle]="messageType === 'error'"></i>
+    {{ message }}
+    <button type="button" class="btn-close" (click)="clearMessage()"></button>
+  </div>
+
+  <!-- Write Review Form -->
+  <div *ngIf="showWriteReview" class="write-review-card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="fas fa-edit me-2"></i>
+        Write a Review
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+        <div class="mb-3">
+          <label class="form-label">Property *</label>
+          <select 
+            class="form-select"
+            [class.is-invalid]="getFieldError('propertyId')"
+            formControlName="propertyId">
+            <option value="">Select a property</option>
+            <option value="property1">Downtown Apartment</option>
+            <option value="property2">Sunset Villa</option>
+          </select>
+          <div class="invalid-feedback">{{ getFieldError('propertyId') }}</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Rating *</label>
+          <div class="rating-input">
+            <span 
+              *ngFor="let star of getStarArray(5); let i = index"
+              class="star"
+              [class.active]="reviewForm.get('rating')?.value >= star"
+              (click)="setRating(star)">
+              <i class="fas fa-star"></i>
+            </span>
+          </div>
+          <div *ngIf="getFieldError('rating')" class="text-danger small mt-1">
+            {{ getFieldError('rating') }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Your Review *</label>
+          <textarea 
+            class="form-control"
+            [class.is-invalid]="getFieldError('comment')"
+            formControlName="comment"
+            rows="4"
+            placeholder="Share your experience with this property..."></textarea>
+          <div class="invalid-feedback">{{ getFieldError('comment') }}</div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-secondary" (click)="closeWriteReview()">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="reviewForm.invalid || submitting">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!submitting" class="fas fa-paper-plane me-2"></i>
+            {{ submitting ? 'Submitting...' : 'Submit Review' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading reviews...</p>
+  </div>
+
+  <!-- Reviews List -->
+  <div *ngIf="!loading" class="reviews-list">
+    <div *ngFor="let review of reviews" class="review-card">
+      <div class="review-header">
+        <div class="property-info">
+          <img 
+            [src]="review.property?.images?.[0] || 'https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=80&h=60&fit=crop'"
+            alt="{{ review.property?.title || 'Property' }}"
+            class="property-thumb">
+          <div class="property-details">
+            <h6 class="property-title">{{ review.property?.title || 'N/A' }}</h6>
+            <p class="review-date">Reviewed on {{ formatDate(review.createdAt) }}</p>
+          </div>
+        </div>
+        <div class="rating-display">
+          <div class="stars">
+            <span 
+              *ngFor="let star of getStarArray(5)"
+              class="star"
+              [class.filled]="star <= review.rating">
+              <i class="fas fa-star"></i>
+            </span>
+          </div>
+          <span class="rating-text">{{ review.rating }}/5</span>
+        </div>
+      </div>
+
+      <div class="review-content">
+        <p class="review-comment">{{ review.comment }}</p>
+      </div>
+
+      <div class="review-footer">
+        <div class="review-actions">
+          <button class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-edit me-1"></i>
+            Edit
+          </button>
+          <button class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-trash me-1"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="reviews.length === 0" class="empty-state">
+      <i class="fas fa-star"></i>
+      <h4>No Reviews Yet</h4>
+      <p>Share your experiences by writing your first review!</p>
+      <button class="btn btn-primary" (click)="openWriteReview()">
+        <i class="fas fa-plus me-2"></i>
+        Write Your First Review
+      </button>
+    </div>
+  </div>
+</div>

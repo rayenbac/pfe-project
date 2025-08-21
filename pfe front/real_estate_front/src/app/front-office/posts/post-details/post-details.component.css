@@ -1,0 +1,105 @@
+/* Post Details Image Styles */
+.mbp_thumb_post .thumb {
+  width: 100%;
+  max-width: 689px;
+  height: 380px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.mbp_thumb_post .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Related posts images */
+.for_blog .thumb {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.for_blog .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Featured listings images */
+.sidebar_feature_listing .media img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mbp_thumb_post .thumb {
+    height: 250px;
+  }
+  
+  .for_blog .thumb {
+    height: 180px;
+  }
+}
+
+/* Blog tag positioning */
+.blog_sp_tag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+/* Review stars */
+.review_star_list {
+  display: flex;
+  gap: 5px;
+}
+
+.review_star_list .fa-star {
+  color: #ffc107;
+}
+
+.review_star_list .fa-star-o {
+  color: #ddd;
+}
+
+/* Star Rating Styles */
+.sspd_review .fa-star {
+  color: #e4e5e9;
+  transition: color 0.2s ease;
+}
+
+.sspd_review .fa-star.filled {
+  color: #ffc107;
+}
+
+.sspd_review .fa-star:hover {
+  color: #ffc107;
+}
+
+/* Tag styles */
+.tag_list a {
+  display: inline-block;
+  padding: 5px 12px;
+  margin: 3px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  text-decoration: none;
+  color: #666;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.tag_list a:hover {
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+}

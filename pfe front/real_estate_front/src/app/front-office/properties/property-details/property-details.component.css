@@ -1,0 +1,377 @@
+/* Property Details Styles */
+.listing-title-area {
+  background-color: #0a0a0a;
+  color: #fff;
+  padding: 60px 0;
+  margin-top: 80px;
+}
+
+.single_property_title h2 {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.single_property_title p {
+  color: #fff;
+  font-size: 16px;
+}
+
+.single_property_social_share .price h2 {
+  color: #ff5a5f;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.single_property_social_share .price p {
+  color: #fff;
+  font-size: 14px;
+}
+
+.spss ul li {
+  margin-right: 10px;
+}
+
+.spss ul li:last-child {
+  margin-right: 0;
+}
+
+.spss ul li a {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #fff;
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  width: 40px;
+}
+
+.spss ul li a:hover {
+  background-color: #ff5a5f;
+}
+
+/* Property Slider Styles */
+.property-slider-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.property-slider {
+  width: 100%;
+  overflow: hidden;
+}
+
+.property-slider .item {
+  height: 500px;
+  overflow: hidden;
+}
+
+.property-slider .item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.property-slider-nav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.property-slider-nav button {
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  color: #333;
+  cursor: pointer;
+  font-size: 20px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.property-slider-nav button:hover {
+  background-color: #ff5a5f;
+  color: #fff;
+}
+
+.property-thumbnails {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.property-thumbnails .thumbnail {
+  flex: 0 0 100px;
+  height: 70px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.property-thumbnails .thumbnail.active {
+  border-color: #ff5a5f;
+}
+
+.property-thumbnails .thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Property Details Styles */
+.listing_single_description {
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  padding: 30px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lsd_list {
+  margin-bottom: 25px;
+}
+
+.lsd_list ul li {
+  margin-right: 20px;
+}
+
+.lsd_list ul li a {
+  background-color: #f7f7f7;
+  border-radius: 3px;
+  color: #484848;
+  display: block;
+  padding: 7px 10px;
+  transition: all 0.3s ease;
+}
+
+.lsd_list ul li a:hover {
+  background-color: #ff5a5f;
+  color: #fff;
+}
+
+
+.property_attachment_area {
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  padding: 30px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.property_attachment_area h4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.attachment-card {
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 20px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.attachment-card:hover {
+  background-color: #ff5a5f;
+  color: #fff;
+}
+
+.attachment-card .icon {
+  color: #ff5a5f;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.attachment-card:hover .icon {
+  color: #fff;
+}
+
+.attachment-card h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.attachment-card p {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+/* Share Modal Styles */
+.share-options {
+  margin-bottom: 20px;
+}
+
+.btn-facebook {
+  background-color: #3b5998;
+  color: #fff;
+}
+
+.btn-twitter {
+  background-color: #1da1f2;
+  color: #fff;
+}
+
+.btn-whatsapp {
+  background-color: #25d366;
+  color: #fff;
+}
+
+.btn-email {
+  background-color: #ff5a5f;
+  color: #fff;
+}
+
+/* Similar Properties Styles */
+.similar_properties {
+  padding: 60px 0;
+}
+
+.similar_properties .main-title {
+  margin-bottom: 30px;
+}
+
+.similar-properties-slider {
+  margin-bottom: 30px;
+}
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+  .listing-title-area {
+    padding: 30px 0;
+    margin-top: 60px;
+  }
+
+  .single_property_title h2 {
+    font-size: 24px;
+  }
+
+  .property-slider .item {
+    height: 300px;
+  }
+
+  .property-thumbnails .thumbnail {
+    flex: 0 0 80px;
+    height: 60px;
+  }
+}
+
+/* Favorite Button Styles */
+.text-danger {
+  color: #ff5a5f !important;
+}
+
+/* Slick Slider Overrides */
+.slick-prev, .slick-next {
+  z-index: 10;
+}
+
+.slick-prev {
+  left: 10px;
+}
+
+.slick-next {
+  right: 10px;
+}
+
+.slick-dots {
+  bottom: 10px;
+}
+
+.slick-dots li button:before {
+  color: #fff;
+}
+
+/* Profile Image Preview Styles */
+.profile-image-preview {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-image {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  border: 3px solid #fff;
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
+}
+
+/* Agent Details Styles */
+.agent-details {
+  padding: 20px;
+}
+
+.agent-details h4 {
+  color: #484848;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Creator Links Styles */
+.sl_creator_links {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.sl_creator_links li {
+  display: inline-block;
+  margin: 5px;
+}
+
+.sl_creator_links .btn {
+  padding: 8px 15px;
+  border-radius: 20px;
+}
+
+.sl_creator_links .btn i {
+  margin-right: 5px;
+}
+
+/* Badge Primary Styles */
+.badge-primary {
+  background-color: #ff5a5f;
+  padding: 8px 15px;
+  font-size: 12px;
+  border-radius: 20px;
+}
+
+/* Creator Media Styles */
+.sl_creator .media {
+  transition: all 0.3s ease;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.sl_creator .media:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sl_creator .media .text-thm {
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.sl_creator .media:hover .text-thm {
+  text-decoration: underline;
+}

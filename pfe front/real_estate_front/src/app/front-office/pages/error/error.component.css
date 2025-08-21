@@ -1,0 +1,74 @@
+/* Error Component Styles */
+.our-error {
+  padding: 100px 0;
+  background-color: #f8f9fa;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+.error_page {
+  text-align: center;
+}
+
+.error_page h1 {
+  font-size: 8rem;
+  color: #007bff;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.error_page h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.error_page p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.btn_error {
+  background-color: #007bff;
+  color: white;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+
+.btn_error:hover {
+  background-color: #0056b3;
+  color: white;
+  text-decoration: none;
+}
+
+.error_illustration {
+  margin-bottom: 40px;
+}
+
+.error_illustration img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .error_page h1 {
+    font-size: 6rem;
+  }
+  
+  .error_page h2 {
+    font-size: 2rem;
+  }
+  
+  .error_page p {
+    font-size: 1rem;
+  }
+}

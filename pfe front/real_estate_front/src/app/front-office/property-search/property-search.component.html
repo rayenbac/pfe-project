@@ -1,0 +1,252 @@
+<section class="home-one home1-overlay home1_bgi1">
+  <div class="container">
+    <div class="row posr">
+      <div class="col-lg-12">
+        <div class="home_content">
+          <div class="home-text text-center">
+            <h2 class="fz55">Find Your Dream Home</h2>
+            <p class="fz18 color-white">From as low as $10 per day with limited time offer discounts.</p>
+          </div>
+          <div class="home_adv_srch_opt">
+            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'buy'" (click)="onTabChange('buy')" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Buy</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'rent'" (click)="onTabChange('rent')" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Rent</a>
+              </li>
+            </ul>
+            <div class="tab-content home1_adsrchfrm" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="home1-advnc-search">
+                  <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                    <ul class="h1ads_1st_list mb0">
+                      <li class="list-inline-item">
+                        <div class="form-group">
+                          <input type="text" class="form-control" formControlName="keyword" placeholder="Enter keyword...">
+                        </div>
+                      </li>
+                      <li class="list-inline-item">
+                        <div class="search_option_two">
+                          <div class="candidate_revew_select">
+                            <select class="selectpicker w100 show-tick" formControlName="propertyType">
+                              <option value="">Property Type</option>
+                              <option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-inline-item">
+                        <div class="form-group">
+                          <input type="text" class="form-control" formControlName="location" placeholder="Location">
+                          <label><span class="flaticon-maps-and-flags"></span></label>
+                        </div>
+                      </li>
+                      <li class="list-inline-item">
+                        <div class="small_dropdown2">
+                          <div id="prncgs" class="btn dd_btn">
+                            <span>Price</span>
+                            <label><span class="fa fa-angle-down"></span></label>
+                          </div>
+                          <div class="dd_content2">
+                            <div class="pricing_acontent">
+                              <span id="slider-range-value1">${{ searchForm.get('price')?.value?.min }}</span>
+                              <span id="slider-range-value2">${{ searchForm.get('price')?.value?.max }}</span>
+                              <div id="slider"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="custome_fields_520 list-inline-item">
+                        <div class="navbered">
+                          <div class="mega-dropdown">
+                            <span id="show_advbtn" class="dropbtn" (click)="toggleAdvancedSearch()">Advanced <i class="flaticon-more pl10 flr-520"></i></span>
+                            <div class="dropdown-content" [style.display]="advancedSearchVisible ? 'block' : 'none'">
+                              <div class="row p15">
+                                <div class="col-lg-12">
+                                  <h4 class="text-thm3">Amenities</h4>
+                                </div>
+                                <div class="col-xxs-6 col-sm col-lg col-xl" *ngFor="let amenityGroup of [0, 1, 2, 3, 4]">
+                                  <ul class="ui_kit_checkbox selectable-list">
+                                    <li *ngFor="let amenity of amenities.slice(amenityGroup * 3, (amenityGroup + 1) * 3)">
+                                      <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" 
+                                               [id]="'amenity' + amenities.indexOf(amenity)"
+                                               [checked]="isAmenitySelected(amenity)"
+                                               (change)="onAmenityChange(amenity, $event)">
+                                        <label class="custom-control-label" [for]="'amenity' + amenities.indexOf(amenity)">{{ amenity }}</label>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              <div class="row p15 pt0-xsd">
+                                <div class="col-lg-11 col-xl-10">
+                                  <ul class="apeartment_area_list mb0">
+                                    <li class="list-inline-item">
+                                      <div class="candidate_revew_select">
+                                        <select class="selectpicker w100 show-tick" formControlName="bathrooms">
+                                          <option value="">Bathrooms</option>
+                                          <option *ngFor="let num of bathrooms" [value]="num">{{ num }}</option>
+                                        </select>
+                                      </div>
+                                    </li>
+                                    <li class="list-inline-item">
+                                      <div class="candidate_revew_select">
+                                        <select class="selectpicker w100 show-tick" formControlName="bedrooms">
+                                          <option value="">Bedrooms</option>
+                                          <option *ngFor="let num of bedrooms" [value]="num">{{ num }}</option>
+                                        </select>
+                                      </div>
+                                    </li>
+                                    <li class="list-inline-item">
+                                      <div class="candidate_revew_select">
+                                        <select class="selectpicker w100 show-tick" formControlName="yearBuilt">
+                                          <option value="">Year built</option>
+                                          <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                                        </select>
+                                      </div>
+                                    </li>
+                                    <li class="list-inline-item">
+                                      <div class="candidate_revew_select">
+                                        <select class="selectpicker w100 show-tick" formControlName="builtUpArea">
+                                          <option value="">Built-up Area</option>
+                                          <option value="small">Small (&lt; 1000 sqft)</option>
+                                          <option value="medium">Medium (1000-2000 sqft)</option>
+                                          <option value="large">Large (&gt; 2000 sqft)</option>
+                                        </select>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div class="col-lg-1 col-xl-2">
+                                  <div class="mega_dropdown_content_closer">
+                                    <h5 class="text-thm text-right mt15"><span id="hide_advbtn" class="curp" (click)="toggleAdvancedSearch()">Hide</span></h5>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="list-inline-item">
+                        <div class="search_option_button">
+                          <button type="submit" class="btn btn-thm" [disabled]="loading">
+                            {{ loading ? 'Searching...' : 'Search' }}
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  
+  <!-- Search Results Section -->
+  <section *ngIf="searchPerformed" class="our-listing bgc-f7 pb30-991">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="listing_sidebar dn db-991">
+            <div class="sidebar_content_details style3">
+              <!-- Sidebar filters can be added here if needed -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="breadcrumb_content style2 mb0-991">
+            <h2 class="breadcrumb_title">Search Results</h2>
+            <p>{{ properties.length }} properties found</p>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="dn db-991 mt30 mb0">
+            <div id="main2">
+              <span id="open2" class="flaticon-filter-results-button filter_open_btn style3">Show Filter</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Property Results -->
+        <div class="col-lg-8 col-xl-9">
+          <div class="row" *ngIf="properties.length > 0; else noResultsBlock">
+            <div class="col-md-6 col-lg-6 col-xl-4" *ngFor="let property of properties">
+              <div class="feat_property" (click)="goToPropertyDetails(property)" style="cursor: pointer;">
+                <div class="thumb">
+                  <img class="img-whp" [src]="getImageUrl(property)" alt="Property Image">
+                  <div class="thmb_cntnt">
+                    <ul class="tag mb0">
+                      <li class="list-inline-item"><a [ngClass]="getPropertyStatusClass(property.status)">{{ property.status }}</a></li>
+                    </ul>
+                    <ul class="icon mb0">
+                      <li class="list-inline-item"><a href="#"><span class="flaticon-heart"></span></a></li>
+                    </ul>
+                                  <a href="#" class="prt-types-tag">{{ formatPrice(property.pricing?.price ?? 0) }}<small>/night</small></a>
+                  </div>
+                </div>
+                <div class="details">
+                  <div class="tc_content">
+                    <p class="text-thm">{{ property.type }}</p>
+                    <h4>{{ property.title }}</h4>
+                    <p><span class="flaticon-placeholder"></span> {{ property.address?.city }}, {{ property.address?.state }}</p>
+                    <ul class="prop_details mb0">
+                      <li class="list-inline-item"><a href="#">Beds: {{ property.bedrooms }}</a></li>
+                      <li class="list-inline-item"><a href="#">Baths: {{ property.bathrooms }}</a></li>
+                      <li class="list-inline-item"><a href="#">Sq Ft: {{ property.size?.total }}</a></li>
+                    </ul>
+                  </div>
+                  <div class="fp_footer">
+                    <ul class="fp_meta float-left mb0">
+                      <li class="list-inline-item"><a href="#"><img src="assets/images/property/pposter1.png" alt=""></a></li>
+                      <li class="list-inline-item"><a href="#">{{ property.owner }}</a></li>
+                    </ul>
+                    <div class="fp_pdate float-right">{{ property.createdAt | date }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noResultsBlock>
+            <div class="no-results">
+              <h4>Aucun résultat trouvé</h4>
+              <p>Essayez d'autres critères de recherche.</p>
+            </div>
+          </ng-template>
+        </div>
+        
+        <!-- AI Search Panel -->
+        <div class="col-lg-4 col-xl-3">
+          <div class="ai-search-panel">
+            <div class="ai-search-header">
+              <h4 class="ai-search-title">
+                <i class="fas fa-brain"></i>
+                Search with AI
+              </h4>
+            </div>
+            <div class="ai-search-content">
+              <p class="ai-search-description">
+                Hi! What do you want to learn today? Let me know your interests, and I'll find the best properties for you!
+              </p>
+              <app-natural-language-search
+                placeholder="Describe your ideal property... (e.g., 'I want a 3-bedroom apartment near the beach with a pool under 1500 DT')"
+                [enableRealTimeSearch]="false"
+                (searchCriteria)="onNaturalLanguageSearch($event)"
+                (searchError)="onNaturalLanguageSearchError($event)"
+                (searchStarted)="onNaturalLanguageSearchStarted()"
+                (searchCompleted)="onNaturalLanguageSearchCompleted()">
+              </app-natural-language-search>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

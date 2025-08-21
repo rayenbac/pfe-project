@@ -1,0 +1,71 @@
+<section id="our-agents" class="our-agents pt40 pb30">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="main-title">
+					<h2>Our Agents</h2>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+						<a class="float-right" (click)="goToAllAgents()" style="cursor: pointer;">View All <span class="flaticon-next"></span></a>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Loading State -->
+		<div class="row" *ngIf="loading">
+			<div class="col-12 text-center py-5">
+				<div class="spinner-border text-primary" role="status">
+					<span class="sr-only">Loading agents...</span>
+				</div>
+				<p class="mt-2">Loading our agents...</p>
+			</div>
+		</div>
+
+		<!-- Error State -->
+		<div class="row" *ngIf="error && !loading">
+			<div class="col-12 text-center py-5">
+				<div class="alert alert-danger" role="alert">
+					<i class="fa fa-exclamation-triangle"></i> {{ error }}
+				</div>
+			</div>
+		</div>
+
+		<!-- Agents Grid -->
+		<div class="row" *ngIf="!loading && !error && topAgents.length > 0">
+			<div class="col-sm-6 col-md-4 col-lg-4 col-xl-2" *ngFor="let agent of topAgents; trackBy: trackByAgentId">
+				<div class="our_agent" (click)="goToAgentDetails(agent._id)" style="cursor: pointer;">
+					<div class="thumb">
+						<img class="img-fluid w100" [src]="getAgentImageUrl(agent)" [alt]="agent.firstName + ' ' + agent.lastName">
+						<div class="overylay">
+							<ul class="social_icon">
+								<li class="list-inline-item"><a href="#" (click)="$event.stopPropagation()"><i class="fa fa-facebook"></i></a></li>
+								<li class="list-inline-item"><a href="#" (click)="$event.stopPropagation()"><i class="fa fa-twitter"></i></a></li>
+								<li class="list-inline-item"><a href="#" (click)="$event.stopPropagation()"><i class="fa fa-instagram"></i></a></li>
+								<li class="list-inline-item"><a href="#" (click)="$event.stopPropagation()"><i class="fa fa-pinterest"></i></a></li>
+								<li class="list-inline-item"><a href="#" (click)="$event.stopPropagation()"><i class="fa fa-dribbble"></i></a></li>
+								<li class="list-inline-item"><a href="#" (click)="$event.stopPropagation()"><i class="fa fa-google"></i></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="details">
+						<h4>{{ agent.firstName }} {{ agent.lastName }}</h4>
+						<p>{{ agent.agentType === 'professional' ? 'Broker' : 'Agent' }} 
+							<a class="float-right" href="#" (click)="$event.stopPropagation()">{{ getAgentRating(agent) }} <i class="fa fa-star color-golden"></i></a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Empty State -->
+		<div class="row" *ngIf="!loading && !error && topAgents.length === 0">
+			<div class="col-12 text-center py-5">
+				<div class="empty-state">
+					<i class="fa fa-users fa-3x text-muted mb-3"></i>
+					<h4>No Agents Available</h4>
+					<p class="text-muted">We're currently adding new agents to our platform. Please check back soon!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

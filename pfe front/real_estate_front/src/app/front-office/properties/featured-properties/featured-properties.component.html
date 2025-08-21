@@ -1,0 +1,68 @@
+<section id="feature-property" class="feature-property bgc-f7">
+  <div class="container ovh">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="main-title text-center mb40">
+          <h2>Featured Properties</h2>
+          <p>Handpicked properties by our team.</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="feature_property_slider">
+          <div class="item" *ngFor="let property of featuredProperties">
+            <div class="feat_property" (click)="goToPropertyDetails(property)" style="cursor:pointer;">
+              <div class="thumb">
+                <img class="img-whp" [src]="getImageUrl(property.media)" alt="property image">
+                <div class="thmb_cntnt">
+                  <ul class="tag mb0">
+                    <li class="list-inline-item"><span>{{ property.listingType === 'rent' ? 'For Rent' : 'For Sale' }}</span></li>
+                    <li class="list-inline-item" *ngIf="property.featured"><span>Featured</span></li>
+                  </ul>
+                  <ul class="icon mb0">
+                    <li class="list-inline-item"><span class="flaticon-transfer-1 text-white"></span></li>
+                    <li class="list-inline-item"><span class="flaticon-heart text-white"></span></li>
+                  </ul>
+                  <span class="fp_price">{{ property.pricing.price | currency:'USD' }}<small *ngIf="property.listingType === 'rent'">/mo</small></span>
+                </div>
+              </div>
+              <div class="details">
+                <div class="tc_content">
+                  <p class="text-thm">{{ property.type }}</p>
+                  <h4>{{ property.title }}</h4>
+                  <p><span class="flaticon-placeholder"></span> {{ property.address.street }}, {{ property.address.city }}, {{ property.address.state }}</p>
+                  <ul class="prop_details mb0">
+                    <li class="list-inline-item"><span>Beds: {{ property.bedrooms }}</span></li>
+                    <li class="list-inline-item"><span>Baths: {{ property.bathrooms }}</span></li>
+                    <li class="list-inline-item"><span>Sq Ft: {{ property.size.total }}</span></li>
+                  </ul>
+                </div>
+                <div class="fp_footer">
+                  <ul class="fp_meta float-left mb0">
+                    <li class="list-inline-item">
+                      <span><img [src]="getOwnerImage(property.owner)" alt="owner image" class="owner-avatar"></span>
+                    </li>
+                    <li class="list-inline-item">
+                      <span>{{ getOwnerName(property.owner) }}</span>
+                    </li>
+                  </ul>
+                  <div class="fp_pdate float-right">{{ property.createdAt | date:'shortDate' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="featuredProperties.length === 0 && !loading" class="text-center">
+            <p>No featured properties found.</p>
+          </div>
+          <div *ngIf="loading" class="text-center">
+            <p>Loading featured properties...</p>
+          </div>
+          <div *ngIf="error" class="text-center text-danger">
+            <p>{{ error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 

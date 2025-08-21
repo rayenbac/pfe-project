@@ -1,0 +1,165 @@
+<section class="blog_post_container bgc-f7">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="breadcrumb_content style2">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/posts">Blog</a></li>
+            <li class="breadcrumb-item active text-thm" aria-current="page">Create Post</li>
+          </ol>
+          <h2 class="breadcrumb_title">Create New Post</h2>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-xl-8">
+        <div class="my_dashboard_review">
+          <div class="row">
+            <div class="col-lg-12">
+              <h4 class="mb30">Create New Post</h4>
+              <div class="my_dashboard_review_content">
+                <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+                  <i class="fa fa-check-circle"></i> Post created successfully!
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <i class="fa fa-exclamation-circle"></i> {{ error }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="title" class="form-label">Post Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               [(ngModel)]="post.title" required placeholder="Enter an engaging title for your post">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-control" id="category" name="category" [(ngModel)]="post.category">
+                          <option value="">Select Category</option>
+                          <option value="Real Estate">Real Estate</option>
+                          <option value="Property Tips">Property Tips</option>
+                          <option value="Market News">Market News</option>
+                          <option value="Investment">Investment</option>
+                          <option value="General">General</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input type="text" class="form-control" id="tags" name="tags" 
+                               [(ngModel)]="post.tags" 
+                               (input)="onTagInput($event)"
+                               placeholder="e.g., property investment tips">
+                        <small class="form-text text-muted">Separate tags with spaces</small>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="description" class="form-label">Content <span class="text-danger">*</span></label>
+                        <div class="editor-container">
+                          <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                          <ngx-editor 
+                            [editor]="editor" 
+                            [(ngModel)]="html" 
+                            [disabled]="false"
+                            name="description"
+                            placeholder="Write your post content here..."
+                            class="content-editor">
+                          </ngx-editor>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="image" class="form-label">Featured Image</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="image" 
+                                 (change)="onFileChange($event)" accept="image/*">
+                          <label class="custom-file-label" for="image">
+                            {{ selectedFile ? selectedFile.name : 'Choose featured image...' }}
+                          </label>
+                        </div>
+                        <small class="form-text text-muted">
+                          <i class="fa fa-info-circle"></i> Upload an image for your post (PNG, JPG, JPEG). Max size: 5MB
+                        </small>
+                        <div *ngIf="selectedFile" class="mt-2">
+                          <div class="alert alert-info">
+                            <i class="fa fa-file-image-o"></i> Selected: {{ selectedFile.name }} 
+                            ({{ (selectedFile.size / 1024 / 1024).toFixed(2) }}MB)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xl-12">
+                      <div class="my_profile_setting_input">
+                        <button type="submit" class="btn btn-thm btn-lg" [disabled]="loading || !post.title || !html">
+                          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                          {{ loading ? 'Creating Post...' : 'Create Post' }}
+                          <span class="flaticon-plus ml-2"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg ml-3" (click)="goBack()">
+                          <span class="flaticon-close mr-2"></span>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-xl-4">
+        <div class="terms_condition_widget">
+          <h4 class="title"><i class="fa fa-lightbulb-o"></i> Post Guidelines</h4>
+          <div class="widget_list">
+            <ul class="list_details">
+              <li><i class="fa fa-caret-right mr10 text-thm"></i>Keep your title clear and descriptive</li>
+              <li><i class="fa fa-caret-right mr10 text-thm"></i>Choose relevant category for better visibility</li>
+              <li><i class="fa fa-caret-right mr10 text-thm"></i>Add engaging featured image</li>
+              <li><i class="fa fa-caret-right mr10 text-thm"></i>Write detailed and helpful content</li>
+              <li><i class="fa fa-caret-right mr10 text-thm"></i>Use proper formatting for readability</li>
+              <li><i class="fa fa-caret-right mr10 text-thm"></i>Add relevant tags for better searchability</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="blog_tag_widget">
+          <h4 class="title"><i class="fa fa-tags"></i> Popular Tags</h4>
+          <ul class="tag_list">
+            <li class="list-inline-item"><a href="#" class="tag-suggestion" (click)="addTag('Real Estate'); $event.preventDefault()">Real Estate</a></li>
+            <li class="list-inline-item"><a href="#" class="tag-suggestion" (click)="addTag('Property'); $event.preventDefault()">Property</a></li>
+            <li class="list-inline-item"><a href="#" class="tag-suggestion" (click)="addTag('Investment'); $event.preventDefault()">Investment</a></li>
+            <li class="list-inline-item"><a href="#" class="tag-suggestion" (click)="addTag('Market'); $event.preventDefault()">Market</a></li>
+            <li class="list-inline-item"><a href="#" class="tag-suggestion" (click)="addTag('Tips'); $event.preventDefault()">Tips</a></li>
+            <li class="list-inline-item"><a href="#" class="tag-suggestion" (click)="addTag('News'); $event.preventDefault()">News</a></li>
+          </ul>
+          <small class="text-muted">Click on tags to add them to your post</small>
+        </div>
+        
+        <div class="terms_condition_widget">
+          <h4 class="title"><i class="fa fa-info-circle"></i> Publishing Info</h4>
+          <div class="widget_list">
+            <ul class="list_details">
+              <li><i class="fa fa-user mr10"></i>Author: <strong>{{ currentUser?.firstName }} {{ currentUser?.lastName }}</strong></li>
+              <li><i class="fa fa-calendar mr10"></i>Date: <strong>{{ currentDate | date:'mediumDate' }}</strong></li>
+              <li><i class="fa fa-globe mr10"></i>Status: <strong>Published</strong></li>
+              <li><i class="fa fa-eye mr10"></i>Visibility: <strong>Public</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

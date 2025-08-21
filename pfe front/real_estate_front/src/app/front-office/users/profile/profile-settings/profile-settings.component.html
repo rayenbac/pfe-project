@@ -1,0 +1,291 @@
+<p>profile-settings works!</p>
+<div class="profile-settings-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading profile...</p>
+  </div>
+
+  <!-- Profile Settings Content -->
+  <div *ngIf="!loading" class="row">
+    <!-- Sidebar Navigation -->
+    <div class="col-md-3 mb-4">
+      <div class="nav nav-pills flex-column settings-nav" role="tablist">
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'profile'"
+          (click)="setActiveTab('profile')"
+          type="button">
+          <i class="fas fa-user me-2"></i>
+          Profile Information
+        </button>
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'security'"
+          (click)="setActiveTab('security')"
+          type="button">
+          <i class="fas fa-lock me-2"></i>
+          Security
+        </button>
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'preferences'"
+          (click)="setActiveTab('preferences')"
+          type="button">
+          <i class="fas fa-cog me-2"></i>
+          Preferences
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="col-md-9">
+      <!-- Message Alert -->
+      <div *ngIf="message" class="alert alert-dismissible fade show" 
+           [class.alert-success]="messageType === 'success'"
+           [class.alert-danger]="messageType === 'error'">
+        <i class="fas" [class.fa-check-circle]="messageType === 'success'" 
+           [class.fa-exclamation-circle]="messageType === 'error'"></i>
+        {{ message }}
+        <button type="button" class="btn-close" (click)="clearMessage()"></button>
+      </div>
+
+      <!-- Profile Information Tab -->
+      <div *ngIf="activeTab === 'profile'" class="tab-content-card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-user me-2"></i>
+            Profile Information
+          </h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            <!-- Avatar Section -->
+            <div class="text-center mb-4">
+              <div class="avatar-container position-relative d-inline-block">
+                <img 
+                  [src]="avatarPreview || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'"
+                  alt="Profile Avatar"
+                  class="profile-avatar">
+                <label for="avatarInput" class="avatar-overlay">
+                  <i class="fas fa-camera"></i>
+                </label>
+                <input 
+                  type="file" 
+                  id="avatarInput" 
+                  class="d-none"
+                  accept="image/*"
+                  (change)="onFileSelected($event)">
+              </div>
+              <p class="text-muted mt-2 small">Click to change profile picture</p>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Full Name *</label>
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [class.is-invalid]="getFieldError('name')"
+                  formControlName="name"
+                  placeholder="Enter your full name">
+                <div class="invalid-feedback">{{ getFieldError('name') }}</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Email Address</label>
+                <input 
+                  type="email" 
+                  class="form-control"
+                  [value]="user?.email"
+                  disabled
+                  placeholder="Email address">
+                <small class="text-muted">Email cannot be changed</small>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Phone Number</label>
+                <input 
+                  type="tel" 
+                  class="form-control"
+                  [class.is-invalid]="getFieldError('phone')"
+                  formControlName="phone"
+                  placeholder="Enter your phone number">
+                <div class="invalid-feedback">{{ getFieldError('phone') }}</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Role</label>
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [value]="user?.role"
+                  disabled>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Bio</label>
+              <textarea 
+                class="form-control"
+                [class.is-invalid]="getFieldError('bio')"
+                formControlName="bio"
+                rows="3"
+                placeholder="Tell us about yourself..."></textarea>
+              <div class="invalid-feedback">{{ getFieldError('bio') }}</div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="profileForm.invalid || updating">
+                <span *ngIf="updating" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!updating" class="fas fa-save me-2"></i>
+                {{ updating ? 'Saving...' : 'Save Changes' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Security Tab -->
+      <div *ngIf="activeTab === 'security'" class="tab-content-card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-lock me-2"></i>
+            Security Settings
+          </h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+            <div class="mb-3">
+              <label class="form-label">Current Password *</label>
+              <input 
+                type="password" 
+                class="form-control"
+                [class.is-invalid]="getFieldError('currentPassword', passwordForm)"
+                formControlName="currentPassword"
+                placeholder="Enter current password">
+              <div class="invalid-feedback">{{ getFieldError('currentPassword', passwordForm) }}</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">New Password *</label>
+              <input 
+                type="password" 
+                class="form-control"
+                [class.is-invalid]="getFieldError('newPassword', passwordForm)"
+                formControlName="newPassword"
+                placeholder="Enter new password">
+              <div class="invalid-feedback">{{ getFieldError('newPassword', passwordForm) }}</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Confirm New Password *</label>
+              <input 
+                type="password" 
+                class="form-control"
+                [class.is-invalid]="getFieldError('confirmPassword', passwordForm)"
+                formControlName="confirmPassword"
+                placeholder="Confirm new password">
+              <div class="invalid-feedback">{{ getFieldError('confirmPassword', passwordForm) }}</div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="passwordForm.invalid || changingPassword">
+                <span *ngIf="changingPassword" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!changingPassword" class="fas fa-key me-2"></i>
+                {{ changingPassword ? 'Changing...' : 'Change Password' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Preferences Tab -->
+      <div *ngIf="activeTab === 'preferences'" class="tab-content-card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-cog me-2"></i>
+            Notification Preferences
+          </h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            <div class="preferences-section">
+              <h6 class="section-title">Communication</h6>
+              
+              <div class="form-check mb-3">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  formControlName="emailNotifications"
+                  id="emailNotifications">
+                <label class="form-check-label" for="emailNotifications">
+                  <strong>Email Notifications</strong>
+                  <div class="text-muted small">Receive important updates via email</div>
+                </label>
+              </div>
+
+              <div class="form-check mb-3">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  formControlName="smsNotifications"
+                  id="smsNotifications">
+                <label class="form-check-label" for="smsNotifications">
+                  <strong>SMS Notifications</strong>
+                  <div class="text-muted small">Receive urgent alerts via SMS</div>
+                </label>
+              </div>
+
+              <div class="form-check mb-4">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  formControlName="marketingEmails"
+                  id="marketingEmails">
+                <label class="form-check-label" for="marketingEmails">
+                  <strong>Marketing Emails</strong>
+                  <div class="text-muted small">Receive promotional offers and updates</div>
+                </label>
+              </div>
+
+              <h6 class="section-title">Privacy</h6>
+              
+              <div class="form-check mb-4">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  formControlName="privacyMode"
+                  id="privacyMode">
+                <label class="form-check-label" for="privacyMode">
+                  <strong>Privacy Mode</strong>
+                  <div class="text-muted small">Hide your profile from public searches</div>
+                </label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="profileForm.invalid || updating">
+                <span *ngIf="updating" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!updating" class="fas fa-save me-2"></i>
+                {{ updating ? 'Saving...' : 'Save Preferences' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

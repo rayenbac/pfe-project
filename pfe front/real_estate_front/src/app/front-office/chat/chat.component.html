@@ -1,0 +1,125 @@
+<div class="our-dashbord dashbord bgc-f7 pb50">
+  <div class="container-fluid">
+    <!-- Header -->
+    <div class="row">
+      <div class="col-lg-12 mb10">
+        <div class="breadcrumb_content style2">
+          <h2 class="breadcrumb_title">Messages</h2>
+          <p>Stay in touch with property owners and agents</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-5 col-xl-4">
+        <div class="message_container">
+          <div class="inbox_user_list">
+            <div class="iu_heading">
+              <div class="candidate_revew_search_box">
+                <form class="form-inline my-2">
+                  <input class="form-control mr-sm-2" type="search" [(ngModel)]="searchQuery" (input)="filterChats()" name="search" placeholder="Search" aria-label="Search">
+                  <button class="btn my-2 my-sm-0" type="button"><span class="flaticon-magnifying-glass"></span></button>
+                </form>
+              </div>
+            </div>
+            <div class="inbox_chat">
+              <ul>
+                <li class="contact" *ngFor="let agent of (isAgent ? recentAgents : filteredAgents)" [class.active]="isCurrentChatWithAgent(agent)" (click)="startOrOpenChat(agent)">
+                  <a href="javascript:void(0)">
+                    <div class="wrap">
+                      <span class="contact-status" [ngClass]="{'online': getAgentStatus(agent) === 'online'}"></span>
+                      <img class="img-fluid" [src]="agent && agent.profileImage ? getAttachmentUrl(agent.profileImage || '') : 'assets/images/team/s1.jpg'" alt="User Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" />
+                      <div class="meta">
+                        <h5 class="name">{{ agent.firstName }} {{ agent.lastName }}</h5>
+                        <p class="preview">{{ getLastMessageContent(agent) }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="!loading && (isAgent ? recentAgents.length === 0 : filteredAgents.length === 0)" class="text-center p-4">
+              <p *ngIf="isRegularUser">No agents found</p>
+              <p *ngIf="isAgent">No users found</p>
+            </div>
+            <div *ngIf="loading" class="text-center p-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7 col-xl-8">
+        <div class="message_container">
+          <div *ngIf="currentChat">
+            <div class="user_heading">
+              <a href="javascript:void(0)">
+                <div class="wrap">
+                  <span class="contact-status" [class.online]="otherUser?.status === 'online'"></span>
+                  <img class="img-fluid" [src]="otherUser && otherUser.profileImage ? getAttachmentUrl(otherUser.profileImage || '') : 'assets/images/team/s1.jpg'" alt="User Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" />
+                  <div class="meta">
+                    <h5 class="name">{{ getOtherParticipantName() }}</h5>
+                    <p class="preview">{{ getPropertyTitle() }}</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="inbox_chatting_box">
+              <div class="chat_history">
+                <ul class="chatting_content">
+                  <li *ngFor="let message of messages; let first = first" [ngClass]="{'media sent': isOwnMessage(message), 'media reply': !isOwnMessage(message), 'first': first && !isOwnMessage(message)}">
+                    <span *ngIf="!isOwnMessage(message)" class="contact-status" [class.online]="otherUser?.status === 'online'"></span>
+                    <img class="img-fluid align-self-start mr-3" [src]="getMessageAvatar(message)" alt="User Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" />
+                    <div class="media-body" [ngClass]="{'text-right': !isOwnMessage(message)}">
+                      <div class="date_time">{{ message.timestamp ? formatTimestamp(message.timestamp) : 'Unknown date' }}</div>
+                      <p>{{ message.content }}</p>
+                      <!-- Attachments -->
+                      <div *ngIf="message.attachments?.length" class="attachments">
+                        <div *ngFor="let attachment of message.attachments" class="attachment">
+                          <div *ngIf="isImage(attachment)" class="image-attachment">
+                            <a [href]="getAttachmentUrl(attachment)" target="_blank">
+                              <img [src]="getAttachmentUrl(attachment)" alt="Attachment" class="img-fluid">
+                            </a>
+                          </div>
+                          <div *ngIf="!isImage(attachment)" class="file-attachment">
+                            <a [href]="getAttachmentUrl(attachment)" target="_blank" download>
+                              <span class="flaticon-download"></span> Download Attachment
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <!-- Typing Indicator -->
+              <div *ngIf="isUserTyping()" class="typing-indicator">
+                <p>{{ getTypingUserName() }} is typing...</p>
+              </div>
+            </div>
+            <div class="mi_text">
+              <div class="message_input">
+                <form (submit)="$event.preventDefault(); sendMessage()" class="form-inline">
+                  <input class="form-control" type="text" [(ngModel)]="newMessage" name="message" placeholder="Enter text here..." [disabled]="loading" (input)="onMessageInput()">
+                  <button type="submit" class="btn" [disabled]="loading || (!newMessage.trim() && selectedFiles.length === 0)">Send Message</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!currentChat && !loading" class="no-chat-selected">
+            <div class="text-center p-5">
+              <i class="fa fa-comments fa-3x mb-3"></i>
+              <h4>Select a conversation</h4>
+              <p>Choose a conversation from the list to start chatting</p>
+            </div>
+          </div>
+          <div *ngIf="loading" class="text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

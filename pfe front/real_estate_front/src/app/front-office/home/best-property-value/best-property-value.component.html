@@ -1,0 +1,98 @@
+<section id="best-property" class="best-property bgc-thm">
+  <div class="container ovh">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="main-title text-center">
+          <h2 class="color-white">Best Property Value</h2>
+          <p class="color-white">Discover properties with the highest value scores based on features, popularity, and pricing.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row" *ngIf="loading">
+      <div class="col-lg-12 text-center">
+        <div class="spinner-border text-white" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="error && !loading">
+      <div class="col-lg-12 text-center">
+        <p class="color-white">{{ error }}</p>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="!loading && !error">
+      <div class="col-lg-12">
+        <div class="best_property_slider">
+          <div class="item" *ngFor="let property of bestValueProperties">
+            <div class="feat_property" (click)="goToPropertyDetails(property)" style="cursor: pointer;">
+              <div class="thumb">
+                <img class="img-whp" [src]="getImageUrl(property.media)" [alt]="property.title">
+                <div class="thmb_cntnt">
+                  <ul class="tag mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ property.listingType === 'rent' ? 'For Rent' : 'For Sale' }}</a>
+                    </li>
+                    <li class="list-inline-item" *ngIf="property.featured">
+                      <a href="#" (click)="$event.stopPropagation()">Featured</a>
+                    </li>
+                    <li class="list-inline-item" *ngIf="property.verified">
+                      <a href="#" (click)="$event.stopPropagation()">Verified</a>
+                    </li>
+                  </ul>
+                  <ul class="icon mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-transfer-1"></span></a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-heart"></span></a>
+                    </li>
+                  </ul>
+                  <a class="fp_price" href="#" (click)="$event.stopPropagation()">
+                    {{ formatPrice(property) }}
+                  </a>
+                </div>
+              </div>
+              <div class="details">
+                <div class="tc_content">
+                  <p class="text-thm">{{ property.type }}</p>
+                  <h4>{{ property.title }}</h4>
+                  <p>
+                    <span class="flaticon-placeholder"></span> 
+                    {{ property.address.street }}, {{ property.address.city }}, {{ property.address.state }}
+                  </p>
+                  <ul class="prop_details mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Beds: {{ property.bedrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Baths: {{ property.bathrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ property.size.unit === 'sqft' ? 'Sq Ft' : 'Sq M' }}: {{ property.size.total }}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="fp_footer">
+                  <ul class="fp_meta float-left mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">
+                        <img class="owner-avatar" [src]="getOwnerImage(property.owner)" [alt]="getOwnerName(property.owner)">
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ getOwnerName(property.owner) }}</a>
+                    </li>
+                  </ul>
+                  <div class="fp_pdate float-right">{{ getTimeSinceCreated(property.createdAt) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

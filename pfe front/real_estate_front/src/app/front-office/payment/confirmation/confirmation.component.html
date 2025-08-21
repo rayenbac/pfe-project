@@ -1,0 +1,76 @@
+<section class="our-checkout bgc-f7">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="breadcrumb_content style2">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Properties</a></li>
+              <li class="breadcrumb-item"><a href="#">Reservation</a></li>
+              <li class="breadcrumb-item"><a href="#">Checkout</a></li>
+              <li class="breadcrumb-item active text-thm" aria-current="page">Confirmation</li>
+            </ol>
+            <h4 class="breadcrumb_title">Payment Confirmation</h4>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="loading">
+        <div class="col-lg-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="error">
+        <div class="col-lg-12">
+          <div class="alert alert-danger">
+            {{ error }}
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="!loading && !error && property">
+        <div class="col-md-12 col-lg-8 col-xl-8">
+          <div class="checkout_form style2">
+            <!-- Replace the form with a simple button -->
+            <button (click)="handlePayment()" [disabled]="loading" class="btn btn-thm btn-block">
+              {{ loading ? 'Processing...' : 'Proceed to Payment' }}
+            </button>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="!loading && !error && property">
+        <div class="col-lg-4 col-xl-4">
+          <div class="order_sidebar_widget mb30">
+            <h4 class="title">Reservation Summary</h4>
+            <div class="media">
+              <img class="align-self-start mr-3" [src]="'http://localhost:3000' + property.media[0]?.url" [alt]="property.title" style="width: 100px; height: 80px; object-fit: cover;">
+              <div class="media-body">
+                <h5 class="mt-0 post_title">{{ property.title }}</h5>
+                <p><span class="flaticon-placeholder"></span> {{ property.address.city }}, {{ property.address.state }}</p>
+              </div>
+            </div>
+            <ul>
+              <li><p>Property Type <span class="float-right">{{ property.type }}</span></p></li>
+              <li><p>Rental Period <span class="float-right">{{ reservation?.rentalDays }} night(s)</span></p></li>
+              <li><p>Start Date <span class="float-right">{{ reservation?.startDate | date }}</span></p></li>
+              <li><p>End Date <span class="float-right">{{ reservation?.endDate | date }}</span></p></li>
+              <li class="subtitle"><p>Daily Rate <span class="float-right">{{ property.pricing.currency }}{{ property.pricing.price | number }}</span></p></li>
+              <li class="subtitle"><p>Total <span class="float-right totals color-orose">{{ property.pricing.currency }}{{ totalAmount | number }}</span></p></li>
+            </ul>
+          </div>
+          <div class="payment_widget">
+            <div class="ui_kit_checkbox style2">
+              <h4 class="mb20">Payment Information</h4>
+              <p>Your payment is processed securely through Stripe. We do not store your card details.</p>
+              <p>After your payment is confirmed, you will receive a confirmation email with your reservation details.</p>
+              <p>For any questions or issues, please contact our support team.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

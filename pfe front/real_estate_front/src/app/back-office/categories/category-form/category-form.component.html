@@ -1,0 +1,75 @@
+<section class="our-dashbord dashbord bgc-f7 pb50">
+  <div class="container-fluid ovh">
+    <div class="row">
+      <div class="col-lg-3 col-xl-2 dn-992 pl0"></div>
+      <div class="col-lg-9 col-xl-10 maxw100flex-992">
+        <div class="row">
+          <div class="col-lg-12 mb10">
+            <div class="breadcrumb_content style2">
+              <h2 class="breadcrumb_title">{{ isEditMode ? 'Edit Category' : 'Add New Category' }}</h2>
+              <p>We are glad to see you again!</p>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+              <div class="my_dashboard_review">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h4 class="mb30">Category Information</h4>
+                  </div>
+                </div>
+
+                <!-- Category Name -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="my_profile_setting_input form-group">
+                      <label for="categoryName">Category Name</label>
+                      <input type="text" class="form-control" id="categoryName" formControlName="name">
+                      <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="text-danger">
+                        Name is required.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Category Description -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="my_profile_setting_textarea">
+                      <label for="categoryDescription">Description</label>
+                      <textarea class="form-control" id="categoryDescription" rows="7" formControlName="description"></textarea>
+                      <div *ngIf="categoryForm.get('description')?.invalid && categoryForm.get('description')?.touched" class="text-danger">
+                        Description is required.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="my_profile_setting_input">
+                      <button type="submit" class="btn btn-primary" [disabled]="categoryForm.invalid || loading">
+                        {{ isEditMode ? 'Update Category' : 'Create Category' }}
+                      </button>
+                      <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row mt10">
+          <div class="col-lg-12">
+            <div class="copyright-widget text-center">
+              <p>© 2025 Property Management System. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

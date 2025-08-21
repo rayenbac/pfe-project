@@ -1,0 +1,279 @@
+<section class="blog_post_container bgc-f7 pb30">
+	<div class="container">
+		<div class="row">
+			<div class="col-xl-6">
+				<div class="breadcrumb_content style2">
+					<ol class="breadcrumb">
+					    <li class="breadcrumb-item"><a href="/home">Home</a></li>
+					    <li class="breadcrumb-item"><a href="/posts">Blog</a></li>
+					    <li class="breadcrumb-item active text-thm" aria-current="page">{{ post?.title || 'Post Details' }}</li>
+					</ol>
+					<h2 class="breadcrumb_title">{{ post?.title || 'Blog Post' }}</h2>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="main_blog_post_content" *ngIf="post">
+					<div class="mbp_thumb_post">
+						<div class="blog_sp_tag" *ngIf="post.category">
+							<a href="#">{{ post.category }}</a>
+						</div>
+            <br>
+						<h3 class="blog_sp_title">{{ post.title }}</h3>
+						<ul class="blog_sp_post_meta">
+							<li class="list-inline-item">
+								<a href="#"><img [src]="getAuthorAvatar(post)" [alt]="authorInfo.name" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;"></a>
+							</li>
+							<li class="list-inline-item">
+								<a href="#">{{ authorInfo.name }}</a>
+							</li>
+							<li class="list-inline-item">
+								<span class="flaticon-calendar"></span>
+							</li>
+							<li class="list-inline-item">
+								<a href="#">{{ post.createdAt | date:'MMMM d, yyyy' }}</a>
+							</li>
+							<li class="list-inline-item">
+								<span class="flaticon-view"></span>
+							</li>
+							<li class="list-inline-item">
+								<a href="#">{{ post.views || 0 }} views</a>
+							</li>
+							<li class="list-inline-item">
+								<span class="flaticon-chat"></span>
+							</li>
+							<li class="list-inline-item">
+								<a href="#">{{ reviews.length }}</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="javascript:void(0)" (click)="reportPost()" class="text-danger" title="Report Post">
+									<span class="flaticon-flag"></span> Report
+								</a>
+							</li>
+						</ul>
+						<div class="thumb" *ngIf="post.image">
+							<img class="img-fluid" [src]="getPostImageUrl(post)" [alt]="post.title" style="width: 689px; height: 380px; object-fit: cover;">
+						</div>
+						<div class="details">
+							<div class="post-content" [innerHTML]="sanitizeHtml(post.description)"></div>
+						</div>
+						<ul class="blog_post_share">
+							<li><p>Share</p></li>
+							<li><a href="#" (click)="shareOnFacebook(); $event.preventDefault()"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#" (click)="shareOnTwitter(); $event.preventDefault()"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#" (click)="shareOnLinkedIn(); $event.preventDefault()"><i class="fa fa-linkedin"></i></a></li>
+							<li><a href="#" (click)="shareOnGoogle(); $event.preventDefault()"><i class="fa fa-google"></i></a></li>
+							<li><a href="#" (click)="shareOnPinterest(); $event.preventDefault()"><i class="fa fa-pinterest"></i></a></li>
+							<li><a href="#" (click)="copyToClipboard(); $event.preventDefault()" title="Copy Link"><i class="fa fa-link"></i></a></li>
+						</ul>
+					</div>
+					<div class="mbp_pagination_tab" *ngIf="previousPost || nextPost">
+						<div class="row">
+							<div class="col-sm-6 col-lg-6" *ngIf="previousPost">
+								<div class="pag_prev">
+									<a href="#" (click)="goToPost(previousPost); $event.preventDefault()"><span class="flaticon-back"></span></a>
+									<div class="detls">
+										<h5>Previous Post</h5> 
+										<p>{{ previousPost.title.length > 30 ? (previousPost.title | slice:0:30) + '...' : previousPost.title }}</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6 col-lg-6" *ngIf="nextPost">
+								<div class="pag_next text-right">
+									<a href="#" (click)="goToPost(nextPost); $event.preventDefault()"><span class="flaticon-next"></span></a>
+									<div class="detls">
+										<h5>Next Post</h5> 
+										<p>{{ nextPost.title.length > 30 ? (nextPost.title | slice:0:30) + '...' : nextPost.title }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="product_single_content mb30">
+						<div class="mbp_pagination_comments" id="reviews">
+							<ul class="total_reivew_view">
+								<li class="list-inline-item sub_titles">{{ reviews.length }} Reviews</li>
+								<li class="list-inline-item">
+									<ul class="star_list">
+										<li class="list-inline-item" *ngFor="let star of getStarArray(averageRating)">
+											<a href="#"><i class="fa fa-star" [class.filled]="star === 1"></i></a>
+										</li>
+									</ul>
+								</li>
+								<li class="list-inline-item avrg_review">( {{ averageRating.toFixed(1) }} out of 5 )</li>
+								<li class="list-inline-item write_review">Write a Review</li>
+							</ul>
+							
+							<!-- Dynamic Reviews List -->
+							<div *ngFor="let review of displayedReviews; let last = last">
+								<div class="mbp_first media">
+									<img [src]="getReviewUserAvatar(review)" class="mr-3" alt="Reviewer" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+									<div class="media-body">
+										<h4 class="sub_title mt-0">{{ getReviewerName(review) }}
+											<div class="sspd_review dif">
+												<ul class="ml10">
+													<li class="list-inline-item" *ngFor="let star of getStarArray(review.rating)">
+														<a href="#"><i class="fa fa-star" [class.filled]="star === 1"></i></a>
+													</li>
+												</ul>
+											</div>
+										</h4>
+										<a class="sspd_postdate fz14" href="#">{{ formatDate(review.createdAt!) }}</a>
+										<p class="mt10">{{ review.comment }}</p>
+									</div>
+								</div>
+								<div class="custom_hr" *ngIf="!last"></div>
+							</div>
+							
+							<!-- Show More/Less Button -->
+							<div class="text-center mt20" *ngIf="reviews.length > displayedReviews.length">
+								<button class="btn btn-outline-primary" (click)="viewMoreReviews()">View More Reviews</button>
+							</div>
+							
+							<!-- No Reviews Message -->
+							<div *ngIf="reviews.length === 0" class="text-center py-5">
+								<p class="text-muted">No reviews yet. Be the first to review this post!</p>
+							</div>
+							
+							<div class="custom_hr"></div>
+							<!-- Review Form -->
+							<div class="mbp_comment_form style2">
+								<h4>Write a Review</h4>
+								
+								<!-- Show login prompt if user is not logged in -->
+								<div *ngIf="!isUserLoggedIn()" class="alert alert-info">
+									<p>Please <a href="/login">login</a> to write a review.</p>
+								</div>
+								
+								<!-- Review form for logged in users -->
+								<div *ngIf="isUserLoggedIn()">
+									<p class="mb-3">Writing review as: <strong>{{ getCurrentUserName() }}</strong></p>
+									
+									<ul class="sspd_review">
+										<li class="list-inline-item">
+											<ul class="mb0">
+												<li class="list-inline-item" *ngFor="let i of [1,2,3,4,5]">
+													<a href="#" (click)="setRating(i); $event.preventDefault()">
+														<i class="fa fa-star" [class.filled]="i <= newReview.rating" [style.color]="i <= newReview.rating ? '#ffc107' : '#e4e5e9'"></i>
+													</a>
+												</li>
+											</ul>
+										</li>
+										<li class="list-inline-item review_rating_para">Your Rating & Review ({{ newReview.rating }}/5)</li>
+									</ul>
+									<form class="comments_form" (ngSubmit)="submitReview()">
+										<div class="form-group">
+											<textarea class="form-control" 
+													  [(ngModel)]="newReview.comment"
+													  name="comment"
+													  rows="8" 
+													  placeholder="Share your thoughts about this post..." required></textarea>
+										</div>
+										<button type="submit" class="btn btn-thm" [disabled]="!newReview.comment.trim()">
+											Submit Review <span class="flaticon-right-arrow-1"></span>
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 mb20">
+						<h4>Related Posts</h4>
+					</div>
+					<div class="col-md-6 col-lg-6" *ngFor="let relatedPost of categoryRelatedPosts">
+						<div class="for_blog feat_property">
+							<div class="thumb">
+								<img class="img-whp" [src]="getPostImageUrl(relatedPost)" [alt]="relatedPost.title">
+								<div class="tag" *ngIf="relatedPost.category">{{ relatedPost.category }}</div>
+							</div>
+							<div class="details">
+								<div class="tc_content">
+									<h4><a href="#" (click)="goToPost(relatedPost); $event.preventDefault()">{{ relatedPost.title }}</a></h4>
+									<ul class="bpg_meta">
+										<li class="list-inline-item">
+											<a href="#"><i class="flaticon-calendar"></i></a>
+										</li>
+										<li class="list-inline-item">
+											<a href="#">{{ relatedPost.createdAt | date:'MMMM d, yyyy' }}</a>
+										</li>
+									</ul>
+									<p>{{ stripHtmlTags(relatedPost.description) | slice:0:100 }}...</p>
+								</div>
+								<div class="fp_footer">
+									<ul class="fp_meta float-left mb0">
+										<li class="list-inline-item">
+											<a href="#"><img [src]="getAuthorAvatar(relatedPost)" [alt]="authorInfo.name" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;"></a>
+										</li>
+										<li class="list-inline-item">
+											<a href="#">{{ authorInfo.name }}</a>
+										</li>
+									</ul>
+									<a class="fp_pdate float-right text-thm" href="#" (click)="goToPost(relatedPost); $event.preventDefault()">
+										Read More <span class="flaticon-next"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="sidebar_search_widget">
+					<div class="blog_search_widget">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search Here" 
+								   [(ngModel)]="searchTerm" (keyup.enter)="onSearch()"
+								   aria-label="Search posts" aria-describedby="button-addon2">
+							<div class="input-group-append">
+						    	<button class="btn btn-outline-secondary" type="button" 
+						    			id="button-addon2" (click)="onSearch()">
+						    		<span class="flaticon-magnifying-glass"></span>
+						    	</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="terms_condition_widget">
+					<h4 class="title">Categories</h4>
+					<div class="widget_list">
+						<ul class="list_details">
+							<li *ngFor="let category of categories">
+								<a href="#" (click)="filterByCategory(category.name); $event.preventDefault()">
+									<i class="fa fa-caret-right mr10"></i>{{ category.name }} 
+									<span class="float-right">{{ category.count }} posts</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="sidebar_feature_listing">
+					<h4 class="title">Featured Posts</h4>
+					<div class="media" *ngFor="let listing of featuredListings">
+						<img class="align-self-start mr-3" [src]="listing.image" [alt]="listing.title">
+						<div class="media-body">
+					    	<h5 class="mt-0 post_title">
+					    		<a href="#" (click)="navigateToFeaturedPost(listing); $event.preventDefault()">{{ listing.title }}</a>
+					    	</h5>
+					    	<a href="#" (click)="navigateToFeaturedPost(listing); $event.preventDefault()">{{ listing.price }}</a>
+					    	<ul class="mb0">
+					    		<li class="list-inline-item">Category: {{ listing.price }}</li>
+					    		<li class="list-inline-item">Recent</li>
+					    	</ul>
+						</div>
+					</div>
+				</div>
+				<div class="blog_tag_widget">
+					<h4 class="title">Tags</h4>
+					<ul class="tag_list">
+						<li class="list-inline-item" *ngFor="let tag of tags">
+							<a href="#" (click)="filterByTag(tag); $event.preventDefault()">{{ tag }}</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

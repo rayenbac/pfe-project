@@ -1,0 +1,117 @@
+<!-- Report Modal -->
+<div class="modal-overlay" *ngIf="isOpen" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+        Report {{ targetType | titlecase }}
+      </h2>
+      <button 
+        type="button" 
+        class="btn-close" 
+        (click)="closeModal()"
+        [disabled]="isSubmitting">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Reporting:</strong> {{ targetTitle || 'This ' + targetType }}
+      </div>
+
+      <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+        <!-- Category Selection -->
+        <div class="form-group mb-3">
+          <label for="category" class="form-label">
+            <strong>Category *</strong>
+          </label>
+          <select 
+            id="category"
+            class="form-select"
+            formControlName="category"
+            [class.is-invalid]="category?.invalid && category?.touched">
+            <option value="">Select a category</option>
+            <option *ngFor="let cat of categories" [value]="cat.value">
+              {{ cat.label }}
+            </option>
+          </select>
+          <div *ngIf="category?.invalid && category?.touched" class="invalid-feedback">
+            <div *ngIf="category?.errors?.['required']">Please select a category</div>
+          </div>
+        </div>
+
+        <!-- Reason Text Area -->
+        <div class="form-group mb-3">
+          <label for="reason" class="form-label">
+            <strong>Reason for Report *</strong>
+          </label>
+          <textarea 
+            id="reason"
+            class="form-control"
+            rows="4"
+            placeholder="Please provide a detailed explanation of why you are reporting this {{ targetType }}..."
+            formControlName="reason"
+            [class.is-invalid]="reason?.invalid && reason?.touched">
+          </textarea>
+          <div class="form-text">
+            <small class="text-muted">
+              {{ remainingChars }} characters remaining (minimum 10, maximum 1000)
+            </small>
+          </div>
+          <div *ngIf="reason?.invalid && reason?.touched" class="invalid-feedback">
+            <div *ngIf="reason?.errors?.['required']">Please provide a reason for your report</div>
+            <div *ngIf="reason?.errors?.['minlength']">Reason must be at least 10 characters long</div>
+            <div *ngIf="reason?.errors?.['maxlength']">Reason cannot exceed 1000 characters</div>
+          </div>
+        </div>
+
+        <!-- Priority Selection -->
+        <div class="form-group mb-3">
+          <label for="priority" class="form-label">
+            <strong>Priority Level</strong>
+          </label>
+          <select 
+            id="priority"
+            class="form-select"
+            formControlName="priority">
+            <option value="low">Low - Minor issue</option>
+            <option value="medium">Medium - Moderate concern</option>
+            <option value="high">High - Urgent attention needed</option>
+          </select>
+        </div>
+
+        <!-- Guidelines -->
+        <div class="alert alert-warning">
+          <h6><i class="fas fa-exclamation-triangle me-2"></i>Reporting Guidelines</h6>
+          <ul class="mb-0 small">
+            <li>Only report content that violates our community standards</li>
+            <li>False reports may result in account restrictions</li>
+            <li>We review all reports within 24-48 hours</li>
+            <li>You will be notified when your report is reviewed</li>
+          </ul>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        class="btn btn-secondary me-2" 
+        (click)="closeModal()"
+        [disabled]="isSubmitting">
+        Cancel
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-danger"
+        [disabled]="reportForm.invalid || isSubmitting"
+        (click)="onSubmit()">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+        <i *ngIf="!isSubmitting" class="fas fa-flag me-2"></i>
+        {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.x'
+    
+    - name: Install Dependencies
+      run: npm install
+    
+    - name: Build
+      run: npm run build -- --project=demo --configuration=production
+    
+    - name: Deploy to Ubuntu Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        source: "dist/,nginx.conf"
+        target: "/var/www/goimmo/GoImmo_web"
+        strip_components: 0
+        
+    - name: Execute deployment commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+          # Copy nginx configuration
+          sudo cp /var/www/goimmo/GoImmo_web/nginx.conf /etc/nginx/sites-available/goimmo
+          
+          # Remove any existing symlink and create new one
+          sudo rm -f /etc/nginx/sites-enabled/goimmo
+          sudo ln -s /etc/nginx/sites-available/goimmo /etc/nginx/sites-enabled/goimmo
+          
+          # Set correct permissions for the web files
+          sudo chown -R www-data:www-data /var/www/goimmo/GoImmo_web/
+          sudo chmod -R 755 /var/www/goimmo/GoImmo_web/
+          
+          # Disable default nginx site if it exists
+          sudo rm -f /etc/nginx/sites-enabled/default
+          
+          # Test nginx configuration
+          sudo nginx -t
+          
+          # Restart nginx
+          sudo systemctl restart nginx
+          
+          # Check if nginx is running
+          sudo systemctl status nginx 

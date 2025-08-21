@@ -1,0 +1,238 @@
+<div class="bookings-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="flaticon-calendar"></i>
+        Bookings Management
+      </h1>
+      <div class="header-actions">
+        <button class="btn btn-outline-light">
+          <i class="flaticon-download"></i>
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="flaticon-search"></i>
+      <input 
+        type="text" 
+        placeholder="Search bookings..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input">
+    </div>
+    
+    <div class="filter-controls">
+      <select [(ngModel)]="statusFilter" (change)="onFilterChange()" class="filter-select">
+        <option value="">All Status</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="pending">Pending</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="completed">Completed</option>
+      </select>
+      
+      <select [(ngModel)]="paymentStatusFilter" (change)="onFilterChange()" class="filter-select">
+        <option value="">All Payments</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+        <option value="failed">Failed</option>
+        <option value="refunded">Refunded</option>
+      </select>
+      
+      <select [(ngModel)]="itemsPerPage" (change)="onFilterChange()" class="filter-select">
+        <option value="10">10 per page</option>
+        <option value="25">25 per page</option>
+        <option value="50">50 per page</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <i class="flaticon-warning"></i>
+    {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading bookings...</p>
+  </div>
+
+  <!-- Bookings Table -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Guest</th>
+          <th (click)="onSort('startDate')" class="sortable">
+            Dates
+            <i class="sort-icon" 
+               [class.active]="sortField === 'startDate'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Guests</th>
+          <th (click)="onSort('totalAmount')" class="sortable">
+            Amount
+            <i class="sort-icon" 
+               [class.active]="sortField === 'totalAmount'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Payment</th>
+          <th>Type</th>
+          <th (click)="onSort('createdAt')" class="sortable">
+            Booked
+            <i class="sort-icon" 
+               [class.active]="sortField === 'createdAt'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of getPaginatedBookings(); trackBy: trackByBookingId" 
+            class="table-row" 
+            [class.overdue]="isOverdue(booking)">
+          <td class="property-info">
+            <div class="property-image">
+              <img [src]="booking.property?.images?.[0] || '/assets/images/default-property.jpg'" 
+                   [alt]="booking.property?.title">
+            </div>
+            <div class="property-details">
+              <div class="property-title">{{ booking.property?.title }}</div>
+              <div class="property-id">ID: {{ booking.property?._id }}</div>
+            </div>
+          </td>
+          <td class="guest-info">
+            <div class="guest-name">
+              {{ booking.contactInfo?.firstName }} {{ booking.contactInfo?.lastName }}
+            </div>
+            <div class="guest-email">{{ booking.contactInfo?.email }}</div>
+            <div class="guest-phone">{{ booking.contactInfo?.phone }}</div>
+          </td>
+          <td class="dates-info">
+            <div class="date-range">{{ getDateRange(booking) }}</div>
+            <div class="duration">{{ getDuration(booking) }}</div>
+          </td>
+          <td class="guest-count">
+            <span class="count-badge">{{ booking.guestCount }}</span>
+          </td>
+          <td class="amount-info">
+            <div class="amount">{{ formatAmount(booking.totalAmount, booking.currency) }}</div>
+            <div class="per-day" *ngIf="booking.metadata?.pricePerDay">
+              {{ formatAmount(booking.metadata.pricePerDay, booking.currency) }}/day
+            </div>
+          </td>
+          <td>
+            <span class="payment-badge" [ngClass]="getPaymentStatusClass(booking)">
+              {{ booking.paymentStatus | titlecase }}
+            </span>
+            <div class="payment-deadline" *ngIf="booking.paymentDeadline && booking.paymentStatus === 'pending'">
+              Due: {{ booking.paymentDeadline | date:'MMM d' }}
+            </div>
+          </td>
+          <td>
+            <span class="reservation-type" [class.online]="booking.reservationType === 'online'">
+              {{ booking.reservationType | titlecase }}
+            </span>
+          </td>
+          <td>
+            <span class="date">{{ booking.createdAt | date:'MMM d, y' }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(booking)">
+              {{ booking.status | titlecase }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                [routerLink]="['/admin/bookings', booking._id]"
+                title="View Details">
+                <i class="flaticon-eye"></i>
+              </button>
+              <button 
+                *ngIf="booking.status === 'pending'"
+                class="btn btn-sm btn-outline-success" 
+                (click)="updateBookingStatus(booking, 'confirmed')"
+                title="Confirm">
+                <i class="flaticon-check"></i>
+              </button>
+              <button 
+                *ngIf="booking.status === 'confirmed'"
+                class="btn btn-sm btn-outline-info" 
+                (click)="updateBookingStatus(booking, 'completed')"
+                title="Mark Complete">
+                <i class="flaticon-checkmark"></i>
+              </button>
+              <button 
+                *ngIf="booking.status !== 'cancelled' && booking.status !== 'completed'"
+                class="btn btn-sm btn-outline-warning" 
+                (click)="updateBookingStatus(booking, 'cancelled')"
+                title="Cancel">
+                <i class="flaticon-close"></i>
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="deleteBooking(booking)"
+                title="Delete">
+                <i class="flaticon-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredBookings.length === 0" class="empty-state">
+      <i class="flaticon-calendar"></i>
+      <h3>No bookings found</h3>
+      <p>No bookings match your current filters.</p>
+      <button class="btn btn-primary" (click)="searchTerm = ''; statusFilter = ''; paymentStatusFilter = ''; onFilterChange()">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="pagination-container">
+    <div class="pagination-info">
+      Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+      {{ Math.min(currentPage * itemsPerPage, filteredBookings.length) }} 
+      of {{ filteredBookings.length }} bookings
+    </div>
+    
+    <nav class="pagination">
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === 1"
+        (click)="changePage(currentPage - 1)">
+        <i class="flaticon-left-arrow"></i>
+      </button>
+      
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-btn"
+        [class.active]="page === currentPage"
+        (click)="changePage(page)">
+        {{ page }}
+      </button>
+      
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === totalPages"
+        (click)="changePage(currentPage + 1)">
+        <i class="flaticon-right-arrow"></i>
+      </button>
+    </nav>
+  </div>
+</div>

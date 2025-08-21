@@ -1,0 +1,89 @@
+<header class="header-nav menu_style_home_one style2 navbar-scrolltofixed stricky main-menu">
+    <div class="container-fluid p0">
+      <nav>
+        <div class="menu-toggle">
+          <img class="nav_logo_img img-fluid" src="assets/images/header-logo.png" alt="header-logo.png">
+          <button type="button" id="menu-btn">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <a href="#" class="navbar_brand float-left dn-smd">
+          <img class="logo1 img-fluid" src="assets/images/header-logo.png" alt="header-logo.png">
+          <img class="logo2 img-fluid" src="assets/images/header-logo2.png" alt="header-logo2.png">
+        </a>
+        <ul id="respMenu" class="ace-responsive-menu text-right" data-menu-style="horizontal">
+          <li>
+            <a [routerLink]="['/home']"><span class="title">Home</span></a>
+            <ul>
+              <li><a href="index.html">Home 1</a></li>
+              <li><a href="index2.html">Home 2</a></li>
+              <li><a href="index3.html">Home 3</a></li>
+              <li><a href="index4.html">Home 4</a></li>
+              <li><a href="index5.html">Home 5</a></li>
+              <li><a href="index6.html">Home 6</a></li>
+              <li><a href="index7.html">Home 7</a></li>
+              <li><a href="index8.html">Home 8</a></li>
+              <li><a href="index9.html">Home 9</a></li>
+              <li><a href="index10.html">Home 10</a></li>
+            </ul>
+          </li>
+          <li>
+            <a [routerLink]="['/properties']"><span class="title">Properties</span></a>
+          </li>
+          <li>
+            <a [routerLink]="['/agents']"><span class="title">Agents</span></a>
+          </li>
+          <li>
+            <a [routerLink]="['/posts']"><span class="title">Blog</span></a>
+          </li>
+          <li>
+            <a [routerLink]="['/about']"><span class="title">About Us</span></a>
+          </li>
+          <li>
+            <a [routerLink]="['/contact']"><span class="title">Contact</span></a>
+          </li>
+          <li>
+            <a [routerLink]="['/faq']"><span class="title">FAQ</span></a>
+          </li>
+          <li>
+            <a [routerLink]="['/agencies']"><span class="title">Agencies</span></a>
+          </li>
+          
+          <!-- Auth Buttons and Profile -->
+          <li class="list-inline-item list_s" *ngIf="!isLoggedIn">
+            <a href="javascript:void(0)" class="btn flaticon-user" (click)="openAuthModal($event)">
+              <span class="dn-lg">Login/Register</span>
+            </a>
+          </li>
+          <li class="list-inline-item list_s" *ngIf="isLoggedIn">
+            <app-notification-dropdown></app-notification-dropdown>
+          </li>
+          <li class="list-inline-item list_s" *ngIf="isLoggedIn">
+            <a [routerLink]="['/chat']" class="btn flaticon-chat">
+              <span class="dn-lg">Chat</span>
+            </a>
+          </li>
+          <li class="list-inline-item list_s" *ngIf="isLoggedIn">
+            <a [routerLink]="['/profile']" class="btn flaticon-user">
+              <span class="dn-lg">Profile</span>
+            </a>
+          </li>
+          <li class="list-inline-item list_s" *ngIf="isLoggedIn">
+            <a href="javascript:void(0)" class="btn flaticon-logout" (click)="onLogout($event)">
+              <span class="dn-lg">Logout</span>
+            </a>
+          </li>
+          <li class="list-inline-item add_listing" *ngIf="isAgent">
+            <a [routerLink]="['/add-property']">
+              <span class="flaticon-plus"></span><span class="dn-lg"> Create Listing</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Auth Modal Component -->
+  <app-auth-modal #authModal></app-auth-modal>

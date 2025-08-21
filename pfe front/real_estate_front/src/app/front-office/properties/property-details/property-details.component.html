@@ -1,0 +1,343 @@
+<section class="listing-title-area">
+  <div class="container">
+    <div class="row" *ngIf="property">
+      <div class="col-lg-8 col-xl-8">
+        <div class="single_property_title mt30-767">
+          <h2>{{ property.title }}</h2>
+          <p>{{ property.address.street }}, {{ property.address.city }}, {{ property.address.state }}, {{ property.address.country }}</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-xl-4">
+        <div class="single_property_social_share">
+          <div class="price float-left fn-400">
+            <h2>{{ property.pricing.currency }}{{ property.pricing.price | number }}</h2>
+            <p *ngIf="property.listingType === 'rent'"><span>/mo</span></p>
+          </div>
+          <div class="spss mt20 text-right">
+            <ul class="mb0">
+              <li class="list-inline-item">
+                <a href="javascript:void(0)" (click)="addToFavorites()" class="text-white">
+                  <span [class.text-danger]="isFavorite" class="flaticon-heart"></span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="javascript:void(0)" (click)="shareProperty()" class="text-white">
+                  <span class="flaticon-share"></span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="javascript:void(0)" (click)="printProperty()" class="text-white">
+                  <span class="flaticon-printer"></span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="javascript:void(0)" (click)="reportProperty()" class="text-white" title="Report Property">
+                  <span class="flaticon-alarm-1"></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Property Content -->
+<section class="our-agent-single bgc-f7 pb30-991">
+  <div class="container">
+    <div class="row" *ngIf="loading">
+      <div class="col-lg-12 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="error">
+      <div class="col-lg-12">
+        <div class="alert alert-danger">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="property && !loading && !error">
+      <div class="col-md-12 col-lg-8">
+        <!-- Property Images Slider -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="listing_single_property_slider">
+              <div class="property-slider">
+                <div *ngFor="let media of property.media" class="item">
+                  <img [src]="'http://localhost:3000' + media.url" [alt]="property.title" class="img-fluid">
+                </div>
+              </div>
+              <div class="property-slider-nav">
+                <button (click)="prevSlide()" class="prev-btn"><i class="fa fa-angle-left"></i></button>
+                <button (click)="nextSlide()" class="next-btn"><i class="fa fa-angle-right"></i></button>
+              </div>
+              <div class="property-thumbnails">
+                <div *ngFor="let media of property.media; let i = index" 
+                     class="thumbnail" 
+                     [class.active]="i === currentSlide"
+                     (click)="goToSlide(i)">
+                  <img [src]="'http://localhost:3000' + media.url" [alt]="property.title">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="listing_single_description">
+              <div class="lsd_list">
+                <ul class="mb0">
+                  <li class="list-inline-item"><a href="javascript:void(0)">{{ property.type }}</a></li>
+                  <li class="list-inline-item"><a href="javascript:void(0)">Beds: {{ property.bedrooms }}</a></li>
+                  <li class="list-inline-item"><a href="javascript:void(0)">Baths: {{ property.bathrooms }}</a></li>
+                  <li class="list-inline-item"><a href="javascript:void(0)">Sq Ft: {{ property.size.total }} {{ property.size.unit }}</a></li>
+                </ul>
+              </div>
+              <h4 class="mb30">Description</h4>
+              <p class="mb25">{{ property.description }}</p>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="additional_details">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h4 class="mb15">Property Details</h4>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                  <ul class="list-inline-item">
+                    <li><p>Property ID :</p></li>
+                    <li><p>Property Type :</p></li>
+                    <li><p>Property Status :</p></li>
+                    <li><p>Property Price :</p></li>
+                    <li><p>Rooms :</p></li>
+                    <li><p>Bedrooms :</p></li>
+                    <li><p>Bathrooms :</p></li>
+                    <li><p>Year Built :</p></li>
+                  </ul>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                  <ul class="list-inline-item">
+                    <li><p><span>{{ property._id }}</span></p></li>
+                    <li><p><span>{{ property.type }}</span></p></li>
+                    <li><p><span>{{ property.status }}</span></p></li>
+                    <li><p><span>{{ property.pricing.currency }}{{ property.pricing.price | number }}</span></p></li>
+                    <li><p><span>{{ property.bedrooms + property.bathrooms }}</span></p></li>
+                    <li><p><span>{{ property.bedrooms }}</span></p></li>
+                    <li><p><span>{{ property.bathrooms }}</span></p></li>
+                    <li><p><span>{{ property.yearBuilt }}</span></p></li>
+                  </ul>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                  <ul class="list-inline-item">
+                    <li><p>Garage :</p></li>
+                    <li><p>Garage Size :</p></li>
+                    <li><p>Property Size :</p></li>
+                    <li><p>Property Lot Size :</p></li>
+                    <li><p>Floors :</p></li>
+                    <li><p>Furnishing Status :</p></li>
+                    <li><p>Construction Status :</p></li>
+                    <li><p>Facing :</p></li>
+                  </ul>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                  <ul class="list-inline-item">
+                    <li><p><span>{{ property.parking?.type !== 'none' ? 'Yes' : 'No' }}</span></p></li>
+                    <li><p><span>{{ property.parking?.spaces }} cars</span></p></li>
+                    <li><p><span>{{ property.size.total }} {{ property.size.unit }}</span></p></li>
+                    <li><p><span>{{ property.lotSize?.size }} {{ property.lotSize?.unit }}</span></p></li>
+                    <li><p><span>{{ property.floors }}</span></p></li>
+                    <li><p><span>{{ property.furnishingStatus }}</span></p></li>
+                    <li><p><span>{{ property.constructionStatus }}</span></p></li>
+                    <li><p><span>{{ property.facing }}</span></p></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="additional_details">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h4 class="mb15">Features & Amenities</h4>
+                </div>
+                <div class="col-md-6 col-lg-6" *ngFor="let amenityGroup of groupAmenities()">
+                  <ul class="list-inline-item">
+                    <li *ngFor="let amenity of amenityGroup">
+                      <p><i class="fa fa-check"></i> {{ amenity.name }}</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="property_attachment_area">
+              <h4 class="mb30">Property Attachments</h4>
+              <div class="pal_wrap">
+                <div class="row" *ngIf="property.attachments && property.attachments.length > 0">
+                  <div class="col-6" *ngFor="let attachment of property.attachments">
+                    <a [href]="'http://localhost:3000' + attachment.url" target="_blank" class="attachment-card">
+                      <span class="icon"><span class="flaticon-document"></span></span>
+                      <h5>{{ attachment.title }}</h5>
+                      <p>{{ attachment.description || 'Click to download' }}</p>
+                    </a>
+                  </div>
+                </div>
+                <div class="row" *ngIf="!property.attachments || property.attachments.length === 0">
+                  <div class="col-12">
+                    <p>No attachments available for this property.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="application_statics mt30">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h4 class="mb10">Location</h4>
+                </div>
+                <div class="col-lg-12">
+                  <div class="property_video p0">
+                    <div class="thumb">
+                      <div class="h400" id="map-canvas">
+                        <iframe 
+                          width="100%" 
+                          height="400" 
+                          frameborder="0" 
+                          scrolling="no" 
+                          marginheight="0" 
+                          marginwidth="0" 
+                          [src]="getMapUrl()" 
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-xl-4">
+        <div class="sidebar_listing_list">
+          <div class="sidebar_advanced_search_widget">
+            <div class="sl_creator">
+              <h4 class="mb25">Listed By</h4>
+              <div class="media">
+                <img class="mr-3" src="assets/images/team/lc1.png" alt="lc1.png">
+                <div class="media-body">
+                  <h5 class="mt-0 mb0">Agent Name</h5>
+                  <p class="mb0">Real Estate Agent</p>
+                  <ul class="review_list mt10 mb10">
+                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
+                    <li class="list-inline-item"><i class="fa fa-star"></i></li>
+                    <li class="list-inline-item">(5 Reviews)</li>
+                  </ul>
+                  <ul class="sl_creator_links">
+                    <li class="list-inline-item"><a href="#"><i class="fa fa-phone"></i></a></li>
+                    <li class="list-inline-item"><a href="#"><i class="fa fa-envelope"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 mt20">
+                <!-- Chat with Agent Button -->
+                <app-chat-button [propertyId]="property._id" [agentId]="property.owner"></app-chat-button>
+                
+                <!-- Rent/Buy Button -->
+                <div class="mt-3" *ngIf="property.listingType === 'rent' || property.listingType === 'both'">
+                  <a [routerLink]="['/payment/reservation', property._id]" class="btn btn-thm btn-block">
+                    <i class="fa fa-calendar"></i> Reserve Now
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Similar Properties Section -->
+<section class="similar-properties-section bgc-f7 pb30">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <app-similar-properties 
+          *ngIf="property" 
+          [currentPropertyId]="property._id"
+          [currentPropertyType]="property.type"
+          [currentPropertyLocation]="property.address?.city || ''"
+          [currentPropertyBedrooms]="property.bedrooms"
+          [currentPropertyBathrooms]="property.bathrooms"
+          [currentPropertyPrice]="property.pricing?.price || 0">
+        </app-similar-properties>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shareModalLabel">Share this Property</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="share-options">
+          <div class="row">
+            <div class="col-6 mb-3">
+              <button class="btn btn-block btn-facebook" (click)="shareOnFacebook()">
+                <i class="fa fa-facebook"></i> Facebook
+              </button>
+            </div>
+            <div class="col-6 mb-3">
+              <button class="btn btn-block btn-twitter" (click)="shareOnTwitter()">
+                <i class="fa fa-twitter"></i> Twitter
+              </button>
+            </div>
+            <div class="col-6 mb-3">
+              <button class="btn btn-block btn-whatsapp" (click)="shareOnWhatsapp()">
+                <i class="fa fa-whatsapp"></i> WhatsApp
+              </button>
+            </div>
+            <div class="col-6 mb-3">
+              <button class="btn btn-block btn-email" (click)="shareByEmail()">
+                <i class="fa fa-envelope"></i> Email
+              </button>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="shareLink">Copy Link</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="shareLink" [value]="getShareLink()" readonly>
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" (click)="copyShareLink()">
+                  <i class="fa fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

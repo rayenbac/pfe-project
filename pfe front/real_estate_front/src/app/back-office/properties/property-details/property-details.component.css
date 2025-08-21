@@ -1,0 +1,32 @@
+/* Add space to the left and top of the listing-title-area */
+.listing-title-area {
+    padding-left: 250px; /* Increased left padding */
+    padding-top: 300px;  /* Added top padding */
+  }
+  
+  /* Add space to the left and top of the our-agent-single */
+  .our-agent-single {
+    padding-left: 250px; /* Increased left padding */
+    padding-top: 300px;  /* Added top padding */
+  }
+  
+  /* Ensure sections are responsive (if sidebar hides on smaller screens) */
+  @media (max-width: 991px) {
+    .listing-title-area, .our-agent-single {
+      padding-left: 0; /* Remove left padding on smaller screens (e.g., mobile) */
+      padding-top: 20px; /* Reduce top padding on smaller screens */
+    }
+  }
+  
+  /* Map container styles */
+  .property-map {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  /* Import Leaflet CSS */
+  @import 'leaflet/dist/leaflet.css';
+  

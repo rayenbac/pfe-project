@@ -1,0 +1,265 @@
+<section class="shop-checkouts bgc-f7">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="breadcrumb_content style2">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Properties</a></li>
+              <li class="breadcrumb-item"><a href="#">Reservation</a></li>
+              <li class="breadcrumb-item active text-thm" aria-current="page">Checkout</li>
+            </ol>
+            <h4 class="breadcrumb_title">Checkout</h4>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="loading">
+        <div class="col-lg-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="error">
+        <div class="col-lg-12">
+          <div class="alert alert-danger">
+            {{ error }}
+          </div>
+        </div>
+      </div>
+  
+      <div class="row" *ngIf="!loading && !error && property">
+        <div class="col-md-12 col-lg-7 col-xl-7">
+          <div class="checkout_form style2">
+            <h4 class="mb40">Billing Details</h4>
+            <!-- Payment Method Selection -->
+            <div class="form-group">
+              <label>Payment Method *</label>
+              <div class="custom-control custom-radio mb-2">
+                <input type="radio" id="stripeRadioCheckout" name="paymentMethodCheckout"
+                       class="custom-control-input"
+                       [(ngModel)]="paymentMethod"
+                       value="stripe"
+                       (change)="onPaymentMethodChange('stripe')"
+                       required>
+                <label class="custom-control-label" for="stripeRadioCheckout">
+                  <strong>Credit Card (Stripe)</strong>
+                  <br><small class="text-muted">International payments • USD currency</small>
+                </label>
+              </div>
+              <div class="custom-control custom-radio mb-2">
+                <input type="radio" id="konnectRadioCheckout" name="paymentMethodCheckout"
+                       class="custom-control-input"
+                       [(ngModel)]="paymentMethod"
+                       value="konnect"
+                       (change)="onPaymentMethodChange('konnect')"
+                       required>
+                <label class="custom-control-label" for="konnectRadioCheckout">
+                  <strong>Konnect (Tunisia)</strong>
+                  <br><small class="text-muted">Local payments • TND currency</small>
+                </label>
+              </div>
+              
+
+            </div>
+            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="form2">
+              <div class="row">
+                <!-- Cardholder Name -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="cardholderName">Cardholder Name *</label>
+                    <input id="cardholderName" name="cardholderName" class="form-control" type="text" formControlName="cardholderName" required>
+                    <div *ngIf="checkoutForm.get('cardholderName')?.invalid && checkoutForm.get('cardholderName')?.touched" class="text-danger">
+                      Cardholder name is required
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Billing Address -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="billingAddress">Billing Address *</label>
+                    <input id="billingAddress" name="billingAddress" class="form-control" type="text" formControlName="billingAddress" required>
+                    <div *ngIf="checkoutForm.get('billingAddress')?.invalid && checkoutForm.get('billingAddress')?.touched" class="text-danger">
+                      Billing address is required
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- City, State, Postal Code -->
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="city">City *</label>
+                    <input id="city" name="city" class="form-control" type="text" formControlName="city" required>
+                    <div *ngIf="checkoutForm.get('city')?.invalid && checkoutForm.get('city')?.touched" class="text-danger">
+                      City is required
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="state">State/Province *</label>
+                    <input id="state" name="state" class="form-control" type="text" formControlName="state" required>
+                    <div *ngIf="checkoutForm.get('state')?.invalid && checkoutForm.get('state')?.touched" class="text-danger">
+                      State is required
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="postalCode">Postal Code *</label>
+                    <input id="postalCode" name="postalCode" class="form-control" type="text" formControlName="postalCode" required>
+                    <div *ngIf="checkoutForm.get('postalCode')?.invalid && checkoutForm.get('postalCode')?.touched" class="text-danger">
+                      Postal code is required
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Country -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="country">Country *</label>
+                    <select id="country" name="country" class="form-control" formControlName="country" required>
+                      <option value="">Select Country</option>
+                      <option value="US">United States</option>
+                      <option value="CA">Canada</option>
+                      <option value="GB">United Kingdom</option>
+                      <option value="FR">France</option>
+                      <option value="DE">Germany</option>
+                      <option value="IT">Italy</option>
+                      <option value="ES">Spain</option>
+                      <option value="AU">Australia</option>
+                      <option value="JP">Japan</option>
+                      <option value="CN">China</option>
+                    </select>
+                    <div *ngIf="checkoutForm.get('country')?.invalid && checkoutForm.get('country')?.touched" class="text-danger">
+                      Country is required
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Terms and Conditions -->
+                <div class="col-sm-12">
+                  <div class="form-group custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="agreeTerms" formControlName="agreeTerms" required>
+                    <label class="custom-control-label" for="agreeTerms">I agree to the <a href="#" class="text-thm">terms and conditions</a> *</label>
+                    <div *ngIf="checkoutForm.get('agreeTerms')?.invalid && checkoutForm.get('agreeTerms')?.touched" class="text-danger">
+                      You must agree to the terms and conditions
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Submit Button -->
+                <div class="col-sm-12">
+                  <div class="form-group mb0">
+                    <button type="submit" class="btn btn-thm btn-block" [disabled]="checkoutForm.invalid || loading">
+                      {{ loading ? 'Processing...' : 'Place Order' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+  
+        <div class="col-lg-5 col-xl-5">
+          <div class="order_sidebar_widget mb30">
+            <h4 class="title">Your Order</h4>
+            <div class="media">
+              <img class="align-self-start mr-3" [src]="'http://localhost:3000' + property.media[0]?.url" [alt]="property.title" style="width: 100px; height: 80px; object-fit: cover;" *ngIf="property.media && property.media[0]">
+              <div class="media-body">
+                <h5 class="mt-0 post_title">{{ property.title }}</h5>
+                <p><span class="flaticon-placeholder"></span> {{ property.address.city }}, {{ property.address.state }}</p>
+              </div>
+            </div>
+            <ul>
+              <li><p>Property Type <span class="float-right">{{ property.type }}</span></p></li>
+              <li><p>Rental Period <span class="float-right">{{ reservation?.rentalDays || metadata?.rentalDays }} night(s)</span></p></li>
+              <li><p>Start Date <span class="float-right">{{ reservation?.startDate | date }}</span></p></li>
+              <li><p>End Date <span class="float-right">{{ reservation?.endDate | date }}</span></p></li>
+              <li class="subtitle"><p>Daily Rate <span class="float-right">{{ property.pricing.currency }}{{ property.pricing.price | number }}</span></p></li>
+              <li class="subtitle"><p>Total <span class="float-right totals color-orose">{{ displayCurrency }}{{ displayAmount | number:'1.2-2' }}</span></p></li>
+              
+              <!-- Currency Conversion Section -->
+              <ng-container *ngIf="paymentMethod === 'konnect' && propertyCurrency.toUpperCase() !== 'TND'">
+                <li class="border-top pt-2 mt-2">
+                  <div class="conversion-info">
+                    <p class="mb-1"><strong>Currency Conversion</strong></p>
+                    <p class="mb-1">Original Amount: <span class="float-right">{{ propertyCurrency.toUpperCase() }} {{ totalAmount | number:'1.2-2' }}</span></p>
+                    <p class="mb-1">Payment Amount: 
+                      <span class="float-right text-success">
+                        <strong>TND {{ 
+                          propertyCurrency.toUpperCase() === 'USD' ? 
+                            (totalAmount * exchangeRates['TND'] | number:'1.2-2') : 
+                            propertyCurrency.toUpperCase() === 'EUR' ? 
+                              ((totalAmount / exchangeRates['EUR']) * exchangeRates['TND'] | number:'1.2-2') : 
+                              (totalAmount | number:'1.2-2')
+                        }}</strong>
+                      </span>
+                    </p>
+                    <p class="mb-0 text-muted">
+                      <small>Rate: 
+                        <span *ngIf="propertyCurrency.toUpperCase() === 'USD'">1 USD = {{ exchangeRates['TND'] | number:'1.2-2' }} TND</span>
+                        <span *ngIf="propertyCurrency.toUpperCase() === 'EUR'">1 EUR = {{ (exchangeRates['TND'] / exchangeRates['EUR']) | number:'1.3-3' }} TND</span>
+                      </small>
+                    </p>
+                  </div>
+                </li>
+              </ng-container>
+              
+              <ng-container *ngIf="paymentMethod === 'stripe' && propertyCurrency.toUpperCase() !== 'USD'">
+                <li class="border-top pt-2 mt-2">
+                  <div class="conversion-info">
+                    <p class="mb-1"><strong>Currency Conversion</strong></p>
+                    <p class="mb-1">Original Amount: <span class="float-right">{{ propertyCurrency.toUpperCase() }} {{ totalAmount | number:'1.2-2' }}</span></p>
+                    <p class="mb-1">Payment Amount: 
+                      <span class="float-right text-primary">
+                        <strong>USD {{ 
+                          propertyCurrency.toUpperCase() === 'TND' ? 
+                            (totalAmount / exchangeRates['TND'] | number:'1.2-2') : 
+                            propertyCurrency.toUpperCase() === 'EUR' ? 
+                              (totalAmount / exchangeRates['EUR'] | number:'1.2-2') : 
+                              (totalAmount | number:'1.2-2')
+                        }}</strong>
+                      </span>
+                    </p>
+                    <p class="mb-0 text-muted">
+                      <small>Rate: 
+                        <span *ngIf="propertyCurrency.toUpperCase() === 'TND'">1 USD = {{ exchangeRates['TND'] | number:'1.2-2' }} TND</span>
+                        <span *ngIf="propertyCurrency.toUpperCase() === 'EUR'">1 USD = {{ exchangeRates['EUR'] | number:'1.2-2' }} EUR</span>
+                      </small>
+                    </p>
+                  </div>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+          <div class="payment_widget">
+            <div class="ui_kit_checkbox style2">
+              <h4 class="mb20">Payment</h4>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck80" [checked]="paymentMethod === 'stripe'" disabled>
+                <label class="custom-control-label" for="customCheck80">Credit Card (Stripe)</label>
+              </div>
+              <div class="custom-control custom-checkbox mt-2">
+                <input type="checkbox" class="custom-control-input" id="customCheckKonnect" [checked]="paymentMethod === 'konnect'" disabled>
+                <label class="custom-control-label" for="customCheckKonnect">Konnect (Tunisia)</label>
+              </div>
+              <div class="payment_details">
+                <ng-container *ngIf="paymentMethod === 'stripe'">
+                  <p>Secure payment via Stripe. Your card details are encrypted and processed securely.</p>
+                  <img class="pr15" src="assets/images/resource/payment.png" alt="payment.png">
+                </ng-container>
+                <ng-container *ngIf="paymentMethod === 'konnect'">
+                  <p>Secure payment via Konnect. You will be redirected to Konnect to complete your payment.</p>
+                  <img class="pr15" src="assets/images/resource/payment.png" alt="payment.png">
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

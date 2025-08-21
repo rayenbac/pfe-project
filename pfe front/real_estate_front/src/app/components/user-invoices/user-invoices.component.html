@@ -1,0 +1,130 @@
+<div class="user-invoices-container">
+  <div class="header">
+    <h2>My Invoices</h2>
+    <p>View and manage your property booking invoices</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Invoices Grid -->
+  <div *ngIf="!loading && !error" class="invoices-grid">
+    <div *ngFor="let invoice of invoices" class="invoice-card">
+      <div class="invoice-header">
+        <div class="invoice-number">
+          <strong>{{ invoice.invoiceNumber }}</strong>
+        </div>
+        <div class="invoice-status">
+          <span class="status-badge" [ngClass]="getStatusClass(invoice.status)">
+            {{ invoice.status | titlecase }}
+          </span>
+        </div>
+      </div>
+
+      <div class="invoice-content">
+        <div class="property-info">
+          <h4>{{ invoice.property?.title }}</h4>
+          <p class="text-muted">
+            <i class="fas fa-calendar"></i>
+            {{ formatDate(invoice.metadata.checkInDate) }} - {{ formatDate(invoice.metadata.checkOutDate) }}
+          </p>
+          <p class="text-muted">
+            <i class="fas fa-moon"></i>
+            {{ invoice.metadata.nights }} nights • {{ invoice.metadata.guests }} guests
+          </p>
+        </div>
+
+        <div class="invoice-details">
+          <div class="detail-row">
+            <span>Invoice Date:</span>
+            <span>{{ formatDate(invoice.invoiceDate) }}</span>
+          </div>
+          <div class="detail-row">
+            <span>Due Date:</span>
+            <span>{{ formatDate(invoice.dueDate) }}</span>
+          </div>
+          <div class="detail-row total">
+            <span>Total Amount:</span>
+            <span class="amount">{{ formatCurrency(invoice.amount.total) }}</span>
+          </div>
+        </div>
+
+        <div class="invoice-items">
+          <h5>Invoice Items:</h5>
+          <div *ngFor="let item of invoice.items" class="item-row">
+            <span class="item-desc">{{ item.description }}</span>
+            <span class="item-amount">{{ formatCurrency(item.total) }}</span>
+          </div>
+        </div>
+
+        <div class="invoice-actions">
+          <div class="pdf-section">
+            <div *ngIf="invoice.pdfUrl; else noPdf">
+              <button class="btn btn-primary" (click)="downloadPDF(invoice._id, invoice.invoiceNumber)">
+                <i class="fas fa-download"></i> Download PDF
+              </button>
+            </div>
+            <ng-template #noPdf>
+              <div class="upload-section">
+                <label class="btn btn-outline-primary">
+                  <i class="fas fa-upload"></i> Upload PDF
+                  <input type="file" 
+                         accept=".pdf" 
+                         (change)="uploadPDF(invoice._id, $event)"
+                         style="display: none;">
+                </label>
+                <small class="text-muted d-block mt-1">Upload your invoice PDF (max 10MB)</small>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="invoices.length === 0" class="empty-state">
+      <i class="fas fa-file-invoice fa-3x text-muted"></i>
+      <h4>No Invoices Found</h4>
+      <p>You don't have any invoices yet. Invoices will appear here after you make bookings.</p>
+    </div>
+
+    <!-- Pagination -->
+    <nav *ngIf="totalPages > 1" class="pagination-nav">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+            Previous
+          </button>
+        </li>
+        
+        <li *ngFor="let page of getPageNumbers()" 
+            class="page-item" 
+            [ngClass]="{ active: page === currentPage }">
+          <button class="page-link" (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+        </li>
+        
+        <li class="page-item" [ngClass]="{ disabled: currentPage === totalPages }">
+          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Next
+          </button>
+        </li>
+      </ul>
+      
+      <div class="pagination-info">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalItems) }} 
+        of {{ totalItems }} invoices
+      </div>
+    </nav>
+  </div>
+</div>

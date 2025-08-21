@@ -1,0 +1,189 @@
+<div class="dashboard_sidebar_menu dn-992" id="sidebar">
+    <ul class="sidebar-menu">
+        <!-- Logo -->
+        <li class="header">
+            <img src="images/header-logo.png" alt="Admin Logo">
+        </li>
+
+        <!-- Main Section -->
+        <li class="title"><span>Main</span></li>
+        <li class="treeview">
+            <a href="/admin/dashboard">
+                <i class="flaticon-layers"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Property Management -->
+        <li class="title"><span>Property Management</span></li>
+        <li class="treeview">
+            <a routerLink="/admin/properties"> <!-- Use routerLink instead of href -->
+              <i class="flaticon-home"></i>
+              <span>Properties</span>
+              <i class="fa fa-angle-down pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <a routerLink="/admin/properties"> <!-- Use routerLink instead of href -->
+                  <i class="fa fa-circle"></i> All Properties
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/properties/pending"> <!-- Use routerLink instead of href -->
+                  <i class="fa fa-circle"></i> Pending Approvals
+                </a>
+              </li>
+              <li>
+                <a routerLink="/admin/properties/add"> <!-- Use routerLink instead of href -->
+                  <i class="fa fa-circle"></i> Add New Property
+                </a>
+              </li>
+            </ul>
+          </li>
+
+        <!-- User Management -->
+        <li class="title"><span>User Management</span></li>
+        <li class="treeview">
+            <a routerLink="/admin/users">
+                <i class="flaticon-user"></i>
+                <span>All Users</span>
+                <i class="fa fa-angle-down pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a routerLink="/admin/users"><i class="fa fa-circle"></i> All Users</a></li>
+                <li><a routerLink="/admin/users/buyers"><i class="fa fa-circle"></i> Buyers</a></li>
+                <li><a routerLink="/admin/users/add"><i class="fa fa-circle"></i> Add User</a></li>
+            </ul>
+        </li>
+        <li>
+            <a routerLink="/admin/agents">
+                <i class="flaticon-user-1"></i>
+                <span>Agents</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="/admin/agencies">
+                <i class="flaticon-building"></i>
+                <span>Agencies</span>
+            </a>
+        </li>
+
+        <!-- Bookings & Payments -->
+        <li class="title"><span>Bookings & Payments</span></li>
+        <li>
+            <a routerLink="/admin/bookings">
+                <i class="flaticon-calendar"></i>
+                <span>Bookings</span>
+            </a>
+        </li>
+        <li class="treeview">
+            <a routerLink="/admin/payments">
+                <i class="flaticon-credit-card"></i>
+                <span>Payments</span>
+                <i class="fa fa-angle-down pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a routerLink="/admin/payments"><i class="fa fa-circle"></i> All Payments</a></li>
+                <li><a routerLink="/admin/payments?status=pending"><i class="fa fa-circle"></i> Pending</a></li>
+                <li><a routerLink="/admin/payments?status=completed"><i class="fa fa-circle"></i> Completed</a></li>
+                <li><a routerLink="/admin/payments?status=failed"><i class="fa fa-circle"></i> Failed</a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a routerLink="/admin/invoices">
+                <i class="flaticon-file"></i>
+                <span>Invoices</span>
+                <i class="fa fa-angle-down pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a routerLink="/admin/invoices"><i class="fa fa-circle"></i> All Invoices</a></li>
+                <li><a routerLink="/admin/invoices?status=sent"><i class="fa fa-circle"></i> Sent</a></li>
+                <li><a routerLink="/admin/invoices?status=paid"><i class="fa fa-circle"></i> Paid</a></li>
+                <li><a routerLink="/admin/invoices?status=overdue"><i class="fa fa-circle"></i> Overdue</a></li>
+            </ul>
+        </li>
+
+        <!-- Posts & Notifications -->
+        <li class="title"><span>Posts & Notifications</span></li>
+        <li>
+            <a routerLink="/admin/posts">
+                <i class="flaticon-edit"></i>
+                <span>Posts</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="/admin/categories">
+                <i class="flaticon-bell"></i>
+                <span>Categories</span>
+            </a>
+        </li>
+
+        <!-- Moderation -->
+        <li class="title"><span>Moderation</span></li>
+        <li class="treeview">
+            <a routerLink="/admin/reports">
+                <i class="flaticon-warning"></i>
+                <span>Reports</span>
+                <i class="fa fa-angle-down pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a routerLink="/admin/reports"><i class="fa fa-circle"></i> All Reports</a></li>
+                <li><a routerLink="/admin/reports?status=pending"><i class="fa fa-circle"></i> Pending Reports</a></li>
+                <li><a routerLink="/admin/reports?status=resolved"><i class="fa fa-circle"></i> Resolved Reports</a></li>
+            </ul>
+        </li>
+
+        <!-- Chats & Reviews -->
+        <li class="title"><span>Chats & Reviews</span></li>
+        <li>
+            <a href="/admin/chats">
+                <i class="flaticon-chat"></i>
+                <span>Chats</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/reviews">
+                <i class="flaticon-star"></i>
+                <span>Reviews</span>
+            </a>
+        </li>
+
+        <!-- CRM & Analytics -->
+        <li class="title"><span>CRM & Analytics</span></li>
+        <li>
+            <a routerLink="/admin/crm">
+                <i class="flaticon-users"></i>
+                <span>CRM & Leads</span>
+            </a>
+        </li>
+        <li>
+            <a routerLink="/admin/analytics">
+                <i class="flaticon-analytics"></i>
+                <span>Analytics & Insights</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/favorites">
+                <i class="flaticon-heart"></i>
+                <span>Favorites</span>
+            </a>
+        </li>
+
+        <!-- Settings -->
+        <li class="title"><span>Settings</span></li>
+        <li>
+            <a routerLink="/admin/settings">
+                <i class="flaticon-settings"></i>
+                <span>Platform Settings</span>
+            </a>
+        </li>
+
+        <!-- Logout -->
+        <li>
+            <a href="/logout">
+                <i class="flaticon-logout"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>

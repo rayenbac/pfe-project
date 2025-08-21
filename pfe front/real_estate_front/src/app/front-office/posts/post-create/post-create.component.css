@@ -1,0 +1,737 @@
+/* NGX Editor Styling */
+.editor-container {
+  margin-bottom: 30px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.content-editor {
+  display: block;
+  width: 100%;
+  min-height: 300px;
+  background-color: #fff;
+}
+
+/* NGX Editor Menu (Toolbar) Styling */
+::ng-deep .NgxEditor__MenuBar {
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+::ng-deep .NgxEditor__MenuItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  margin: 0 2px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+::ng-deep .NgxEditor__MenuItem:hover {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-color: #bbdefb;
+}
+
+::ng-deep .NgxEditor__MenuItem--Active {
+  background-color: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+}
+
+::ng-deep .NgxEditor__MenuItem--Disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+::ng-deep .NgxEditor__MenuItem--Disabled:hover {
+  background-color: transparent;
+  color: #666;
+  border-color: transparent;
+}
+
+/* NGX Editor Content Area Styling */
+::ng-deep .NgxEditor {
+  border: none;
+  border-radius: 0 0 8px 8px;
+  background-color: #fff;
+}
+
+::ng-deep .NgxEditor__Content {
+  min-height: 300px;
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  border: none;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+::ng-deep .NgxEditor__Content:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+/* Typography styling for editor content */
+::ng-deep .NgxEditor__Content p {
+  margin-bottom: 16px;
+}
+
+::ng-deep .NgxEditor__Content h1, 
+::ng-deep .NgxEditor__Content h2, 
+::ng-deep .NgxEditor__Content h3,
+::ng-deep .NgxEditor__Content h4,
+::ng-deep .NgxEditor__Content h5,
+::ng-deep .NgxEditor__Content h6 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+::ng-deep .NgxEditor__Content ul, 
+::ng-deep .NgxEditor__Content ol {
+  margin-bottom: 16px;
+  padding-left: 24px;
+}
+
+::ng-deep .NgxEditor__Content blockquote {
+  border-left: 4px solid #1976d2;
+  padding-left: 16px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 16px;
+  color: #666;
+  font-style: italic;
+}
+
+::ng-deep .NgxEditor__Content strong {
+  font-weight: 600;
+}
+
+::ng-deep .NgxEditor__Content em {
+  font-style: italic;
+}
+
+::ng-deep .NgxEditor__Content u {
+  text-decoration: underline;
+}
+
+::ng-deep .NgxEditor__Content s {
+  text-decoration: line-through;
+}
+
+::ng-deep .NgxEditor__Content code {
+  background-color: #f8f9fa;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+::ng-deep .NgxEditor__Content pre {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+::ng-deep .NgxEditor__Content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Dropdown styling */
+::ng-deep .NgxEditor__Dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+::ng-deep .NgxEditor__Dropdown__Button {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .NgxEditor__Dropdown__Button:hover {
+  background-color: #e3f2fd;
+  border-color: #bbdefb;
+  color: #1976d2;
+}
+
+::ng-deep .NgxEditor__Dropdown__Content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+::ng-deep .NgxEditor__Dropdown__Item {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #333;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+::ng-deep .NgxEditor__Dropdown__Item:hover {
+  background-color: #f5f5f5;
+}
+
+::ng-deep .NgxEditor__Dropdown__Item--Active {
+  background-color: #1976d2;
+  color: #fff;
+}
+
+::ng-deep .post-content-editor .ql-editor {
+  min-height: 300px;
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  border: none;
+  outline: none;
+}
+
+::ng-deep .post-content-editor .ql-editor.ql-blank::before {
+  color: #999;
+  font-style: italic;
+  font-size: 15px;
+}
+
+::ng-deep .post-content-editor .ql-editor p {
+  margin-bottom: 16px;
+}
+
+::ng-deep .post-content-editor .ql-editor h1, 
+::ng-deep .post-content-editor .ql-editor h2, 
+::ng-deep .post-content-editor .ql-editor h3 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.post-content-editor .ql-editor ul, 
+.post-content-editor .ql-editor ol {
+  margin-bottom: 12px;
+  padding-left: 20px;
+}
+
+.post-content-editor .ql-editor blockquote {
+  margin: 16px 0;
+  padding: 12px 20px;
+  background-color: #f8f9fa;
+  border-left: 4px solid #ff5a5f;
+  font-style: italic;
+}
+
+.post-content-editor .ql-toolbar .ql-formats {
+  margin-right: 15px;
+}
+
+.post-content-editor .ql-toolbar button {
+  padding: 5px;
+  margin: 2px;
+  border: none;
+  border-radius: 3px;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.post-content-editor .ql-toolbar button:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.post-content-editor .ql-toolbar button.ql-active {
+  background-color: #ff5a5f;
+  color: white;
+}
+
+.post-content-editor .ql-toolbar .ql-picker {
+  color: #666;
+}
+
+.post-content-editor .ql-toolbar .ql-picker-options {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.post-content-editor .ql-toolbar .ql-picker-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Make the Quill editor look clean and full width */
+quill-editor {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.ql-toolbar.ql-snow {
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.ql-container.ql-snow {
+  border-radius: 0 0 4px 4px;
+  border: 1px solid #ccc;
+  border-top: none;
+  min-height: 150px;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.ql-editor {
+  min-height: 120px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Remove any unwanted box or font artifacts */
+body, input, textarea, .ql-editor {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Post Create Component Custom Styles */
+
+.my_dashboard_review_content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #ff5a5f;
+  box-shadow: 0 0 0 0.2rem rgba(255, 90, 95, 0.25);
+}
+
+.custom-file-label {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.custom-file-label:hover {
+  border-color: #ff5a5f;
+}
+
+.btn-thm {
+  background-color: #ff5a5f;
+  border-color: #ff5a5f;
+  color: white;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-thm:hover {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+  transform: translateY(-2px);
+}
+
+.btn-thm:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-outline-secondary {
+  border-color: #ddd;
+  color: #666;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #999;
+  color: #333;
+}
+
+.alert {
+  border-radius: 6px;
+  margin-bottom: 25px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}
+
+.widget_list ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.widget_list ul li:last-child {
+  border-bottom: none;
+}
+
+.text-thm {
+  color: #ff5a5f !important;
+}
+
+.tag-suggestion {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 5px 12px;
+  font-size: 12px;
+  text-decoration: none;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.tag-suggestion:hover {
+  background-color: #ff5a5f;
+  border-color: #ff5a5f;
+  color: white;
+  text-decoration: none;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .my_dashboard_review_content {
+    padding: 20px;
+  }
+  
+  .btn-thm, .btn-outline-secondary {
+    padding: 10px 20px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+}
+
+/* Additional Quill Editor fixes */
+:host ::ng-deep .post-content-editor .ql-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+
+:host ::ng-deep .post-content-editor .ql-toolbar {
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background-color: #f8f9fa;
+}
+
+:host ::ng-deep .post-content-editor .ql-editor {
+  min-height: 250px;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+:host ::ng-deep .post-content-editor .ql-editor.ql-blank::before {
+  color: #999;
+  font-style: italic;
+  content: attr(data-placeholder);
+}
+
+:host ::ng-deep .post-content-editor .ql-toolbar .ql-formats {
+  margin-right: 15px;
+}
+
+:host ::ng-deep .post-content-editor .ql-toolbar button {
+  padding: 5px;
+  margin: 2px;
+  border: none;
+  border-radius: 3px;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .post-content-editor .ql-toolbar button:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+:host ::ng-deep .post-content-editor .ql-toolbar button.ql-active {
+  background-color: #ff5a5f;
+  color: white;
+}
+
+/* Additional Quill toolbar styling */
+::ng-deep .post-content-editor .ql-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-formats {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-right: 16px !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 6px !important;
+  margin: 0 2px !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  background-color: transparent !important;
+  color: #666 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-size: 14px !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar button:hover {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  border-color: #bbdefb !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar button.ql-active {
+  background-color: #1976d2 !important;
+  color: #fff !important;
+  border-color: #1976d2 !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker {
+  display: inline-block !important;
+  vertical-align: top !important;
+  position: relative !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  color: #666 !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker-label:hover {
+  background-color: #e3f2fd !important;
+  border-color: #bbdefb !important;
+  color: #1976d2 !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker-options {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  background-color: #fff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  z-index: 1000 !important;
+  margin-top: 4px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker-item {
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  color: #333 !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s ease !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker-item:hover {
+  background-color: #f5f5f5 !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-picker-item.ql-selected {
+  background-color: #1976d2 !important;
+  color: #fff !important;
+}
+
+/* Color picker improvements */
+::ng-deep .post-content-editor .ql-toolbar .ql-color-picker .ql-picker-options {
+  width: 200px !important;
+  padding: 8px !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-color-picker .ql-picker-item {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 2px !important;
+  border-radius: 3px !important;
+  border: 1px solid #ddd !important;
+  display: inline-block !important;
+  padding: 0 !important;
+}
+
+::ng-deep .post-content-editor .ql-toolbar .ql-color-picker .ql-picker-item:hover {
+  transform: scale(1.1) !important;
+  border-color: #333 !important;
+}
+
+/* Focus improvements */
+::ng-deep .post-content-editor .ql-editor:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* Typography improvements */
+::ng-deep .post-content-editor .ql-editor strong {
+  font-weight: 600 !important;
+}
+
+::ng-deep .post-content-editor .ql-editor em {
+  font-style: italic !important;
+}
+
+::ng-deep .post-content-editor .ql-editor u {
+  text-decoration: underline !important;
+}
+
+::ng-deep .post-content-editor .ql-editor s {
+  text-decoration: line-through !important;
+}
+
+::ng-deep .post-content-editor .ql-editor ul {
+  padding-left: 24px !important;
+}
+
+::ng-deep .post-content-editor .ql-editor ol {
+  padding-left: 24px !important;
+}
+
+::ng-deep .post-content-editor .ql-editor blockquote {
+  border-left: 4px solid #1976d2 !important;
+  padding-left: 16px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  color: #666 !important;
+  font-style: italic !important;
+}
+
+/* Ensure proper display structure */
+::ng-deep .quill-editor-container {
+  position: relative !important;
+  width: 100% !important;
+}
+
+::ng-deep .quill-editor-container quill-editor {
+  display: block !important;
+  width: 100% !important;
+}
+
+::ng-deep .quill-editor-container .ql-container {
+  display: block !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+::ng-deep .quill-editor-container .ql-editor {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  tab-size: 4 !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}

@@ -1,0 +1,218 @@
+<div class="analytics-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="flaticon-analytics"></i>
+        Analytics & Insights
+      </h1>
+      <div class="header-actions">
+        <select [(ngModel)]="selectedPeriod" (change)="onPeriodChange()" class="period-select">
+          <option value="week">Last Week</option>
+          <option value="month">Last Month</option>
+          <option value="quarter">Last Quarter</option>
+          <option value="year">Last Year</option>
+        </select>
+        <button class="btn btn-outline-light" (click)="exportAnalytics()">
+          <i class="flaticon-download"></i>
+          Export Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <i class="flaticon-warning"></i>
+    {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading analytics...</p>
+  </div>
+
+  <!-- Analytics Content -->
+  <div *ngIf="!loading && !error">
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card revenue">
+        <div class="kpi-icon">
+          <i class="flaticon-money-bag"></i>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ formatCurrency(kpiData.totalRevenue) }}</div>
+          <div class="kpi-label">Total Revenue</div>
+        </div>
+      </div>
+      
+      <div class="kpi-card price">
+        <div class="kpi-icon">
+          <i class="flaticon-home"></i>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ formatCurrency(kpiData.averagePropertyPrice) }}</div>
+          <div class="kpi-label">Avg Property Price</div>
+        </div>
+      </div>
+      
+      <div class="kpi-card occupancy">
+        <div class="kpi-icon">
+          <i class="flaticon-calendar"></i>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ formatPercentage(kpiData.occupancyRate) }}</div>
+          <div class="kpi-label">Occupancy Rate</div>
+        </div>
+      </div>
+      
+      <div class="kpi-card listings">
+        <div class="kpi-icon">
+          <i class="flaticon-list"></i>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ kpiData.activeListings }}</div>
+          <div class="kpi-label">Active Listings</div>
+        </div>
+      </div>
+      
+      <div class="kpi-card conversion">
+        <div class="kpi-icon">
+          <i class="flaticon-graph"></i>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ formatPercentage(kpiData.bookingConversionRate) }}</div>
+          <div class="kpi-label">Booking Conversion</div>
+        </div>
+      </div>
+      
+      <div class="kpi-card duration">
+        <div class="kpi-icon">
+          <i class="flaticon-clock"></i>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ kpiData.averageStayDuration }} days</div>
+          <div class="kpi-label">Avg Stay Duration</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market Trends -->
+    <div class="trends-section">
+      <h2 class="section-title">Market Trends</h2>
+      <div class="trends-grid">
+        <div *ngFor="let trend of marketTrends" class="trend-card">
+          <div class="trend-header">
+            <span class="trend-name">{{ trend.trend }}</span>
+            <div class="trend-change" [ngClass]="getChangeClass(trend.direction)">
+              <i [class]="getChangeIcon(trend.direction)"></i>
+              {{ trend.change }}
+            </div>
+          </div>
+          <p class="trend-description">{{ trend.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <div class="chart-grid">
+        <!-- Revenue Chart -->
+        <div class="chart-card">
+          <h3 class="chart-title">Revenue Trends</h3>
+          <div class="chart-content">
+            <div class="simple-chart">
+              <div *ngFor="let item of revenueChartData" class="chart-bar">
+                <div class="bar-container">
+                  <div class="bar" [style.height.%]="(item.revenue / 70000) * 100"></div>
+                </div>
+                <div class="bar-label">{{ item.month }}</div>
+                <div class="bar-value">{{ formatCurrency(item.revenue) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property Types -->
+        <div class="chart-card">
+          <h3 class="chart-title">Property Types</h3>
+          <div class="chart-content">
+            <div class="property-types-list">
+              <div *ngFor="let property of propertyPriceChartData" class="property-type-item">
+                <div class="property-type-info">
+                  <span class="property-type-name">{{ property.type }}</span>
+                  <span class="property-type-count">{{ property.count }} properties</span>
+                </div>
+                <div class="property-type-price">{{ formatCurrency(property.avgPrice) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Analytics -->
+    <div class="location-section">
+      <h2 class="section-title">Popular Locations</h2>
+      <div class="location-table">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>City</th>
+              <th>Properties</th>
+              <th>Bookings</th>
+              <th>Avg Price</th>
+              <th>Performance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let location of locationPopularityData" class="table-row">
+              <td class="city-name">{{ location.city }}</td>
+              <td>{{ location.properties }}</td>
+              <td>{{ location.bookings }}</td>
+              <td>{{ formatCurrency(location.avgPrice) }}</td>
+              <td>
+                <div class="performance-bar">
+                  <div class="performance-fill" 
+                       [style.width.%]="(location.bookings / location.properties) * 100"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Agent Performance -->
+    <div class="agent-performance-section">
+      <h2 class="section-title">Top Performing Agents</h2>
+      <div class="agent-grid">
+        <div *ngFor="let agent of agentPerformanceData" class="agent-card">
+          <div class="agent-info">
+            <h4 class="agent-name">{{ agent.name }}</h4>
+            <div class="agent-stats">
+              <div class="stat">
+                <span class="stat-value">{{ agent.properties }}</span>
+                <span class="stat-label">Properties</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ formatCurrency(agent.revenue) }}</span>
+                <span class="stat-label">Revenue</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ agent.rating }}</span>
+                <span class="stat-label">Rating</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent-performance">
+            <div class="performance-meter">
+              <div class="meter-fill" [style.width.%]="agent.rating * 20"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

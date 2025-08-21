@@ -1,0 +1,685 @@
+<section class="our-listing bgc-f7 pb30-991">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="listing_sidebar dn db-991">
+						<div class="sidebar_content_details style3">
+							<!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+							<div class="sidebar_listing_list style2 mobile_sytle_sidebar mb0">
+								<div class="sidebar_advanced_search_widget">
+									<h4 class="mb25">Advanced Search <a class="filter_closed_btn float-right" href="#"><small>Hide Filter</small> <span class="flaticon-close"></span></a></h4>
+									<ul class="sasw_list style2 mb0">
+										<li class="search_area">
+										    <div class="form-group">
+										    	<input type="text" class="form-control" id="mobileSearchKeyword" placeholder="keyword" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+										    	<label for="mobileSearchKeyword"><span class="flaticon-magnifying-glass"></span></label>
+										    </div>
+										</li>
+										<li class="search_area">
+										    <div class="form-group">
+										    	<input type="text" class="form-control" id="mobileSearchLocation" placeholder="Location" [(ngModel)]="selectedCity" (keyup.enter)="onSearch()">
+										    	<label for="mobileSearchLocation"><span class="flaticon-maps-and-flags"></span></label>
+										    </div>
+										</li>
+										<li>
+											<div class="search_option_two">
+												<div class="candidate_revew_select">
+													<select class="selectpicker w100 show-tick" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+														<option value="">Status</option>
+														<option value="rent">For Rent</option>
+														<option value="sale">For Sale</option>
+													</select>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="search_option_two">
+												<div class="candidate_revew_select">
+													<select class="selectpicker w100 show-tick" [(ngModel)]="selectedType" (change)="onFilterChange()">
+														<option value="">Property Type</option>
+														<option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+													</select>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="small_dropdown2">
+											    <div id="prncgs" class="btn dd_btn">
+											    	<span>Price</span>
+											    	<label for="exampleInputEmail2"><span class="fa fa-angle-down"></span></label>
+											    </div>
+											  	<div class="dd_content2">
+												    <div class="pricing_acontent">
+												    	<span id="slider-range-value1"></span>
+														<span class="mt0" id="slider-range-value2"></span>
+													    <div id="slider"></div>
+														<!-- <input type="text" class="amount" placeholder="$52,239"> 
+														<input type="text" class="amount2" placeholder="$985,14">
+														<div class="slider-range"></div> -->
+												    </div>
+											  	</div>
+											</div>
+										</li>
+										<li>
+											<div class="search_option_two">
+												<div class="candidate_revew_select">
+													<select class="selectpicker w100 show-tick" [(ngModel)]="minBathrooms" (change)="onFilterChange()">
+														<option value="">Bathrooms</option>
+														<option value="1">1+</option>
+														<option value="2">2+</option>
+														<option value="3">3+</option>
+														<option value="4">4+</option>
+														<option value="5">5+</option>
+														<option value="6">6+</option>
+													</select>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="search_option_two">
+												<div class="candidate_revew_select">
+													<select class="selectpicker w100 show-tick" [(ngModel)]="minBedrooms" (change)="onFilterChange()">
+														<option value="">Bedrooms</option>
+														<option value="1">1+</option>
+														<option value="2">2+</option>
+														<option value="3">3+</option>
+														<option value="4">4+</option>
+														<option value="5">5+</option>
+														<option value="6">6+</option>
+													</select>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="search_option_two">
+												<div class="candidate_revew_select">
+													<select class="selectpicker w100 show-tick">
+														<option>Garages</option>
+														<option>Yes</option>
+														<option>No</option>
+														<option>Others</option>
+													</select>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="search_option_two">
+												<div class="candidate_revew_select">
+													<select class="selectpicker w100 show-tick">
+														<option>Year built</option>
+														<option>2013</option>
+														<option>2014</option>
+														<option>2015</option>
+														<option>2016</option>
+														<option>2017</option>
+														<option>2018</option>
+														<option>2019</option>
+														<option>2020</option>
+													</select>
+												</div>
+											</div>
+										</li>
+										<li class="min_area style2 list-inline-item">
+										    <div class="form-group">
+										    	<input type="text" class="form-control" id="mobileMinArea" placeholder="Min Area" [(ngModel)]="minArea" (keyup.enter)="onSearch()">
+										    </div>
+										</li>
+										<li class="max_area list-inline-item">
+										    <div class="form-group">
+										    	<input type="text" class="form-control" id="mobileMaxArea" placeholder="Max Area" [(ngModel)]="maxArea" (keyup.enter)="onSearch()">
+										    </div>
+										</li>
+										<li>
+										  	<div id="accordion" class="panel-group">
+											    <div class="panel">
+											      	<div class="panel-heading">
+												      	<h4 class="panel-title">
+												        	<a href="#panelBodyRating" class="accordion-toggle link" data-toggle="collapse" data-parent="#accordion"><i class="flaticon-more"></i> Advanced features</a>
+												        </h4>
+											      	</div>
+												    <div id="panelBodyRating" class="panel-collapse collapse">
+												        <div class="panel-body row">
+												      		<div class="col-lg-12">
+												                <ul class="ui_kit_checkbox selectable-list float-left fn-400">
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck1">
+																			<label class="custom-control-label" for="customCheck1">Air Conditioning</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck4">
+																			<label class="custom-control-label" for="customCheck4">Barbeque</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck10">
+																			<label class="custom-control-label" for="customCheck10">Gym</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck5">
+																			<label class="custom-control-label" for="customCheck5">Microwave</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck6">
+																			<label class="custom-control-label" for="customCheck6">TV Cable</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck2">
+																			<label class="custom-control-label" for="customCheck2">Lawn</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck11">
+																			<label class="custom-control-label" for="customCheck11">Refrigerator</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck3">
+																			<label class="custom-control-label" for="customCheck3">Swimming Pool</label>
+																		</div>
+												                	</li>
+												                </ul>
+												                <ul class="ui_kit_checkbox selectable-list float-right fn-400">
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck12">
+																			<label class="custom-control-label" for="customCheck12">WiFi</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck14">
+																			<label class="custom-control-label" for="customCheck14">Sauna</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck7">
+																			<label class="custom-control-label" for="customCheck7">Dryer</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck9">
+																			<label class="custom-control-label" for="customCheck9">Washer</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck13">
+																			<label class="custom-control-label" for="customCheck13">Laundry</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck8">
+																			<label class="custom-control-label" for="customCheck8">Outdoor Shower</label>
+																		</div>
+												                	</li>
+												                	<li>
+																		<div class="custom-control custom-checkbox">
+																			<input type="checkbox" class="custom-control-input" id="customCheck15">
+																			<label class="custom-control-label" for="customCheck15">Window Coverings</label>
+																		</div>
+												                	</li>
+												                </ul>
+													        </div>
+												        </div>
+												    </div>
+											    </div>
+											</div>
+										</li>
+										<li>
+											<div class="search_option_button">
+											    <button type="submit" class="btn btn-block btn-thm" (click)="onSearch()">Search</button>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="breadcrumb_content style2 mb0-991">
+						<ol class="breadcrumb">
+						    <li class="breadcrumb-item"><a href="#">Home</a></li>
+						    <li class="breadcrumb-item active text-thm" aria-current="page">Property Listings</li>
+						</ol>
+						<h2 class="breadcrumb_title">Property Listings</h2>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="listing_list_style mb20-xsd tal-991">
+						<ul class="mb0">
+							<li class="list-inline-item"><a href="#"><span class="fa fa-th-large"></span></a></li>
+							<li class="list-inline-item"><a href="#"><span class="fa fa-th-list"></span></a></li>
+						</ul>
+					</div>
+					<div class="dn db-991 mt30 mb0">
+						<div id="main2">
+							<span id="open2" class="flaticon-filter-results-button filter_open_btn style2"> Show Filter</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-xl-4">
+					<div class="sidebar_listing_grid1 dn-991">
+						<div class="sidebar_listing_list">
+							<div class="sidebar_advanced_search_widget">
+								<ul class="sasw_list mb0">
+									<li class="search_area">
+									    <div class="form-group">
+									    	<input type="text" class="form-control" id="desktopSearchKeyword" placeholder="keyword" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+									    	<label for="desktopSearchKeyword"><span class="flaticon-magnifying-glass"></span></label>
+									    </div>
+									</li>
+									<li class="search_area">
+									    <div class="form-group">
+									    	<input type="text" class="form-control" id="desktopSearchLocation" placeholder="Location" [(ngModel)]="selectedCity" (keyup.enter)="onSearch()">
+									    	<label for="desktopSearchLocation"><span class="flaticon-maps-and-flags"></span></label>
+									    </div>
+									</li>
+									<li>
+										<div class="search_option_two">
+											<div class="candidate_revew_select">
+												<select class="selectpicker w100 show-tick" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+													<option value="">Status</option>
+													<option value="rent">For Rent</option>
+													<option value="sale">For Sale</option>
+												</select>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="search_option_two">
+											<div class="candidate_revew_select">
+												<select class="selectpicker w100 show-tick" [(ngModel)]="selectedType" (change)="onFilterChange()">
+													<option value="">Property Type</option>
+													<option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</option>
+												</select>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="small_dropdown2">
+										    <div id="prncgs2" class="btn dd_btn">
+										    	<span>Price</span>
+										    	<label for="exampleInputEmail2"><span class="fa fa-angle-down"></span></label>
+										    </div>
+										  	<div class="dd_content2 style2">
+											    <div class="pricing_acontent">
+													<input type="text" class="amount" placeholder="Min Price" [(ngModel)]="minPrice" (keyup.enter)="onSearch()"> 
+													<input type="text" class="amount2" placeholder="Max Price" [(ngModel)]="maxPrice" (keyup.enter)="onSearch()">
+													<div class="slider-range"></div>
+											    </div>
+										  	</div>
+										</div>
+									</li>
+									<li>
+										<div class="search_option_two">
+											<div class="candidate_revew_select">
+												<select class="selectpicker w100 show-tick" [(ngModel)]="minBathrooms" (change)="onFilterChange()">
+													<option value="">Bathrooms</option>
+													<option value="1">1+</option>
+													<option value="2">2+</option>
+													<option value="3">3+</option>
+													<option value="4">4+</option>
+													<option value="5">5+</option>
+													<option value="6">6+</option>
+												</select>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="search_option_two">
+											<div class="candidate_revew_select">
+												<select class="selectpicker w100 show-tick" [(ngModel)]="minBedrooms" (change)="onFilterChange()">
+													<option value="">Bedrooms</option>
+													<option value="1">1+</option>
+													<option value="2">2+</option>
+													<option value="3">3+</option>
+													<option value="4">4+</option>
+													<option value="5">5+</option>
+													<option value="6">6+</option>
+												</select>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="search_option_two">
+											<div class="candidate_revew_select">
+												<select class="selectpicker w100 show-tick">
+													<option>Garages</option>
+													<option>Yes</option>
+													<option>No</option>
+													<option>Others</option>
+												</select>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="search_option_two">
+											<div class="candidate_revew_select">
+												<select class="selectpicker w100 show-tick">
+													<option>Year built</option>
+													<option>2013</option>
+													<option>2014</option>
+													<option>2015</option>
+													<option>2016</option>
+													<option>2017</option>
+													<option>2018</option>
+													<option>2019</option>
+													<option>2020</option>
+												</select>
+											</div>
+										</div>
+									</li>
+									<li class="min_area list-inline-item">
+									    <div class="form-group">
+									    	<input type="text" class="form-control" id="desktopMinArea" placeholder="Min Area" [(ngModel)]="minArea" (keyup.enter)="onSearch()">
+									    </div>
+									</li>
+									<li class="max_area list-inline-item">
+									    <div class="form-group">
+									    	<input type="text" class="form-control" id="desktopMaxArea" placeholder="Max Area" [(ngModel)]="maxArea" (keyup.enter)="onSearch()">
+									    </div>
+									</li>
+									<li>
+									  	<div id="accordion" class="panel-group">
+										    <div class="panel">
+										      	<div class="panel-heading">
+											      	<h4 class="panel-title">
+											        	<a href="#panelBodyRating" class="accordion-toggle link" data-toggle="collapse" data-parent="#accordion"><i class="flaticon-more"></i> Advanced features</a>
+											        </h4>
+										      	</div>
+											    <div id="panelBodyRating" class="panel-collapse collapse">
+											        <div class="panel-body row">
+											      		<div class="col-lg-12">
+											                <ul class="ui_kit_checkbox selectable-list float-left fn-400">
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck16">
+																		<label class="custom-control-label" for="customCheck16">Air Conditioning</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck17">
+																		<label class="custom-control-label" for="customCheck17">Barbeque</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck18">
+																		<label class="custom-control-label" for="customCheck18">Gym</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck19">
+																		<label class="custom-control-label" for="customCheck19">Microwave</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck20">
+																		<label class="custom-control-label" for="customCheck20">TV Cable</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck21">
+																		<label class="custom-control-label" for="customCheck21">Lawn</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck22">
+																		<label class="custom-control-label" for="customCheck22">Refrigerator</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck23">
+																		<label class="custom-control-label" for="customCheck23">Swimming Pool</label>
+																	</div>
+											                	</li>
+											                </ul>
+											                <ul class="ui_kit_checkbox selectable-list float-right fn-400">
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck24">
+																		<label class="custom-control-label" for="customCheck24">WiFi</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck25">
+																		<label class="custom-control-label" for="customCheck25">Sauna</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck26">
+																		<label class="custom-control-label" for="customCheck26">Dryer</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck27">
+																		<label class="custom-control-label" for="customCheck27">Washer</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck28">
+																		<label class="custom-control-label" for="customCheck28">Laundry</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck29">
+																		<label class="custom-control-label" for="customCheck29">Outdoor Shower</label>
+																	</div>
+											                	</li>
+											                	<li>
+																	<div class="custom-control custom-checkbox">
+																		<input type="checkbox" class="custom-control-input" id="customCheck30">
+																		<label class="custom-control-label" for="customCheck30">Window Coverings</label>
+																	</div>
+											                	</li>
+											                </ul>
+												        </div>
+											        </div>
+											    </div>
+										    </div>
+										</div>
+									</li>
+									<li>
+										<div class="search_option_button">
+										    <button type="submit" class="btn btn-block btn-thm" (click)="onSearch()">Search</button>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<!-- Dynamic Featured Properties Sidebar -->
+						<app-featured-properties-sidebar></app-featured-properties-sidebar>
+						
+						<!-- Dynamic Categories Properties Sidebar -->
+						<app-categories-properties-sidebar></app-categories-properties-sidebar>
+						
+						<!-- Dynamic Recently Viewed Sidebar -->
+						<app-recently-viewed-sidebar></app-recently-viewed-sidebar>
+					</div>
+				</div>
+				<div class="col-md-12 col-lg-8">
+					<div class="row">
+						<div class="grid_list_search_result">
+							<div class="col-sm-12 col-md-4 col-lg-4 col-xl-5">
+								<div class="left_area tac-xsd">
+									<p>{{ totalItems }} Search results</p>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-8 col-lg-8 col-xl-7">
+								<div class="right_area text-right tac-xsd">
+									<ul>
+										<li class="list-inline-item"><span class="stts">Status:</span>
+											<select class="selectpicker show-tick" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+												<option value="">All Status</option>
+												<option value="rent">For Rent</option>
+												<option value="sale">For Sale</option>
+											</select>
+										</li>
+										<li class="list-inline-item"><span class="shrtby">Sort by:</span>
+											<select class="selectpicker show-tick" [(ngModel)]="sortBy" (change)="onSortChange()">
+												<option value="createdAt">Recent</option>
+												<option value="price">Price</option>
+												<option value="title">Title</option>
+												<option value="area">Area</option>
+											</select>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!-- Loading State -->
+						<div class="col-lg-12" *ngIf="loading">
+							<div class="text-center p-5">
+								<div class="spinner-border text-primary" role="status">
+									<span class="visually-hidden">Loading...</span>
+								</div>
+								<p class="mt-3">Loading properties...</p>
+							</div>
+						</div>
+
+						<!-- Error State -->
+						<div class="col-lg-12" *ngIf="error">
+							<div class="alert alert-danger" role="alert">
+								<i class="fas fa-exclamation-triangle"></i>
+								{{ error }}
+								<button class="btn btn-outline-danger btn-sm ml-2" (click)="loadProperties()">
+									Try Again
+								</button>
+							</div>
+						</div>
+
+						<!-- No Results -->
+						<div class="col-lg-12" *ngIf="!loading && !error && displayedProperties.length === 0">
+							<div class="text-center p-5">
+								<i class="fas fa-search fa-3x text-muted mb-3"></i>
+								<h3>No properties found</h3>
+								<p class="text-muted">Try adjusting your search criteria</p>
+								<button class="btn btn-primary" (click)="clearFilters()">
+									Clear All Filters
+								</button>
+							</div>
+						</div>
+
+						<!-- Property Grid -->
+						<div class="col-md-6 col-lg-6" *ngFor="let property of displayedProperties">
+							<div class="feat_property home7 style4" (click)="onCardClick(property)" style="cursor: pointer;">
+								<div class="thumb">
+									<div class="fp_single_item_slider">
+										<div class="item">
+											<img class="img-whp" [src]="getImageUrl(property.media)" [alt]="property.title">
+										</div>
+									</div>
+									<div class="thmb_cntnt style2">
+										<ul class="tag mb0">
+											<li class="list-inline-item">
+												<a href="#">{{ property.listingType === 'rent' ? 'For Rent' : 'For Sale' }}</a>
+											</li>
+											<li class="list-inline-item" *ngIf="property.featured">
+												<a href="#">Featured</a>
+											</li>
+										</ul>
+									</div>
+									<div class="thmb_cntnt style3">
+										<ul class="icon mb0">
+											<li class="list-inline-item"><a href="#"><span class="flaticon-transfer-1"></span></a></li>
+											<li class="list-inline-item"><a href="#"><span class="flaticon-heart"></span></a></li>
+										</ul>
+										<a class="fp_price" href="#">
+											{{ formatPrice(property.pricing.price) }}
+											<small *ngIf="property.listingType === 'rent'">/night</small>
+										</a>
+									</div>
+								</div>
+								<div class="details">
+									<div class="tc_content">
+										<p class="text-thm">{{ property.type }}</p>
+										<h4>
+											<a [routerLink]="['/property', getPropertySlug(property)]">
+												{{ property.title }}
+											</a>
+										</h4>
+										<p>
+											<span class="flaticon-placeholder"></span>
+											{{ property.address.street }}, {{ property.address.city }}, {{ property.address.state }}
+										</p>
+										<ul class="prop_details mb0">
+											<li class="list-inline-item"><a href="#">Beds: {{ property.bedrooms }}</a></li>
+											<li class="list-inline-item"><a href="#">Baths: {{ property.bathrooms }}</a></li>
+											<li class="list-inline-item"><a href="#">{{ property.size.total }} {{ property.size.unit }}</a></li>
+										</ul>
+									</div>
+									<div class="fp_footer">
+										<ul class="fp_meta float-left mb0">
+											<li class="list-inline-item">
+												<a href="#"><img src="images/property/pposter1.png" alt="agent"></a>
+											</li>
+											<li class="list-inline-item"><a href="#">Agent</a></li>
+										</ul>
+										<div class="fp_pdate float-right">{{ property.createdAt | date:'shortDate' }}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12 mt20" *ngIf="!loading && !error && displayedProperties.length > 0">
+							<div class="mbp_pagination">
+								<ul class="page_navigation">
+								    <li class="page-item" [class.disabled]="currentPage === 1">
+								    	<a class="page-link" href="#" tabindex="-1" [attr.aria-disabled]="currentPage === 1" (click)="prevPage(); $event.preventDefault()">
+								    		<span class="flaticon-left-arrow"></span> Prev
+								    	</a>
+								    </li>
+								    <li class="page-item" 
+								    	*ngFor="let page of getPageNumbers()" 
+								    	[class.active]="page === currentPage"
+								    	[attr.aria-current]="page === currentPage ? 'page' : null">
+								    	<a class="page-link" href="#" (click)="goToPage(page); $event.preventDefault()">
+								    		{{ page }}
+								    		<span class="sr-only" *ngIf="page === currentPage">(current)</span>
+								    	</a>
+								    </li>
+								    <li class="page-item" [class.disabled]="currentPage === totalPages">
+								    	<a class="page-link" href="#" [attr.aria-disabled]="currentPage === totalPages" (click)="nextPage(); $event.preventDefault()">
+								    		<span class="flaticon-right-arrow"></span> Next
+								    	</a>
+								    </li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>

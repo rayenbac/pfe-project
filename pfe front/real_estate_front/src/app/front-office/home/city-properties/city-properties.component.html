@@ -1,0 +1,37 @@
+<section id="property-city" class="property-city pb30">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="main-title text-center">
+          <h2>Find Properties in These Cities</h2>
+          <p>Découvrez les villes les plus actives de la plateforme.</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <ng-container *ngIf="!loading && cities.length > 0; else loadingOrEmpty">
+        <div class="col-lg-4 col-xl-4 mb-4" *ngFor="let city of cities">
+          <div class="properti_city" (click)="goToCity(city.city)" style="cursor:pointer;">
+            <div class="thumb">
+              <img class="img-fluid w100"
+                   [src]="getCityImageUrl(city.city)"
+                   [alt]="city.city"
+                   (error)="onImageError($event)">
+            </div>
+            <div class="overlay">
+              <div class="details">
+                <h4>{{ city.city }}</h4>
+                <p>{{ city.count }} Properties</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #loadingOrEmpty>
+        <div class="col-12 text-center" *ngIf="loading">Chargement des villes...</div>
+        <div class="col-12 text-center text-warning" *ngIf="!loading && cities.length === 0">Aucune ville trouvée dans la base de données. Ajoutez des propriétés avec une ville pour voir cette section.</div>
+        <div class="col-12 text-center text-danger" *ngIf="error">{{ error }}</div>
+      </ng-template>
+    </div>
+  </div>
+</section>

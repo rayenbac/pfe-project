@@ -1,0 +1,256 @@
+<div class="payments-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="flaticon-credit-card"></i>
+        Payments & Transactions
+      </h1>
+      <div class="header-actions">
+        <button class="btn btn-outline-light" (click)="exportPayments()">
+          <i class="flaticon-download"></i>
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon completed">
+        <i class="flaticon-check"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getCompletedCount() }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon pending">
+        <i class="flaticon-clock"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getPendingCount() }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon failed">
+        <i class="flaticon-warning"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getFailedCount() }}</div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon revenue">
+        <i class="flaticon-money"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ formatAmount(getTotalAmount(), 'USD') }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="flaticon-search"></i>
+      <input 
+        type="text" 
+        placeholder="Search payments..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input">
+    </div>
+    
+    <div class="filter-controls">
+      <select [(ngModel)]="statusFilter" (change)="onFilterChange()" class="filter-select">
+        <option value="">All Status</option>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+        <option value="failed">Failed</option>
+        <option value="refunded">Refunded</option>
+      </select>
+      
+      <select [(ngModel)]="typeFilter" (change)="onFilterChange()" class="filter-select">
+        <option value="">All Types</option>
+        <option value="booking">Booking</option>
+        <option value="commission">Commission</option>
+        <option value="refund">Refund</option>
+      </select>
+      
+      <select [(ngModel)]="dateFilter" (change)="onFilterChange()" class="filter-select">
+        <option value="">All Time</option>
+        <option value="today">Today</option>
+        <option value="week">Last Week</option>
+        <option value="month">Last Month</option>
+      </select>
+      
+      <select [(ngModel)]="itemsPerPage" (change)="onFilterChange()" class="filter-select">
+        <option value="10">10 per page</option>
+        <option value="25">25 per page</option>
+        <option value="50">50 per page</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <i class="flaticon-warning"></i>
+    {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading payments...</p>
+  </div>
+
+  <!-- Payments Table -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th (click)="onSort('transactionId')" class="sortable">
+            Transaction ID
+            <i class="sort-icon" 
+               [class.active]="sortField === 'transactionId'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Customer/Agent</th>
+          <th (click)="onSort('amount')" class="sortable">
+            Amount
+            <i class="sort-icon" 
+               [class.active]="sortField === 'amount'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Type</th>
+          <th>Method</th>
+          <th>Property/Service</th>
+          <th (click)="onSort('createdAt')" class="sortable">
+            Date
+            <i class="sort-icon" 
+               [class.active]="sortField === 'createdAt'"
+               [class.desc]="sortDirection === 'desc'"></i>
+          </th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of getPaginatedPayments(); trackBy: trackByPaymentId" class="table-row">
+          <td class="transaction-info">
+            <div class="transaction-id">{{ payment.transactionId }}</div>
+            <div class="booking-id" *ngIf="payment.bookingId">
+              Booking: {{ payment.bookingId }}
+            </div>
+          </td>
+          <td class="customer-info">
+            <div class="customer-name" *ngIf="payment.user">
+              {{ payment.user.firstName }} {{ payment.user.lastName }}
+            </div>
+            <div class="customer-name" *ngIf="payment.agent">
+              {{ payment.agent.firstName }} {{ payment.agent.lastName }}
+            </div>
+            <div class="customer-email">
+              {{ payment.user?.email || payment.agent?.email }}
+            </div>
+          </td>
+          <td class="amount-info">
+            <div class="amount">{{ formatAmount(payment.amount, payment.currency) }}</div>
+            <div class="currency">{{ payment.currency }}</div>
+          </td>
+          <td>
+            <span class="type-badge" [ngClass]="getTypeClass(payment)">
+              {{ payment.type }}
+            </span>
+          </td>
+          <td class="payment-method">
+            <i [class]="'flaticon-' + payment.paymentMethod"></i>
+            {{ payment.paymentMethod | titlecase }}
+          </td>
+          <td class="property-info">
+            <div class="property-title" *ngIf="payment.property">
+              {{ payment.property.title }}
+            </div>
+            <div class="description" *ngIf="payment.description">
+              {{ payment.description }}
+            </div>
+          </td>
+          <td>
+            <span class="date">{{ payment.createdAt | date:'MMM d, y HH:mm' }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(payment)">
+              {{ payment.status | titlecase }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                [routerLink]="['/admin/payments', payment._id]"
+                title="View Details">
+                <i class="flaticon-eye"></i>
+              </button>
+              <button 
+                *ngIf="payment.status === 'completed'"
+                class="btn btn-sm btn-outline-warning" 
+                (click)="refundPayment(payment)"
+                title="Refund">
+                <i class="flaticon-undo"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredPayments.length === 0" class="empty-state">
+      <i class="flaticon-credit-card"></i>
+      <h3>No payments found</h3>
+      <p>No payments match your current filters.</p>
+      <button class="btn btn-primary" (click)="searchTerm = ''; statusFilter = ''; typeFilter = ''; dateFilter = ''; onFilterChange()">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="pagination-container">
+    <div class="pagination-info">
+      Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+      {{ Math.min(currentPage * itemsPerPage, filteredPayments.length) }} 
+      of {{ filteredPayments.length }} payments
+    </div>
+    
+    <nav class="pagination">
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === 1"
+        (click)="changePage(currentPage - 1)">
+        <i class="flaticon-left-arrow"></i>
+      </button>
+      
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-btn"
+        [class.active]="page === currentPage"
+        (click)="changePage(page)">
+        {{ page }}
+      </button>
+      
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === totalPages"
+        (click)="changePage(currentPage + 1)">
+        <i class="flaticon-right-arrow"></i>
+      </button>
+    </nav>
+  </div>
+</div>

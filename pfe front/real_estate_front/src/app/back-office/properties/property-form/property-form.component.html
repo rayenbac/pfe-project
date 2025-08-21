@@ -1,0 +1,768 @@
+<section class="our-dashbord dashbord bgc-f7 pb50">
+  <div class="container-fluid ovh">
+    <div class="row">
+      <div class="col-lg-3 col-xl-2 dn-992 pl0"></div>
+      <div class="col-lg-9 col-xl-10 maxw100flex-992">
+        <div class="row">
+          <div class="col-lg-12 mb10">
+            <div class="breadcrumb_content style2">
+              <h2 class="breadcrumb_title">{{ isEditMode ? 'Edit Property' : 'Add New Property' }}</h2>
+              <p>We are glad to see you again!</p>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
+              <div class="my_dashboard_review">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h4 class="mb30">Create Listing</h4>
+                  </div>
+                </div>
+
+                <!-- Property Title and Description -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="my_profile_setting_input form-group">
+                      <label for="propertyTitle">Property Title</label>
+                      <input type="text" class="form-control" id="propertyTitle" formControlName="title">
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="my_profile_setting_textarea">
+                      <label for="propertyDescription">Description</label>
+                      <textarea class="form-control" id="propertyDescription" rows="7"
+                        formControlName="description"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Type and Status -->
+                <div class="row">
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input ui_kit_select_search form-group">
+                      <label>Type</label>
+                      <select class="selectpicker" data-live-search="true" data-width="100%" formControlName="type">
+                        <option value="Apartment">Apartment</option>
+                        <option value="House">House</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Bungalow">Bungalow</option>
+                        <option value="Studio">Studio</option>
+                        <option value="Penthouse">Penthouse</option>
+                        <option value="Duplex">Duplex</option>
+                        <option value="Townhouse">Townhouse</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input ui_kit_select_search form-group">
+                      <label>Status</label>
+                      <select class="selectpicker" data-live-search="true" data-width="100%" formControlName="status">
+                        <option value="available">Available</option>
+                        <option value="sold">Sold</option>
+                        <option value="rented">Rented</option>
+                        <option value="pending">Pending</option>
+                        <option value="off-market">Off Market</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Listing Type and Year Built -->
+                <div class="row">
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input ui_kit_select_search form-group">
+                      <label>Listing Type</label>
+                      <select class="selectpicker" data-live-search="true" data-width="100%"
+                        formControlName="listingType">
+                        <option value="sale">Sale</option>
+                        <option value="rent">Rent</option>
+                        <option value="both">Both</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input form-group">
+                      <label for="yearBuilt">Year Built</label>
+                      <input type="text" class="form-control" id="yearBuilt" formControlName="yearBuilt">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Construction Status and Furnishing Status -->
+                <div class="row">
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input form-group">
+                      <label for="constructionStatus">Construction Status</label>
+                      <select class="form-control" id="constructionStatus" formControlName="constructionStatus">
+                        <option value="ready">Ready</option>
+                        <option value="under-construction">Under Construction</option>
+                        <option value="pre-construction">Pre-Construction</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input form-group">
+                      <label for="furnishingStatus">Furnishing Status</label>
+                      <select class="form-control" id="furnishingStatus" formControlName="furnishingStatus">
+                        <option value="furnished">Furnished</option>
+                        <option value="semi-furnished">Semi-Furnished</option>
+                        <option value="unfurnished">Unfurnished</option>
+                      </select>
+                      <div
+                        *ngIf="propertyForm.get('furnishingStatus')?.invalid && propertyForm.get('furnishingStatus')?.touched"
+                        class="text-danger">
+                        Furnishing status is required.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Facing and Availability -->
+                <div class="row">
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="my_profile_setting_input form-group">
+                      <label for="facing">Facing</label>
+                      <select class="form-control" id="facing" formControlName="facing">
+                        <option value="">Select Facing</option>
+                        <option value="north">North</option>
+                        <option value="south">South</option>
+                        <option value="east">East</option>
+                        <option value="west">West</option>
+                        <option value="northeast">Northeast</option>
+                        <option value="northwest">Northwest</option>
+                        <option value="southeast">Southeast</option>
+                        <option value="southwest">Southwest</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Amenities and Features on the Same Row -->
+                <div class="row">
+                  <!-- Amenities -->
+                  <div class="col-lg-6 col-xl-6">
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <h4>Amenities</h4>
+                      </div>
+                      <div class="col-sm-4 col-md-4 col-lg-4 col-xl-6">
+                        <ul class="ui_kit_checkbox selectable-list">
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck1"
+                                [checked]="isAmenitySelected('indoor', 'Air Conditioning')"
+                                (change)="toggleAmenity($event, 'indoor', 'Air Conditioning')">
+                              <label class="custom-control-label" for="customCheck1">Air Conditioning</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck2"
+                                [checked]="isAmenitySelected('outdoor', 'Lawn')"
+                                (change)="toggleAmenity($event, 'outdoor', 'Lawn')">
+                              <label class="custom-control-label" for="customCheck2">Lawn</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck3"
+                                [checked]="isAmenitySelected('outdoor', 'Swimming Pool')"
+                                (change)="toggleAmenity($event, 'outdoor', 'Swimming Pool')">
+                              <label class="custom-control-label" for="customCheck3">Swimming Pool</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck4"
+                                [checked]="isAmenitySelected('outdoor', 'Barbeque')"
+                                (change)="toggleAmenity($event, 'outdoor', 'Barbeque')">
+                              <label class="custom-control-label" for="customCheck4">Barbeque</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck5"
+                                [checked]="isAmenitySelected('indoor', 'Microwave')"
+                                (change)="toggleAmenity($event, 'indoor', 'Microwave')">
+                              <label class="custom-control-label" for="customCheck5">Microwave</label>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-sm-4 col-md-4 col-lg-4 col-xl-6">
+                        <ul class="ui_kit_checkbox selectable-list">
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck6"
+                                [checked]="isAmenitySelected('indoor', 'TV Cable')"
+                                (change)="toggleAmenity($event, 'indoor', 'TV Cable')">
+                              <label class="custom-control-label" for="customCheck6">TV Cable</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck7"
+                                [checked]="isAmenitySelected('indoor', 'Dryer')"
+                                (change)="toggleAmenity($event, 'indoor', 'Dryer')">
+                              <label class="custom-control-label" for="customCheck7">Dryer</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck8"
+                                [checked]="isAmenitySelected('outdoor', 'Outdoor Shower')"
+                                (change)="toggleAmenity($event, 'outdoor', 'Outdoor Shower')">
+                              <label class="custom-control-label" for="customCheck8">Outdoor Shower</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck9"
+                                [checked]="isAmenitySelected('indoor', 'Washer')"
+                                (change)="toggleAmenity($event, 'indoor', 'Washer')">
+                              <label class="custom-control-label" for="customCheck9">Washer</label>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="customCheck10"
+                                [checked]="isAmenitySelected('community', 'Gym')"
+                                (change)="toggleAmenity($event, 'community', 'Gym')">
+                              <label class="custom-control-label" for="customCheck10">Gym</label>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Features as Tags Input -->
+                  <div class="col-lg-6 col-xl-6">
+                    <h4 class="mb30">Features</h4>
+                    <div class="my_profile_setting_input form-group">
+                      <label for="featuresInput">Features</label>
+                      <input type="text" class="form-control" id="featuresInput"
+                        placeholder="Add features (e.g., Balcony, Fireplace)" />
+                      <small class="form-text text-muted">Press Enter or comma to add a feature.</small>
+                      <div id="featuresTags" class="mt-2 d-flex flex-wrap"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Availability Date and Status on the Same Row -->
+                <div class="row">
+                  <div class="col-lg-6 col-xl-6">
+                    <div formGroupName="availability">
+                      <h4 class="mb30">Availability</h4>
+                      <div class="row">
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="availabilityDate">Date</label>
+                            <input type="date" class="form-control" id="availabilityDate" formControlName="date" />
+                            <div
+                              *ngIf="propertyForm.get('availability.date')?.invalid && propertyForm.get('availability.date')?.touched"
+                              class="text-danger">
+                              Availability date is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="availabilityStatus">Status</label>
+                            <select class="form-control" id="availabilityStatus" formControlName="status">
+                              <option value="immediate">Immediate</option>
+                              <option value="from-date">From Date</option>
+                              <option value="on-request">On Request</option>
+                            </select>
+                            <div
+                              *ngIf="propertyForm.get('availability.status')?.invalid && propertyForm.get('availability.status')?.touched"
+                              class="text-danger">
+                              Availability status is required.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <!-- Details Section -->
+                  <div class="col-lg-12">
+                    <h4 class="mb30">Details</h4>
+                    <div class="row">
+                      <!-- Bedrooms -->
+                      <div class="col-lg-4 col-xl-4">
+                        <div class="my_profile_setting_input ui_kit_select_search form-group">
+                          <label>Bedrooms</label>
+                          <select class="selectpicker form-control" data-live-search="true" data-width="100%"
+                            formControlName="bedrooms">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Bathrooms -->
+                      <div class="col-lg-4 col-xl-4">
+                        <div class="my_profile_setting_input ui_kit_select_search form-group">
+                          <label>Bathrooms</label>
+                          <select class="selectpicker form-control" data-live-search="true" data-width="100%"
+                            formControlName="bathrooms">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Half Bathrooms -->
+                      <div class="col-lg-4 col-xl-4">
+                        <div class="my_profile_setting_input ui_kit_select_search form-group">
+                          <label>Half Bathrooms</label>
+                          <select class="selectpicker form-control" data-live-search="true" data-width="100%"
+                            formControlName="halfBathrooms">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">Other</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Size Details Section -->
+                  <div class="col-lg-12" formGroupName="size">
+                    <h4 class="mb30">Size Details</h4>
+                    <div class="row">
+                      <!-- Total Size -->
+                      <div class="col-lg-3 col-xl-3">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="sizeTotal">Total Size</label>
+                          <input type="text" class="form-control" id="sizeTotal" formControlName="total">
+                        </div>
+                      </div>
+
+                      <!-- Indoor Size -->
+                      <div class="col-lg-3 col-xl-3">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="sizeIndoor">Indoor Size</label>
+                          <input type="text" class="form-control" id="sizeIndoor" formControlName="indoor">
+                        </div>
+                      </div>
+
+                      <!-- Outdoor Size -->
+                      <div class="col-lg-3 col-xl-3">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="sizeOutdoor">Outdoor Size</label>
+                          <input type="text" class="form-control" id="sizeOutdoor" formControlName="outdoor">
+                        </div>
+                      </div>
+
+                      <!-- Unit -->
+                      <div class="col-lg-3 col-xl-3">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="sizeUnit">Unit</label>
+                          <select class="form-control" id="sizeUnit" formControlName="unit">
+                            <option value="sqft">Square Feet (sqft)</option>
+                            <option value="sqm">Square Meters (sqm)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <!-- Parking Details -->
+                  <div class="col-lg-12" formGroupName="parking">
+                    <h4 class="mb30">Parking Details</h4>
+                    <div class="row">
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="parkingType">Parking Type</label>
+                          <select class="form-control" id="parkingType" formControlName="type">
+                            <option value="garage">Garage</option>
+                            <option value="carport">Carport</option>
+                            <option value="street">Street</option>
+                            <option value="none">None</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="parkingSpaces">Parking Spaces</label>
+                          <input type="text" class="form-control" id="parkingSpaces" formControlName="spaces">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Lot Size -->
+                  <div class="col-lg-12" formGroupName="lotSize">
+                    <h4 class="mb30">Lot Size</h4>
+                    <div class="row">
+                      <!-- Lot Size (Size) -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="lotSizeSize">Lot Size</label>
+                          <input type="number" class="form-control" id="lotSizeSize" formControlName="size" min="0" />
+                          <div
+                            *ngIf="propertyForm.get('lotSize.size')?.invalid && propertyForm.get('lotSize.size')?.touched"
+                            class="text-danger">
+                            Lot size must be a number greater than or equal to 0.
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Lot Size (Unit) -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="lotSizeUnit">Unit</label>
+                          <select class="form-control" id="lotSizeUnit" formControlName="unit">
+                            <option value="sqft">Square Feet (sqft)</option>
+                            <option value="sqm">Square Meters (sqm)</option>
+                            <option value="acres">Acres</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Floors and Unit Number -->
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="floors">Floors</label>
+                          <input type="number" class="form-control" id="floors" formControlName="floors" min="1" />
+                          <div *ngIf="propertyForm.get('floors')?.invalid && propertyForm.get('floors')?.touched"
+                            class="text-danger">
+                            <div *ngIf="propertyForm.get('floors')?.hasError('required')">
+                              Floors is required.
+                            </div>
+                            <div *ngIf="propertyForm.get('floors')?.hasError('min')">
+                              Floors must be at least 1.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="unitNumber">Unit Number</label>
+                          <input type="text" class="form-control" id="unitNumber" formControlName="unitNumber" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h4 class="mb30">Location</h4>
+                    <div class="col-lg-12" formGroupName="address">
+                      <div class="row">
+                        <!-- Street -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="street">Street</label>
+                            <input type="text" class="form-control" id="street" formControlName="street" />
+                            <div *ngIf="
+                              propertyForm.get('address.street')?.invalid &&
+                              propertyForm.get('address.street')?.touched
+                            " class="text-danger">
+                              Street is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- City -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" formControlName="city" />
+                            <div *ngIf="
+                              propertyForm.get('address.city')?.invalid &&
+                              propertyForm.get('address.city')?.touched
+                            " class="text-danger">
+                              City is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- State -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control" id="state" formControlName="state" />
+                            <div *ngIf="
+                              propertyForm.get('address.state')?.invalid &&
+                              propertyForm.get('address.state')?.touched
+                            " class="text-danger">
+                              State is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Country -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="country">Country</label>
+                            <input type="text" class="form-control" id="country" formControlName="country" />
+                            <div *ngIf="
+                              propertyForm.get('address.country')?.invalid &&
+                              propertyForm.get('address.country')?.touched
+                            " class="text-danger">
+                              Country is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Postal Code -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="postalCode">Postal Code</label>
+                            <input type="text" class="form-control" id="postalCode" formControlName="postalCode" />
+                            <div *ngIf="
+                              propertyForm.get('address.postalCode')?.invalid &&
+                              propertyForm.get('address.postalCode')?.touched
+                            " class="text-danger">
+                              Postal code is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Latitude -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="latitude">Latitude</label>
+                            <input type="text" class="form-control" id="latitude" formControlName="latitude" />
+                          </div>
+                        </div>
+
+                        <!-- Longitude -->
+                        <div class="col-lg-6 col-xl-6">
+                          <div class="my_profile_setting_input form-group">
+                            <label for="longitude">Longitude</label>
+                            <input type="text" class="form-control" id="longitude" formControlName="longitude" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Location Section (add after address fields, before pricing) -->
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="my_profile_setting_input form-group">
+                    <label>Pin Property Location on Map</label>
+                    <div id="property-location-map" style="width: 100%; height: 350px; border-radius: 8px; border: 1px solid #e0e0e0;"></div>
+                    <small class="form-text text-muted">
+                      Click on the map to set the exact property location. Latitude and longitude will be filled automatically.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <div formGroupName="pricing">
+                    <h4 class="mb30">Pricing</h4>
+                    <div class="row">
+                      <!-- Price -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="price">Price</label>
+                          <input type="number" class="form-control" id="price" formControlName="price" min="0" />
+                          <div *ngIf="propertyForm.get('pricing.price')?.invalid && propertyForm.get('pricing.price')?.touched" class="text-danger">
+                            Price is required and must be a non-negative number.
+                          </div>
+                          <div *ngIf="propertyForm.get('listingType')?.value === 'rent'" class="text-info">
+                            Price is per day (for rentals)
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Currency -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="currency">Currency</label>
+                          <input type="text" class="form-control" id="currency" formControlName="currency" />
+                          <div *ngIf="propertyForm.get('pricing.currency')?.invalid && propertyForm.get('pricing.currency')?.touched" class="text-danger">
+                            Currency is required.
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Price Per Square Foot -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="pricePerSquareFoot">Price Per Square Foot</label>
+                          <input type="number" class="form-control" id="pricePerSquareFoot" formControlName="pricePerSquareFoot" />
+                        </div>
+                      </div>
+
+                      <!-- Maintenance Fee -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="maintenanceFee">Maintenance Fee</label>
+                          <input type="number" class="form-control" id="maintenanceFee" formControlName="maintenanceFee" />
+                        </div>
+                      </div>
+
+                      <!-- Property Tax -->
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="propertyTax">Property Tax</label>
+                          <input type="number" class="form-control" id="propertyTax" formControlName="propertyTax" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Media Section -->
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h4 class="mb30">Media</h4>
+
+                    <!-- Existing Images Preview -->
+                    <div class="col-lg-12 mb-3" *ngIf="uploadedImages.length > 0">
+                      <h5>Current Images</h5>
+                      <div class="row">
+                        <div class="col-sm-4 col-md-3 mb-3" *ngFor="let image of uploadedImages; let i = index">
+                          <div class="card h-100">
+                            <img [src]="image.url" [alt]="image.name" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <div class="card-body p-2">
+                              <p class="card-text small mb-0">{{image.name}}</p>
+                              <p class="card-text small text-muted" *ngIf="i === 0">(Primary Image)</p>
+                              <button type="button" class="btn btn-danger btn-sm mt-2" (click)="deleteImage(i)">
+                                <i class="fa fa-trash"></i> Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Upload New Images -->
+                    <div class="col-lg-12">
+                      <div class="portfolio_upload">
+                        <div class="upload-area" (dragover)="$event.preventDefault()" (drop)="$event.preventDefault(); onFileChange($event)">
+                          <input type="file" name="images" (change)="onFileChange($event)" multiple accept="image/*" style="opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer;">
+                          <div class="icon"><span class="flaticon-download"></span></div>
+                          <p>Drag and drop images here or click to select files</p>
+                          <small class="form-text text-muted">
+                            You can upload up to 10 images. Each image should be less than 5MB.
+                            <br>Supported formats: JPG, PNG, GIF
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Attachments Section -->
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <div class="col-lg-12" formArrayName="attachments">
+                    <h4 class="mb30">Attachments</h4>
+                    <div class="col-xl-6">
+                      <div class="resume_uploader mb30">
+                        <form class="form-inline">
+                          <input class="upload-path" placeholder="No file selected">
+                          <label class="upload">
+                            <input type="file" (change)="onAttachmentChange($event)" multiple>
+                            Select Attachments
+                          </label>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="my_profile_setting_input form-group">
+                          <label>Selected Attachments</label>
+                          <ul *ngIf="uploadedAttachments.length > 0">
+                            <li *ngFor="let att of uploadedAttachments; let i = index">
+                              {{ att.name }}
+                              <button type="button" class="btn btn-danger btn-sm ms-2" (click)="deleteAttachment(i)">
+                                <i class="fa fa-trash"></i> Remove
+                              </button>
+                            </li>
+                          </ul>
+                          <div *ngIf="uploadedAttachments.length === 0" class="text-muted">No attachments selected.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Virtual Tour Section -->
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <div class="col-lg-12" formGroupName="virtualTour">
+                    <h4 class="mb30">Virtual Tour</h4>
+                    <div class="row">
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="virtualTourUrl">Virtual Tour URL</label>
+                          <input type="text" class="form-control" id="virtualTourUrl" formControlName="url" />
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-xl-6">
+                        <div class="my_profile_setting_input form-group">
+                          <label for="virtualTourProvider">Provider</label>
+                          <input type="text" class="form-control" id="virtualTourProvider" formControlName="provider" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cancel and Submit Buttons -->
+              <div class="my_dashboard_review mt30">
+                <div class="row">
+                  <div class="col-xl-12">
+                    <div class="my_profile_setting_input">
+                      <button type="button" class="btn btn1 float-left" (click)="onCancel()">Cancel</button>
+                      <button type="submit" class="btn btn2 float-right">Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

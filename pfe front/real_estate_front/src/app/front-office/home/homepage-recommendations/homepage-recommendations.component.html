@@ -1,0 +1,193 @@
+<section id="homepage-recommendations" class="homepage-recommendations bgc-f7 pb30" *ngIf="!isLoading && !error && ((showPersonalizedSection && personalizedRecommendations.length > 0) || (!showPersonalizedSection && trendingProperties.length > 0))">
+  <div class="container ovh">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="main-title text-center mb40">
+          <!-- Show "Recommended for You" for logged-in users OR guests with viewing history -->
+          <h2 *ngIf="showPersonalizedSection">Recommended for You</h2>
+          <!-- Show "Trending Properties" for guests without viewing history -->
+          <h2 *ngIf="!showPersonalizedSection">Trending Properties</h2>
+          
+          <p *ngIf="currentUser">Properties selected based on your preferences and viewing history</p>
+          <p *ngIf="isGuestUser && hasGuestHistory">Properties selected based on your browsing preferences</p>
+          <p *ngIf="isGuestUser && !hasGuestHistory">Most popular properties in your area</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="row" *ngIf="isLoading">
+      <div class="col-lg-12 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="row" *ngIf="error && !isLoading">
+      <div class="col-lg-12 text-center">
+        <div class="alert alert-danger">
+          {{ error }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Personalized Recommendations (for logged-in users OR guests with history) -->
+    <div class="row" *ngIf="!isLoading && !error && showPersonalizedSection && personalizedRecommendations.length > 0">
+      <div class="col-lg-12">
+        <div class="homepage_recommendations_slider">
+          <div class="item" *ngFor="let recommendation of personalizedRecommendations; trackBy: trackByPropertyId">
+            <div class="feat_property" (click)="goToPropertyDetails(recommendation.property!)" style="cursor: pointer;">
+              <div class="thumb">
+                <img class="img-whp" [src]="getImageUrl(recommendation.property?.media)" [alt]="recommendation.property?.title || 'Property'">
+                <div class="thmb_cntnt">
+                  <ul class="tag mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ recommendation.property?.listingType === 'rent' ? 'For Rent' : 'For Sale' }}</a>
+                    </li>
+                    <li class="list-inline-item" *ngIf="recommendation.property?.featured">
+                      <a href="#" (click)="$event.stopPropagation()">Featured</a>
+                    </li>
+                  </ul>
+                  <ul class="icon mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-transfer-1"></span></a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-heart"></span></a>
+                    </li>
+                  </ul>
+                  <a class="fp_price" href="#" (click)="$event.stopPropagation()">
+                    {{ (recommendation.property?.pricing?.price || recommendation.price) | currency:'USD' }}
+                    <small *ngIf="recommendation.property?.listingType === 'rent'">/mo</small>
+                  </a>
+                </div>
+              </div>
+              <div class="details">
+                <div class="tc_content">
+                  <p class="text-thm">{{ recommendation.property?.type || recommendation.type }}</p>
+                  <h4>{{ recommendation.property?.title || 'Property' }}</h4>
+                  <p>
+                    <span class="flaticon-placeholder"></span> 
+                    {{ recommendation.property?.address?.street || '' }}{{ recommendation.property?.address?.street ? ', ' : '' }}{{ recommendation.property?.address?.city || recommendation.location }}{{ recommendation.property?.address?.state ? ', ' + recommendation.property?.address?.state : '' }}
+                  </p>
+                  <ul class="prop_details mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Beds: {{ recommendation.property?.bedrooms || recommendation.bedrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Baths: {{ recommendation.property?.bathrooms || recommendation.bathrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Sq Ft: {{ recommendation.property?.size?.total || 'N/A' }}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="fp_footer">
+                  <ul class="fp_meta float-left mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">
+                        <img class="owner-avatar" [src]="getOwnerImage(recommendation.property?.owner)" alt="owner image">
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ getOwnerName(recommendation.property?.owner) }}</a>
+                    </li>
+                  </ul>
+                  <div class="fp_pdate float-right">{{ getRecommendationReason(recommendation) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trending Properties (shown when no personalized recommendations OR for guests without history) -->
+    <div class="row" *ngIf="!isLoading && !error && trendingProperties.length > 0 && (!showPersonalizedSection || personalizedRecommendations.length === 0)">
+      <div class="col-lg-12">
+        <div class="homepage_recommendations_slider">
+          <div class="item" *ngFor="let trending of trendingProperties; trackBy: trackByTrendingId">
+            <div class="feat_property" (click)="goToPropertyDetails(trending.property!)" style="cursor: pointer;">
+              <div class="thumb">
+                <img class="img-whp" [src]="getImageUrl(trending.property?.media)" [alt]="trending.property?.title || 'Property'">
+                <div class="thmb_cntnt">
+                  <ul class="tag mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ trending.property?.listingType === 'rent' ? 'For Rent' : 'For Sale' }}</a>
+                    </li>
+                    <li class="list-inline-item" *ngIf="trending.property?.featured">
+                      <a href="#" (click)="$event.stopPropagation()">Featured</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Trending</a>
+                    </li>
+                  </ul>
+                  <ul class="icon mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-transfer-1"></span></a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()"><span class="flaticon-heart"></span></a>
+                    </li>
+                  </ul>
+                  <a class="fp_price" href="#" (click)="$event.stopPropagation()">
+                    {{ (trending.property?.pricing?.price || trending.price) | currency:'USD' }}
+                    <small *ngIf="trending.property?.listingType === 'rent'">/mo</small>
+                  </a>
+                </div>
+              </div>
+              <div class="details">
+                <div class="tc_content">
+                  <p class="text-thm">{{ trending.property?.type || trending.type }}</p>
+                  <h4>{{ trending.property?.title || 'Property' }}</h4>
+                  <p>
+                    <span class="flaticon-placeholder"></span> 
+                    {{ trending.property?.address?.street || '' }}{{ trending.property?.address?.street ? ', ' : '' }}{{ trending.property?.address?.city || trending.location }}{{ trending.property?.address?.state ? ', ' + trending.property?.address?.state : '' }}
+                  </p>
+                  <ul class="prop_details mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Beds: {{ trending.property?.bedrooms || trending.bedrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Baths: {{ trending.property?.bathrooms || trending.bathrooms }}</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">Sq Ft: {{ trending.property?.size?.total || 'N/A' }}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="fp_footer">
+                  <ul class="fp_meta float-left mb0">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">
+                        <img class="owner-avatar" [src]="getOwnerImage(trending.property?.owner)" alt="owner image">
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()">{{ getOwnerName(trending.property?.owner) }}</a>
+                    </li>
+                  </ul>
+                  <div class="fp_pdate float-right">{{ trending.views || 0 }} views</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="row" *ngIf="!isLoading && !error && (!showPersonalizedSection ? trendingProperties.length === 0 : personalizedRecommendations.length === 0 && trendingProperties.length === 0)">
+      <div class="col-lg-12 text-center">
+        <div class="alert alert-info">
+          <h4>No recommendations available</h4>
+          <p *ngIf="currentUser">Start browsing properties to get personalized recommendations.</p>
+          <p *ngIf="isGuestUser && !hasGuestHistory">Browse properties to see trending options in your area.</p>
+          <p *ngIf="isGuestUser && hasGuestHistory">No properties match your current preferences. Try browsing more properties.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

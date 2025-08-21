@@ -1,0 +1,236 @@
+
+<section class="our-dashbord dashbord bgc-f7 pb50">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-xl-2 dn-992 pl0"></div>
+            <div class="col-lg-9 col-xl-10 maxw100flex-992">
+                
+                <!-- Loading State -->
+                <div *ngIf="loading" class="row">
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-3">Loading dashboard data...</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div *ngIf="!loading">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="dashboard_navigationbar dn db-992">
+                                <div class="dropdown">
+                                    <button (click)="toggleDropdown()" class="dropbtn">
+                                        <i class="fa fa-bars pr10"></i> Dashboard Navigation
+                                    </button>
+                                    <ul [class]="'dropdown-content' + (dropdownOpen ? ' show' : '')" id="myDropdown">
+                                        <li class="active"><a routerLink="/admin/dashboard"><span class="flaticon-layers"></span> Dashboard</a></li>
+                                        <li><a routerLink="/admin/properties"><span class="flaticon-home"></span> Properties</a></li>
+                                        <li><a routerLink="/admin/users"><span class="flaticon-user"></span> Users</a></li>
+                                        <li><a routerLink="/admin/posts"><span class="flaticon-edit"></span> Posts</a></li>
+                                        <li><a routerLink="/admin/reports"><span class="flaticon-warning"></span> Reports</a></li>
+                                        <li><a href="/logout"><span class="flaticon-logout"></span> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-12 mb10">
+                            <div class="breadcrumb_content style2">
+                                <h2 class="breadcrumb_title">Admin Dashboard</h2>
+                                <p>Welcome back! Here's what's happening with your real estate platform.</p>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Cards -->
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one">
+                                <div class="icon"><span class="flaticon-home"></span></div>
+                                <div class="detais">
+                                    <div class="timer">{{ quickStats.properties }}</div>
+                                    <p>Total Properties</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one style2">
+                                <div class="icon"><span class="flaticon-user"></span></div>
+                                <div class="detais">
+                                    <div class="timer">{{ quickStats.users }}</div>
+                                    <p>Total Users</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one style3">
+                                <div class="icon"><span class="flaticon-chat"></span></div>
+                                <div class="detais">
+                                    <div class="timer">{{ quickStats.agents }}</div>
+                                    <p>Total Agents</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one style4">
+                                <div class="icon"><span class="flaticon-heart"></span></div>
+                                <div class="detais">
+                                    <div class="timer">{{ quickStats.agencies }}</div>
+                                    <p>Total Agencies</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Stats Row -->
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="icon"><span class="flaticon-edit" style="color: white;"></span></div>
+                                <div class="detais">
+                                    <div class="timer" style="color: white;">{{ quickStats.posts }}</div>
+                                    <p style="color: white;">Total Posts</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <div class="icon"><span class="flaticon-star" style="color: white;"></span></div>
+                                <div class="detais">
+                                    <div class="timer" style="color: white;">{{ quickStats.reviews }}</div>
+                                    <p style="color: white;">Total Reviews</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <div class="icon"><span class="flaticon-calendar" style="color: white;"></span></div>
+                                <div class="detais">
+                                    <div class="timer" style="color: white;">{{ quickStats.bookings }}</div>
+                                    <p style="color: white;">Total Bookings</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3" *ngIf="quickStats">
+                            <div class="ff_one" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                                <div class="icon"><span class="flaticon-warning" style="color: white;"></span></div>
+                                <div class="detais">
+                                    <div class="timer" style="color: white;">{{ quickStats.reports }}</div>
+                                    <p style="color: white;">Reports</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Charts and Recent Activities -->
+                        <div class="col-xl-7">
+                            <div class="application_statics">
+                                <h4>Property Statistics</h4>
+                                <div class="property-analytics" *ngIf="statistics?.charts">
+                                    <!-- Property Types Chart -->
+                                    <div class="chart-container mb-4">
+                                        <h6>Properties by Type</h6>
+                                        <div class="chart-bars">
+                                            <div *ngFor="let type of getPropertyTypesSafe().slice(0, 5)" class="chart-bar-item">
+                                                <div class="chart-bar">
+                                                    <div class="bar-fill" 
+                                                         [style.width.%]="(type.count / getMaxPropertyTypeCount()) * 100"
+                                                         [style.background]="'linear-gradient(90deg, #4F46E5, #06B6D4)'">
+                                                    </div>
+                                                </div>
+                                                <div class="bar-label">
+                                                    <span>{{ type._id }}</span>
+                                                    <strong>{{ type.count }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Property Status Chart -->
+                                    <div class="chart-container">
+                                        <h6>Properties by Status</h6>
+                                        <div class="status-cards">
+                                            <div *ngFor="let status of getPropertyStatusSafe()" class="status-card">
+                                                <div class="status-icon">
+                                                    <i [class]="getStatusIcon(status._id)"></i>
+                                                </div>
+                                                <div class="status-info">
+                                                    <div class="status-count">{{ status.count }}</div>
+                                                    <div class="status-label">{{ status._id | titlecase }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xl-5">
+                            <div class="recent_job_activity">
+                                <h4 class="title">Recent Activities</h4>
+                                <div *ngIf="statistics?.recentActivities?.length === 0" class="text-center py-4">
+                                    <i class="flaticon-info text-muted" style="font-size: 48px;"></i>
+                                    <p class="text-muted mt-2">No recent activities</p>
+                                </div>
+                                <div *ngFor="let activity of statistics?.recentActivities" class="grid">
+                                    <ul>
+                                        <li class="list-inline-item">
+                                            <div class="icon"><span [class]="activity.icon"></span></div>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <p>{{ activity.title }}
+                                                <small class="text-muted d-block">{{ getTimeAgo(activity.time) }}</small>
+                                                <small class="text-info d-block" *ngIf="activity.agent">by {{ activity.agent }}</small>
+                                                <small class="text-warning d-block" *ngIf="activity.reporter">reported by {{ activity.reporter }}</small>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="col-12 mt-4">
+                            <div class="quick-actions">
+                                <h4>Quick Actions</h4>
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <a routerLink="/admin/properties/add" class="btn btn-primary btn-block">
+                                            <i class="flaticon-plus"></i> Add Property
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <a routerLink="/admin/users" class="btn btn-success btn-block">
+                                            <i class="flaticon-user"></i> Manage Users
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <a routerLink="/admin/reports" class="btn btn-warning btn-block">
+                                            <i class="flaticon-warning"></i> View Reports
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <a routerLink="/admin/posts" class="btn btn-info btn-block">
+                                            <i class="flaticon-edit"></i> Manage Posts
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt50">
+                    <div class="col-lg-6 offset-lg-3">
+                        <div class="copyright-widget text-center">
+                            <p>© 2024 Real Estate Platform. Admin Dashboard.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

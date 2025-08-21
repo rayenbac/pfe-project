@@ -1,0 +1,139 @@
+/* Contact Component Styles */
+.our-contact {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.form_grid {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form_grid h4 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.btn-submit {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: #0056b3;
+}
+
+.contact_localtion {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact_localtion h4 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.contact_info {
+  margin-bottom: 20px;
+}
+
+.contact_info .icon {
+  color: #007bff;
+  font-size: 1.5rem;
+  margin-right: 15px;
+}
+
+.contact_info h6 {
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.contact_info p {
+  color: #666;
+  margin: 0;
+}
+
+.breadcrumb_content {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.breadcrumb_content h4 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.breadcrumb_content p {
+  color: #666;
+}
+
+.start-partners {
+  padding: 50px 0;
+  background-color: #007bff;
+  color: white;
+}
+
+.start_partner h2 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.start_partner p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.parner_reg_btn .btn {
+  background-color: white;
+  color: #007bff;
+  padding: 12px 30px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.parner_reg_btn .btn:hover {
+  background-color: #f8f9fa;
+}

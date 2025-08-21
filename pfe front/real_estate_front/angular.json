@@ -1,0 +1,103 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "demo": {
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "configurations": {
+            "development": {
+              "extractLicenses": false,
+              "namedChunks": true,
+              "optimization": false,
+              "sourceMap": true
+            },
+            "production": {
+              "aot": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false
+            }
+          },
+          "options": {
+            "assets": [
+  "src/favicon.ico",
+  "src/assets"
+],
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "outputPath": "dist/demo",
+            "polyfills": ["zone.js"],
+            "scripts": [
+              "src/assets/js/jquery-3.3.1.js",
+              "src/assets/js/jquery-migrate-3.0.0.min.js",
+              "src/assets/js/popper.min.js",
+              "src/assets/js/bootstrap.min.js",
+              "src/assets/js/jquery.mmenu.all.js",
+              "src/assets/js/ace-responsive-menu.js",
+              "src/assets/js/bootstrap-select.min.js",
+              "src/assets/js/isotop.js",
+              "src/assets/js/snackbar.min.js",
+              "src/assets/js/simplebar.js",
+              "src/assets/js/parallax.js",
+              "src/assets/js/scrollto.js",
+              "src/assets/js/jquery-scrolltofixed-min.js",
+              "src/assets/js/jquery.counterup.js",
+              "src/assets/js/wow.min.js",
+              "src/assets/js/slider.js",
+              "src/assets/js/timepicker.js",
+              "src/assets/js/dashboard-safe.js"
+            ],
+            "styles": [
+              "src/assets/css/bootstrap.min.css",
+              "src/assets/css/style.css",
+              "src/assets/css/responsive.css",
+              "src/assets/css/font-awesome.min.css",
+              "src/assets/css/font-awesome-animation.min.css",
+              "src/assets/css/menu.css",
+              "src/assets/css/ace-responsive-menu.css",
+              "src/assets/css/megadropdown.css",
+              "src/assets/css/bootstrap-select.min.css",
+              "src/assets/css/simplebar.min.css",
+              "src/assets/css/progressbar.css",
+              "src/assets/css/flaticon.css",
+              "src/assets/css/animate.css",
+              "src/assets/css/slider.css",
+              "src/assets/css/magnific-popup.css",
+              "src/assets/css/timecounter.css",
+              "src/assets/css/owl.css",
+              "src/assets/css/isotope.css",
+              "src/styles.css"
+            ],
+
+            "tsConfig": "tsconfig.app.json"
+          }
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "development": {
+              "buildTarget": "demo:build:development"
+            },
+            "production": {
+              "buildTarget": "demo:build:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      },
+      "prefix": "app",
+      "projectType": "application",
+      "root": "",
+      "schematics": {},
+      "sourceRoot": "src"
+    }
+  },
+  "version": 1
+}

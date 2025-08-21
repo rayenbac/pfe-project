@@ -1,0 +1,225 @@
+<section class="our-listing bgc-f7 pb30-991">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="breadcrumb_content style2 mb0-991">
+						<ol class="breadcrumb">
+						    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+						    <li class="breadcrumb-item active text-thm" aria-current="page">Agency Directory</li>
+						</ol>
+						<h2 class="breadcrumb_title">Our Agencies</h2>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="listing_list_style tal-991">
+						<ul>
+							<li class="list-inline-item"><a href="#"><span class="fa fa-th-large"></span></a></li>
+							<li class="list-inline-item"><a href="#"><span class="fa fa-th-list"></span></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4 col-xl-4">
+					<div class="sidebar_listing_grid1 dn-991">
+						<div class="terms_condition_widget">
+							<h4 class="title">Categories Property</h4>
+							<div class="widget_list">
+								<ul class="list_details">
+									<li *ngFor="let category of categories">
+										<a routerLink="/properties" [queryParams]="{category: category._id}">
+											<i class="fa fa-caret-right mr10"></i>{{category.name}} 
+											<span class="float-right">{{getCategoryPropertyCount(category)}} properties</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="terms_condition_widget">
+							<h4 class="title">Featured Properties</h4>
+							<div class="sidebar_feature_property_slider">
+								<div class="item" *ngFor="let property of featuredProperties">
+									<div class="feat_property home7 agent">
+										<div class="thumb">
+											<img class="img-fluid" [src]="getPropertyImage(property)" [alt]="property.title">
+											<div class="thmb_cntnt">
+												<ul class="tag mb0">
+													<li class="list-inline-item"><a href="#">{{property.listingType === 'rent' ? 'For Rent' : 'For Sale'}}</a></li>
+													<li class="list-inline-item" *ngIf="property.featured"><a href="#">Featured</a></li>
+												</ul>
+												<a class="fp_price" [routerLink]="['/properties', property._id]">{{getPropertyPrice(property)}}</a>
+												<h4 class="posr color-white">{{property.title}}</h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="sidebar_feature_listing">
+							<h4 class="title">Recently Viewed</h4>
+							<div class="media" *ngFor="let property of recentlyViewed">
+								<img class="align-self-start mr-3" [src]="getPropertyImage(property)" [alt]="property.title">
+								<div class="media-body">
+							    	<h5 class="mt-0 post_title">{{property.title}}</h5>
+							    	<a [routerLink]="['/properties', property._id]">{{getPropertyPrice(property)}}</a>
+							    	<ul class="mb0">
+							    		<li class="list-inline-item">Beds: {{property.bedrooms}}</li>
+							    		<li class="list-inline-item">Baths: {{property.bathrooms}}</li>
+							    		<li class="list-inline-item">Sq Ft: {{property.size}}</li>
+							    	</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12 col-lg-8">
+					<div class="row">
+						<div class="grid_list_search_result style2">
+							<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+								<div class="left_area">
+									<p>{{totalItems}} Search results</p>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-8 col-lg-9 col-xl-9">
+								<div class="right_area style2 text-right">
+									<ul>
+										<li class="list-inline-item"><span class="shrtby">Sort by:</span>
+											<select class="selectpicker show-tick" [(ngModel)]="sortBy" (change)="onSortChange()">
+												<option value="rating">Highest Rating</option>
+												<option value="name">Name A-Z</option>
+												<option value="foundedYear">Newest First</option>
+												<option value="totalReviews">Most Reviews</option>
+											</select>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!-- Loading State -->
+						<div class="col-12" *ngIf="loading">
+							<div class="text-center py-5">
+								<div class="spinner-border text-primary" role="status">
+									<span class="sr-only">Loading...</span>
+								</div>
+								<p class="mt-2">Loading agencies...</p>
+							</div>
+						</div>
+
+						<!-- Error State -->
+						<div class="col-12" *ngIf="error && !loading">
+							<div class="alert alert-danger" role="alert">
+								<h4 class="alert-heading">Error!</h4>
+								<p>{{error}}</p>
+								<button class="btn btn-primary" (click)="loadAgencies()">Try Again</button>
+							</div>
+						</div>
+
+						<!-- Empty State -->
+						<div class="col-12" *ngIf="!loading && !error && displayedAgencies.length === 0">
+							<div class="text-center py-5">
+								<h4>No agencies found</h4>
+								<p>Try adjusting your search criteria or filters.</p>
+								<button class="btn btn-primary" (click)="clearFilters()">Clear Filters</button>
+							</div>
+						</div>
+
+						<!-- Agency Cards -->
+						<div class="col-md-6 col-lg-6" *ngFor="let agency of displayedAgencies">
+							<div class="feat_property home7 agency">
+								<div class="thumb">
+									<img class="img-fluid" [src]="getAgencyImage(agency)" [alt]="agency.name">
+									<div class="thmb_cntnt">
+										<ul class="tag mb0">
+											<li class="list-inline-item dn"></li>
+											<li class="list-inline-item">
+												<a [routerLink]="['/agencies', getAgencySlug(agency)]">
+													{{agency.totalReviews}} Listings
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div class="details">
+									<div class="tc_content">
+										<h4>
+											<a [routerLink]="['/agencies', getAgencySlug(agency)]">{{agency.name}}</a>
+										</h4>
+										<p class="text-thm">Agency</p>
+										<ul class="prop_details mb0">
+											<li *ngIf="agency.phone">
+												<a href="tel:{{agency.phone}}">Office: {{agency.phone}}</a>
+											</li>
+											<li *ngIf="agency.email">
+												<a href="mailto:{{agency.email}}">Email: {{agency.email}}</a>
+											</li>
+											<li *ngIf="agency.address">
+												<a>{{agency.address}}</a>
+											</li>
+											<li *ngIf="agency.website">
+												<a [href]="agency.website" target="_blank">Website</a>
+											</li>
+										</ul>
+									</div>
+									<div class="fp_footer">
+										<ul class="fp_meta float-left mb0">
+											<li class="list-inline-item" *ngIf="agency.socialMedia?.facebook">
+												<a [href]="agency.socialMedia!.facebook" target="_blank">
+													<i class="fa fa-facebook"></i>
+												</a>
+											</li>
+											<li class="list-inline-item" *ngIf="agency.socialMedia?.twitter">
+												<a [href]="agency.socialMedia!.twitter" target="_blank">
+													<i class="fa fa-twitter"></i>
+												</a>
+											</li>
+											<li class="list-inline-item" *ngIf="agency.socialMedia?.instagram">
+												<a [href]="agency.socialMedia!.instagram" target="_blank">
+													<i class="fa fa-instagram"></i>
+												</a>
+											</li>
+											<li class="list-inline-item" *ngIf="agency.socialMedia?.linkedin">
+												<a [href]="agency.socialMedia!.linkedin" target="_blank">
+													<i class="fa fa-linkedin"></i>
+												</a>
+											</li>
+										</ul>
+										<div class="fp_pdate float-right text-thm">
+											<a [routerLink]="['/agencies', getAgencySlug(agency)]">
+												View Details <i class="fa fa-angle-right"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12 mt20" *ngIf="totalPages > 1">
+							<div class="mbp_pagination">
+								<ul class="page_navigation">
+								    <li class="page-item" [class.disabled]="currentPage === 1">
+								    	<a class="page-link" (click)="prevPage()" tabindex="-1"> 
+								    		<span class="flaticon-left-arrow"></span> Prev
+								    	</a>
+								    </li>
+								    <li class="page-item" 
+								    	*ngFor="let page of getPageNumbers()" 
+								    	[class.active]="page === currentPage">
+								    	<a class="page-link" (click)="goToPage(page)">
+								    		{{page}}
+								    		<span class="sr-only" *ngIf="page === currentPage">(current)</span>
+								    	</a>
+								    </li>
+								    <li class="page-item" [class.disabled]="currentPage === totalPages">
+								    	<a class="page-link" (click)="nextPage()">
+								    		<span class="flaticon-right-arrow"></span>
+								    	</a>
+								    </li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>

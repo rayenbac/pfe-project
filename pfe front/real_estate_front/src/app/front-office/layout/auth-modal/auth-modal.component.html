@@ -1,0 +1,191 @@
+<!-- Modal -->
+<div class="sign_up_modal modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" [ngClass]="{'show': isVisible}" [style.display]="isVisible ? 'block' : 'none'" #modal>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body container pb20">
+        <!-- Login/Register Tabs -->
+        <div class="row" *ngIf="!isForgotPasswordMode">
+          <div class="col-lg-12">
+            <ul class="sign_up_tab nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="isLoginMode" (click)="isLoginMode = true">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [class.active]="!isLoginMode" (click)="isLoginMode = false">Register</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tab-content container" id="myTabContent">
+          <!-- Login Form -->
+          <div class="row mt25 tab-pane fade" [class.show]="isLoginMode && !isForgotPasswordMode" [class.active]="isLoginMode && !isForgotPasswordMode" id="home" role="tabpanel">
+            <div class="col-lg-6 col-xl-6">
+              <div class="login_thumb">
+                <img class="img-fluid w100" src="assets/images/resource/login.jpg" alt="login.jpg">
+              </div>
+            </div>
+            <div class="col-lg-6 col-xl-6">
+              <div class="login_form">
+                <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+                  <div class="heading">
+                    <h4>Login</h4>
+                  </div>
+                  <div class="row mt25">
+                    <div class="col-lg-12">
+                      <button type="button" class="btn btn-fb btn-block"><i class="fa fa-facebook float-left mt5"></i> Login with Facebook</button>
+                    </div>
+                    <div class="col-lg-12 mb-2">
+                      <button type="button" class="btn btn-googl btn-block" (click)="redirectToGoogle()">
+                        <i class="fa fa-google float-left mt5"></i> Login with Google
+                      </button>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="input-group mb-2 mr-sm-2">
+                    <input type="email" class="form-control" formControlName="email" placeholder="Email">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="flaticon-user"></i></div>
+                    </div>
+                  </div>
+                  <div class="input-group form-group">
+                    <input type="password" class="form-control" formControlName="password" placeholder="Password">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="flaticon-password"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="exampleCheck1">
+                    <label class="custom-control-label" for="exampleCheck1">Remember me</label>
+                    <a class="btn-fpswd float-right" href="javascript:void(0)" (click)="showForgotPasswordForm()">Lost your password?</a>
+                  </div>
+                  <button type="submit" class="btn btn-log btn-block btn-thm" [disabled]="loginForm.invalid || loading">
+                    {{ loading ? 'Logging in...' : 'Log In' }}
+                  </button>
+                  <p class="text-center">Don't have an account? <a class="text-thm" href="javascript:void(0)" (click)="isLoginMode = false">Register</a></p>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Register Form -->
+          <div class="row mt25 tab-pane fade" [class.show]="!isLoginMode && !isForgotPasswordMode" [class.active]="!isLoginMode && !isForgotPasswordMode" id="profile" role="tabpanel">
+            <div class="col-lg-6 col-xl-6">
+              <div class="regstr_thumb">
+                <img class="img-fluid w100" src="assets/images/resource/regstr.jpg" alt="regstr.jpg">
+              </div>
+            </div>
+            <div class="col-lg-6 col-xl-6">
+              <div class="sign_up_form">
+                <div class="heading">
+                  <h4>Register</h4>
+                </div>
+                <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <button type="button" class="btn btn-block btn-fb"><i class="fa fa-facebook float-left mt5"></i> Login with Facebook</button>
+                    </div>
+                    <div class="col-lg-12 mb-2">
+                      <button type="button" class="btn btn-block btn-googl" (click)="redirectToGoogle()">
+                        <i class="fa fa-google float-left mt5"></i> Login with Google
+                      </button>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="form-group input-group">
+                    <input type="text" class="form-control" formControlName="firstName" placeholder="First Name">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="flaticon-user"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group input-group">
+                    <input type="text" class="form-control" formControlName="lastName" placeholder="Last Name">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="flaticon-user"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group input-group">
+                    <input type="email" class="form-control" formControlName="email" placeholder="Email">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="fa fa-envelope-o"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group input-group">
+                    <input type="password" class="form-control" formControlName="password" placeholder="Password">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="flaticon-password"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group input-group">
+                    <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Re-enter password">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="flaticon-password"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group input-group">
+                    <input type="tel" class="form-control" formControlName="phone" placeholder="Phone">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="fa fa-phone"></i></div>
+                    </div>
+                  </div>
+                  <div class="form-group ui_kit_select_search mb0">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="isAgent" formControlName="isAgent">
+                      <label class="custom-control-label" for="isAgent">I am a real estate agent</label>
+                    </div>
+                  </div>
+                  <div class="form-group custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="exampleCheck2">
+                    <label class="custom-control-label" for="exampleCheck2">
+                      I have read and accept the 
+                      <a [routerLink]="['/terms']" target="_blank" class="text-thm">Terms and Conditions</a> 
+                      and Privacy Policy?
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-log btn-block btn-thm" [disabled]="registerForm.invalid || loading">
+                    {{ loading ? 'Registering...' : 'Sign Up' }}
+                  </button>
+                  <p class="text-center">Already have an account? <a class="text-thm" href="javascript:void(0)" (click)="isLoginMode = true">Log In</a></p>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Forgot Password Form -->
+          <div class="row mt25 tab-pane fade" [class.show]="isForgotPasswordMode" [class.active]="isForgotPasswordMode" id="forgot-password" role="tabpanel">
+            <div class="col-lg-6 col-xl-6">
+              <div class="login_thumb">
+                <img class="img-fluid w100" src="assets/images/resource/login.jpg" alt="login.jpg">
+              </div>
+            </div>
+            <div class="col-lg-6 col-xl-6">
+              <div class="login_form">
+                <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPassword()">
+                  <div class="heading">
+                    <h4>Forgot Password</h4>
+                  </div>
+                  <p class="mb-4">Enter your email address and we'll send you a link to reset your password.</p>
+                  <div class="input-group mb-2 mr-sm-2">
+                    <input type="email" class="form-control" formControlName="email" placeholder="Email">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="fa fa-envelope-o"></i></div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-log btn-block btn-thm" [disabled]="forgotPasswordForm.invalid || loading">
+                    {{ loading ? 'Sending...' : 'Send Reset Link' }}
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-block mt-2" (click)="backToLogin()">
+                    Back to Login
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal backdrop -->
+<div class="modal-backdrop fade show" *ngIf="isVisible" (click)="closeModal()"></div>

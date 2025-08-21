@@ -1,0 +1,316 @@
+<div class="verification-container">
+  <div class="verification-header">
+    <h2>Identity Verification</h2>
+    <p>Complete your identity verification to access all platform features</p>
+    
+    <!-- Progress bar -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getVerificationProgress()"></div>
+      </div>
+      <span class="progress-text">{{ getVerificationProgress() }}% Complete</span>
+    </div>
+  </div>
+
+  <div class="verification-content" *ngIf="!isLoading">
+    <!-- Step 1: Email Verification -->
+    <div class="verification-step" *ngIf="currentStep === 'email_verification' || currentStep === 'check_email'">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <h3>Email Verification</h3>
+      </div>
+      
+      <div class="step-content">
+        <div *ngIf="currentStep === 'email_verification'">
+          <p>Verify your email address to start the identity verification process.</p>
+          <button class="btn-primary" (click)="sendEmailVerification()" [disabled]="isLoading">
+            <i class="fas fa-envelope"></i>
+            Send Verification Email
+          </button>
+        </div>
+        
+        <div *ngIf="currentStep === 'check_email'" class="email-pending">
+          <div class="success-icon">
+            <i class="fas fa-envelope-open-text"></i>
+          </div>
+          <h4>Email Sent!</h4>
+          <p>We've sent a verification link to your email address. Please check your inbox and click the link to verify your email.</p>
+          <p class="note">Didn't receive the email? Check your spam folder or request a new one.</p>
+          <button class="btn-secondary" (click)="sendEmailVerification()">
+            Resend Email
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Document Upload -->
+    <div class="verification-step" *ngIf="currentStep === 'upload_documents'">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <h3>Upload Identity Documents</h3>
+      </div>
+      
+      <div class="step-content">
+        <p>Upload a clear photo of your government-issued ID and a selfie holding the ID.</p>
+        
+        <div class="upload-section">
+          <div class="upload-item">
+            <h4>ID Document</h4>
+            <div class="upload-area" [class.has-file]="idImagePreview">
+              <input type="file" id="idDocument" accept="image/*" (change)="onIdDocumentSelected($event)" hidden>
+              <label for="idDocument" class="upload-label">
+                <div *ngIf="!idImagePreview" class="upload-placeholder">
+                  <i class="fas fa-id-card"></i>
+                  <span>Click to upload ID document</span>
+                </div>
+                <img *ngIf="idImagePreview" [src]="idImagePreview" alt="ID Document" class="preview-image">
+              </label>
+            </div>
+          </div>
+
+          <div class="upload-item">
+            <h4>Selfie with ID</h4>
+            <div class="upload-area" [class.has-file]="selfiePreview">
+              <input type="file" id="selfieWithId" accept="image/*" (change)="onSelfieSelected($event)" hidden>
+              <label for="selfieWithId" class="upload-label">
+                <div *ngIf="!selfiePreview" class="upload-placeholder">
+                  <i class="fas fa-camera"></i>
+                  <span>Click to upload selfie</span>
+                </div>
+                <img *ngIf="selfiePreview" [src]="selfiePreview" alt="Selfie" class="preview-image">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-tips">
+          <h5>Tips for good photos:</h5>
+          <ul>
+            <li>Ensure good lighting and clear visibility</li>
+            <li>ID document should be flat and unfolded</li>
+            <li>For selfie: hold ID next to your face, both should be clearly visible</li>
+            <li>Avoid glare or shadows on the documents</li>
+          </ul>
+        </div>
+
+        <button class="btn-primary" 
+                (click)="uploadDocuments()" 
+                [disabled]="!idDocumentFile || !selfieFile || isLoading">
+          <i class="fas fa-upload"></i>
+          Upload Documents
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Face Comparison -->
+    <div class="verification-step" *ngIf="currentStep === 'face_comparison'">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <h3>Face Verification</h3>
+      </div>
+      
+      <div class="step-content">
+        <p>We'll now compare your face in the ID document with your selfie to verify your identity.</p>
+        
+        <div class="comparison-container" *ngIf="verificationStatus?.identityDocuments">
+          <div class="comparison-status">
+            <div *ngIf="!faceComparisonInProgress && !faceComparisonResult">
+              <button class="btn-primary" (click)="performFaceComparison()">
+                <i class="fas fa-user-check"></i>
+                Start Face Verification
+              </button>
+            </div>
+            
+            <div *ngIf="faceComparisonInProgress" class="processing">
+              <div class="spinner"></div>
+              <p>Processing face comparison...</p>
+            </div>
+            
+            <div *ngIf="faceComparisonResult" class="result" 
+                 [class.success]="faceComparisonResult.verified"
+                 [class.failed]="!faceComparisonResult.verified">
+              <div class="result-icon">
+                <i [class]="faceComparisonResult.verified ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+              </div>
+              <h4>{{ faceComparisonResult.message }}</h4>
+              <p>Similarity Score: {{ (faceComparisonResult.similarityScore * 100).toFixed(1) }}%</p>
+              
+              <div *ngIf="!faceComparisonResult.verified" class="retry-section">
+                <p>The face comparison didn't meet our security threshold. Please try again with clearer photos.</p>
+                <button class="btn-secondary" (click)="retryStep('documents')">
+                  <i class="fas fa-redo"></i>
+                  Upload New Photos
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Liveness Check -->
+    <div class="verification-step" *ngIf="currentStep === 'liveness_check_for_booking'">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <h3>Liveness Check</h3>
+      </div>
+      
+      <div class="step-content">
+        <div *ngIf="!livenessCheckStarted">
+          <p>To ensure security for bookings, we need to verify that you're a real person. You'll be asked to perform simple actions in front of your camera.</p>
+          
+          <div class="liveness-info">
+            <h5>What you'll need to do:</h5>
+            <ul>
+              <li><i class="fas fa-eye"></i> Blink your eyes</li>
+              <li><i class="fas fa-smile"></i> Smile</li>
+              <li><i class="fas fa-arrow-left"></i> Turn your head left</li>
+              <li><i class="fas fa-arrow-right"></i> Turn your head right</li>
+            </ul>
+          </div>
+          
+          <button class="btn-primary" (click)="startLivenessCheck()">
+            <i class="fas fa-video"></i>
+            Start Liveness Check
+          </button>
+        </div>
+
+        <div *ngIf="livenessCheckStarted" class="liveness-check-container">
+          <div class="camera-container">
+            <video #videoElement autoplay muted class="camera-feed"></video>
+            <canvas #canvasElement hidden></canvas>
+          </div>
+          
+          <div class="liveness-instructions">
+            <div *ngIf="currentLivenessAction" class="current-action">
+              <h4>{{ getActionDisplayName(currentLivenessAction) }}</h4>
+              <div class="action-icon">
+                <i [class]="'fas fa-' + (currentLivenessAction === 'blink' ? 'eye' : 
+                            currentLivenessAction === 'smile' ? 'smile' :
+                            currentLivenessAction === 'turn_left' ? 'arrow-left' : 'arrow-right')"></i>
+              </div>
+            </div>
+            
+            <div class="completed-actions" *ngIf="completedActions.length > 0">
+              <h5>Completed:</h5>
+              <div class="action-list">
+                <span *ngFor="let action of completedActions" class="completed-action">
+                  <i class="fas fa-check"></i>
+                  {{ getActionDisplayName(action) }}
+                </span>
+              </div>
+            </div>
+            
+            <div *ngIf="livenessCheckInProgress" class="processing">
+              <div class="spinner"></div>
+              <p>Analyzing...</p>
+            </div>
+          </div>
+          
+          <button class="btn-secondary" (click)="stopCamera()">
+            <i class="fas fa-stop"></i>
+            Stop Camera
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verification Complete -->
+    <div class="verification-step" *ngIf="currentStep === 'verification_complete'">
+      <div class="step-header">
+        <div class="step-number completed">✓</div>
+        <h3>Verification Complete!</h3>
+      </div>
+      
+      <div class="step-content success-content">
+        <div class="success-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h4>Identity Successfully Verified</h4>
+        <p>Congratulations! Your identity has been verified. You can now:</p>
+        <ul class="benefits-list">
+          <li><i class="fas fa-check"></i> Make property bookings</li>
+          <li><i class="fas fa-check"></i> Process payments securely</li>
+          <li><i class="fas fa-check"></i> Access all platform features</li>
+          <li><i class="fas fa-check"></i> Build trust with property owners</li>
+        </ul>
+        
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="router.navigate(['/properties'])">
+            <i class="fas fa-home"></i>
+            Browse Properties
+          </button>
+          <button class="btn-secondary" (click)="router.navigate(['/profile'])">
+            <i class="fas fa-user"></i>
+            View Profile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Failed Verification -->
+    <div class="verification-step" *ngIf="currentStep === 'retry_verification'">
+      <div class="step-header">
+        <div class="step-number failed">✗</div>
+        <h3>Verification Failed</h3>
+      </div>
+      
+      <div class="step-content failed-content">
+        <div class="error-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h4>Verification Unsuccessful</h4>
+        <p *ngIf="verificationStatus?.verification?.failureReason">
+          {{ verificationStatus?.verification?.failureReason }}
+        </p>
+        <p>Don't worry, you can try again. Make sure to:</p>
+        <ul>
+          <li>Use clear, high-quality photos</li>
+          <li>Ensure good lighting</li>
+          <li>Make sure your face is clearly visible</li>
+          <li>Follow all instructions carefully</li>
+        </ul>
+        
+        <div class="retry-buttons">
+          <button class="btn-primary" (click)="retryStep('documents')">
+            <i class="fas fa-redo"></i>
+            Try Again
+          </button>
+          <button class="btn-secondary" (click)="router.navigate(['/support'])">
+            <i class="fas fa-question-circle"></i>
+            Get Help
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner large"></div>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Verification Status Summary -->
+  <div class="status-summary" *ngIf="verificationStatus && !isLoading">
+    <h4>Verification Status</h4>
+    <div class="status-grid">
+      <div class="status-item" [class.completed]="verificationStatus.verification.emailVerified">
+        <i [class]="verificationStatus.verification.emailVerified ? 'fas fa-check-circle' : 'fas fa-circle'"></i>
+        <span>Email Verified</span>
+      </div>
+      <div class="status-item" [class.completed]="verificationStatus.verification.documentsUploaded">
+        <i [class]="verificationStatus.verification.documentsUploaded ? 'fas fa-check-circle' : 'fas fa-circle'"></i>
+        <span>Documents Uploaded</span>
+      </div>
+      <div class="status-item" [class.completed]="verificationStatus.verification.faceVerified">
+        <i [class]="verificationStatus.verification.faceVerified ? 'fas fa-check-circle' : 'fas fa-circle'"></i>
+        <span>Face Verified</span>
+      </div>
+      <div class="status-item" [class.completed]="verificationStatus.livenessCheck.totalChecks > 0">
+        <i [class]="verificationStatus.livenessCheck.totalChecks > 0 ? 'fas fa-check-circle' : 'fas fa-circle'"></i>
+        <span>Liveness Check</span>
+      </div>
+    </div>
+  </div>
+</div>

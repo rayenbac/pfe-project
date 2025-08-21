@@ -1,0 +1,308 @@
+<!-- Listing Grid View -->
+<section class="our-listing bgc-f7 pb30-991">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="listing_sidebar dn db-991">
+          <div class="sidebar_content_details style3">
+            <!-- Mobile Filter Content -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="breadcrumb_content style2 mb0-991">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Agents</li>
+          </ol>
+          <h2 class="breadcrumb_title">Our Agents – Grid View</h2>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="listing_list_style mb20-xsd tal-991">
+          <ul class="mb0">
+            <li class="list-inline-item">
+              <span>Sort by:</span>
+            </li>
+            <li class="list-inline-item">
+              <select class="selectpicker show-tick" [(ngModel)]="sortBy" (change)="onSortChange()">
+                <option value="name">Name</option>
+                <option value="rating">Rating</option>
+                <option value="joined">Date Joined</option>
+              </select>
+            </li>
+            <li class="list-inline-item">
+              <select class="selectpicker show-tick" [(ngModel)]="sortOrder" (change)="onSortChange()">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </li>
+          </ul>
+        </div>
+        <div class="dn db-991 mt30 mb0">
+          <div id="main2">
+            <!-- Mobile toggle content -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-4 col-xl-4">
+        <div class="sidebar_listing_grid1 dn-991">
+          <div class="sidebar_listing_list">
+            <div class="sidebar_advanced_search_widget">
+              <h4 class="mb25">Find Agents</h4>
+              <ul class="sasw_list mb0">
+                <!-- Search -->
+                <li class="search_area">
+                  <div class="form-group">
+                    <input type="text" 
+                           class="form-control" 
+                           placeholder="Search agents by name or email..."
+                           [(ngModel)]="searchQuery"
+                           (input)="onSearchChange()">
+                    <label for="name"><span class="flaticon-magnifying-glass"></span></label>
+                  </div>
+                </li>
+                <!-- Agent Type Filter -->
+                <li>
+                  <div class="search_option_two">
+                    <div class="candidate_revew_select">
+                      <select class="selectpicker w100 show-tick" 
+                              [(ngModel)]="selectedAgentType"
+                              (change)="onFilterChange()">
+                        <option value="">All Agent Types</option>
+                        <option value="particular">Particular Agent</option>
+                        <option value="professional">Professional Agent</option>
+                      </select>
+                    </div>
+                  </div>
+                </li>
+                <!-- Agency Filter -->
+                <li>
+                  <div class="search_option_two">
+                    <div class="candidate_revew_select">
+                      <select class="selectpicker w100 show-tick" 
+                              [(ngModel)]="selectedAgency"
+                              (change)="onFilterChange()">
+                        <option value="">All Agencies</option>
+                        <option value="">Independent</option>
+                        <option *ngFor="let agency of agencies" [value]="agency._id">{{ agency.name }}</option>
+                      </select>
+                    </div>
+                  </div>
+                </li>
+                <!-- Clear Filters Button -->
+                <li>
+                  <div class="d-grid">
+                    <button class="btn btn-thm advnc_search_form_btn" type="button" 
+                            (click)="clearFilters()">
+                      <span class="flaticon-search"></span> Clear Filters
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- Dynamic Featured Properties Sidebar -->
+          <app-featured-properties-sidebar></app-featured-properties-sidebar>
+          
+          <!-- Dynamic Categories Properties Sidebar -->
+          <app-categories-properties-sidebar></app-categories-properties-sidebar>
+          
+          <!-- Dynamic Recently Viewed Sidebar -->
+          <app-recently-viewed-sidebar></app-recently-viewed-sidebar>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-8">
+        <div class="row">
+          <div class="grid_list_search_result">
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+              <div class="page_control_shorting left_area">
+                <p *ngIf="!loading && !error">
+                  Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+                  {{ getDisplayedCount() }} of {{ filteredAgents.length }} agents
+                </p>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+              <div class="page_control_shorting right_area text-right tac-md">
+                <ul class="shorting_list">
+                  <li class="list-inline-item">
+                    <button class="btn btn-sm btn-outline-secondary" [class.active]="viewType === 'grid'" 
+                            (click)="viewType = 'grid'">
+                      <span class="fa fa-th-large"></span>
+                    </button>
+                  </li>
+                  <li class="list-inline-item">
+                    <button class="btn btn-sm btn-outline-secondary" [class.active]="viewType === 'list'" 
+                            (click)="viewType = 'list'">
+                      <span class="fa fa-th-list"></span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="row" *ngIf="loading">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading agents...</span>
+            </div>
+            <p class="mt-3">Loading our agents...</p>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="row" *ngIf="error && !loading">
+          <div class="col-12">
+            <div class="alert alert-danger text-center" role="alert">
+              <i class="fa fa-exclamation-triangle"></i> {{ error }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Agents Grid -->
+        <div class="row" *ngIf="!loading && !error && viewType === 'grid'">
+          <div class="col-md-6 col-lg-6 d-flex" *ngFor="let agent of paginatedAgents; trackBy: trackByAgentId">
+            <div class="our_agent style2 mb30 w-100" (click)="goToAgentDetails(agent)" style="cursor: pointer;">
+              <div class="thumb">
+                <img class="img-fluid w100" [src]="getProfileImage(agent)" [alt]="agent.firstName + ' ' + agent.lastName">
+                <div class="overylay">
+                  <ul class="social_icon">
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()" [title]="'Call ' + agent.firstName">
+                        <i class="fa fa-phone"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()" [title]="'Email ' + agent.firstName">
+                        <i class="fa fa-envelope"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a href="#" (click)="$event.stopPropagation()" [title]="'View Profile'">
+                        <i class="fa fa-user"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="details">
+                <h4>{{ agent.firstName }} {{ agent.lastName }}</h4>
+                <p class="mb-1">
+                  {{ agent.agentType === 'professional' ? 'Professional Agent' : 'Particular Agent' }}
+                  <a class="float-right" href="#" (click)="$event.stopPropagation()">
+                    {{ getAgentRating(agent) }} <i class="fa fa-star color-golden"></i>
+                  </a>
+                </p>
+                <p class="mb-1 text-muted small">{{ getAgencyName(agent._id) }}</p>
+                <div class="agent-contact-info">
+                  <ul class="prop_details mb0">
+                    <li><a href="javascript:void(0)" (click)="$event.stopPropagation()">
+                      <i class="fa fa-phone"></i> {{ agent.phone || 'Not provided' }}
+                    </a></li>
+                    <li><a href="javascript:void(0)" (click)="$event.stopPropagation()">
+                      <i class="fa fa-envelope"></i> {{ agent.email }}
+                    </a></li>
+                  </ul>
+                </div>
+                <div class="agent-badges mt-2" *ngIf="agent.isVerified">
+                  <span class="badge badge-success">
+                    <i class="fa fa-check"></i> Verified
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agents List View -->
+        <div class="row" *ngIf="!loading && !error && viewType === 'list'">
+          <div class="col-lg-12" *ngFor="let agent of paginatedAgents; trackBy: trackByAgentId">
+            <div class="our_agent style2 list_view mb30" (click)="goToAgentDetails(agent)" style="cursor: pointer;">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="thumb">
+                    <img class="img-fluid w100" [src]="getProfileImage(agent)" [alt]="agent.firstName + ' ' + agent.lastName">
+                  </div>
+                </div>
+                <div class="col-md-9">
+                  <div class="details">
+                    <h4>{{ agent.firstName }} {{ agent.lastName }}</h4>
+                    <p class="mb-1">
+                      {{ agent.agentType === 'professional' ? 'Professional Agent' : 'Particular Agent' }}
+                      <span class="float-right">
+                        {{ getAgentRating(agent) }} <i class="fa fa-star color-golden"></i>
+                      </span>
+                    </p>
+                    <p class="mb-1 text-muted">{{ getAgencyName(agent._id) }}</p>
+                    <div class="agent-contact-info">
+                      <ul class="prop_details mb0">
+                        <li><a href="javascript:void(0)" (click)="$event.stopPropagation()">
+                          <i class="fa fa-phone"></i> {{ agent.phone || 'Not provided' }}
+                        </a></li>
+                        <li><a href="javascript:void(0)" (click)="$event.stopPropagation()">
+                          <i class="fa fa-envelope"></i> {{ agent.email }}
+                        </a></li>
+                      </ul>
+                    </div>
+                    <div class="agent-badges mt-2" *ngIf="agent.isVerified">
+                      <span class="badge badge-success">
+                        <i class="fa fa-check"></i> Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="row" *ngIf="!loading && !error && filteredAgents.length === 0">
+          <div class="col-12 text-center py-5">
+            <div class="empty-state">
+              <i class="fa fa-users fa-3x text-muted mb-3"></i>
+              <h4>No Agents Found</h4>
+              <p class="text-muted">Try adjusting your search criteria or filters to find agents.</p>
+              <button class="btn btn-thm" (click)="clearFilters()">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="row" *ngIf="!loading && !error && totalPages > 1">
+          <div class="col-lg-12 mt20">
+            <div class="mbp_pagination">
+              <ul class="page_navigation">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" href="#" (click)="$event.preventDefault(); goToPage(currentPage - 1)">
+                    <span class="flaticon-left-arrow"></span> Prev
+                  </a>
+                </li>
+                <li class="page-item" 
+                    *ngFor="let page of [].constructor(totalPages); let i = index" 
+                    [class.active]="currentPage === (i + 1)">
+                  <a class="page-link" href="#" (click)="$event.preventDefault(); goToPage(i + 1)">{{ i + 1 }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" href="#" (click)="$event.preventDefault(); goToPage(currentPage + 1)">
+                    Next <span class="flaticon-right-arrow"></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

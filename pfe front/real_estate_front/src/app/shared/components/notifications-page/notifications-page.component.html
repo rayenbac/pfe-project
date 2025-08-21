@@ -1,0 +1,221 @@
+<div class="notifications-page">
+  <div class="container-fluid">
+    <!-- Page Header -->
+    <div class="notifications-header">
+      <div class="header-content">
+        <div class="title-section">
+          <h1>
+            <i class="fas fa-bell"></i>
+            Notifications
+          </h1>
+          <p class="subtitle">Stay updated with all your important activities</p>
+        </div>
+        
+        <div class="header-actions">
+          <div class="stats-summary">
+            <div class="stat-item">
+              <span class="stat-number">{{ totalNotifications }}</span>
+              <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-item unread">
+              <span class="stat-number">{{ unreadCount }}</span>
+              <span class="stat-label">Unread</span>
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button 
+              *ngIf="unreadCount > 0"
+              (click)="markAllAsRead()" 
+              class="btn btn-primary">
+              <i class="fas fa-check-double"></i>
+              Mark All Read
+            </button>
+            <button 
+              *ngIf="notifications.length > 0"
+              (click)="deleteAllNotifications()" 
+              class="btn btn-danger">
+              <i class="fas fa-trash"></i>
+              Clear All
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters and Controls -->
+    <div class="notifications-controls">
+      <div class="filters">
+        <div class="filter-group">
+          <label>Filter by Status:</label>
+          <select [(ngModel)]="filterStatus" (change)="applyFilters()" class="form-control">
+            <option value="all">All Notifications</option>
+            <option value="unread">Unread Only</option>
+            <option value="read">Read Only</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Filter by Type:</label>
+          <select [(ngModel)]="filterType" (change)="applyFilters()" class="form-control">
+            <option value="all">All Types</option>
+            <option value="booking">Bookings</option>
+            <option value="message">Messages</option>
+            <option value="payment">Payments</option>
+            <option value="property">Properties</option>
+            <option value="review">Reviews</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Priority:</label>
+          <select [(ngModel)]="filterPriority" (change)="applyFilters()" class="form-control">
+            <option value="all">All Priorities</option>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <div class="search-input-group">
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            (input)="applyFilters()"
+            placeholder="Search notifications..." 
+            class="form-control">
+          <div class="search-icon">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+        
+        <button 
+          *ngIf="filterStatus !== 'all' || filterType !== 'all' || filterPriority !== 'all' || searchTerm"
+          (click)="clearFilters()" 
+          class="btn btn-outline-secondary">
+          <i class="fas fa-times"></i>
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="notifications-content">
+      <div class="notifications-list">
+        <!-- Empty State -->
+        <div 
+          *ngIf="filteredNotifications.length === 0 && !loading" 
+          class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-bell-slash"></i>
+          </div>
+          <h3>No notifications found</h3>
+          <p *ngIf="filterStatus !== 'all' || filterType !== 'all' || filterPriority !== 'all' || searchTerm">
+            Try adjusting your filters to see more results.
+          </p>
+          <p *ngIf="filterStatus === 'all' && filterType === 'all' && filterPriority === 'all' && !searchTerm">
+            You're all caught up! New notifications will appear here.
+          </p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading notifications...</p>
+        </div>
+
+        <!-- Notification Items -->
+        <div 
+          *ngFor="let notification of getPaginatedNotifications(); trackBy: trackByNotificationId" 
+          class="notification-card"
+          [class.unread]="!notification.isRead"
+          [class.priority-high]="notification.priority === 'high'"
+          [class.priority-medium]="notification.priority === 'medium'"
+          [class.priority-low]="notification.priority === 'low'">
+          
+          <!-- Priority Indicator -->
+          <div 
+            class="priority-indicator"
+            [class]="'priority-' + notification.priority">
+          </div>
+
+          <!-- Notification Icon -->
+          <div class="notification-icon">
+            <i [class]="'fas fa-' + getNotificationIcon(notification.type)"></i>
+          </div>
+
+          <!-- Notification Content -->
+          <div class="notification-content" (click)="handleNotificationClick(notification)">
+            <div class="notification-header">
+              <h3 class="notification-title">{{ notification.title }}</h3>
+              <div class="notification-meta">
+                <span class="notification-type">{{ notification.type | titlecase }}</span>
+                <span class="notification-time">{{ getTimeAgo(notification.createdAt) }}</span>
+              </div>
+            </div>
+            <p class="notification-message">{{ notification.message }}</p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="notification-actions">
+            <button 
+              *ngIf="!notification.isRead"
+              (click)="markAsRead(getNotificationId(notification), $event)" 
+              class="btn btn-sm btn-success"
+              title="Mark as read">
+              <i class="fas fa-check"></i>
+            </button>
+            <button 
+              (click)="deleteNotification(getNotificationId(notification), $event)" 
+              class="btn btn-sm btn-danger"
+              title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div 
+        *ngIf="getTotalPages() > 1" 
+        class="pagination-container">
+        <nav aria-label="Notifications pagination">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="currentPage <= 1">
+              <button 
+                class="page-link" 
+                (click)="goToPage(currentPage - 1)"
+                [disabled]="currentPage <= 1">
+                <i class="fas fa-chevron-left"></i>
+                Previous
+              </button>
+            </li>
+            
+            <li 
+              *ngFor="let page of [].constructor(getTotalPages()); let i = index" 
+              class="page-item" 
+              [class.active]="(i + 1) === currentPage">
+              <button 
+                class="page-link" 
+                (click)="goToPage(i + 1)">
+                {{ i + 1 }}
+              </button>
+            </li>
+            
+            <li class="page-item" [class.disabled]="currentPage >= getTotalPages()">
+              <button 
+                class="page-link" 
+                (click)="goToPage(currentPage + 1)"
+                [disabled]="currentPage >= getTotalPages()">
+                Next
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

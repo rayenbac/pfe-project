@@ -1,0 +1,30 @@
+<div class="terms_condition_widget">
+  <h4 class="title">Categories Property</h4>
+  
+  <div *ngIf="loading" class="text-center py-3">
+    <p class="text-muted">Loading categories...</p>
+  </div>
+
+  <div *ngIf="error" class="text-center py-3">
+    <p class="text-danger">{{ error }}</p>
+    <button class="btn btn-sm btn-secondary" (click)="loadPropertyCategories()">Try Again</button>
+  </div>
+
+  <div *ngIf="!loading && !error" class="widget_list">
+    <ul class="list_details">
+      <li *ngFor="let category of categories">
+        <a href="javascript:void(0)" (click)="filterByCategory(category.name)">
+          <i class="fa fa-caret-right mr10"></i>
+          {{ category.name }}
+          <span class="float-right">
+            {{ category.count }} {{ category.count === 1 ? 'property' : 'properties' }}
+          </span>
+        </a>
+      </li>
+    </ul>
+
+    <div *ngIf="categories.length === 0" class="text-center py-3">
+      <p class="text-muted">No property categories available.</p>
+    </div>
+  </div>
+</div>

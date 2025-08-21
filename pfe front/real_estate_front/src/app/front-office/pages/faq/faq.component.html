@@ -1,0 +1,61 @@
+<!-- Inner Page Breadcrumb -->
+<section class="inner_page_breadcrumb">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="breadcrumb_content">
+          <h4 class="breadcrumb_title">Frequently Asked Questions</h4>
+          <p class="breadcrumb_para">Find answers to common questions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Our FAQ -->
+<section class="our-faq bgc-f7">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="main-title text-center">
+          <h2>Frequently Asked Questions</h2>
+          <p class="text">Get answers to the most common questions about our platform</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+        <div class="faq_content">
+          <div class="faq_item" *ngFor="let faq of faqs">
+            <div class="faq_question" (click)="toggleFAQ(faq.id)">
+              <h5>{{ faq.question }}</h5>
+              <i class="flaticon-arrow-down icon" [class.open]="faq.isOpen"></i>
+            </div>
+            <div class="faq_answer" [class.open]="faq.isOpen">
+              <p>{{ faq.answer }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Start Partners -->
+<section class="start-partners bgc-thm pt50 pb50">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="start_partner tac-smd">
+          <h2>Still Have Questions?</h2>
+          <p>Can't find the answer you're looking for? Our support team is here to help you.</p>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="parner_reg_btn text-right tac-smd">
+          <a class="btn btn-light" href="/contact">Contact Support</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

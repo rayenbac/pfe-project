@@ -1,0 +1,241 @@
+<div class="invoice-detail-container">
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Invoice Details -->
+  <div *ngIf="!loading && invoice" class="invoice-content">
+    <!-- Header -->
+    <div class="invoice-header">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Invoice Details</h2>
+          <p class="text-muted">Invoice #{{ invoice.invoiceNumber }}</p>
+        </div>
+        <div class="col-md-6 text-right">
+          <div class="invoice-actions">
+            <button *ngIf="invoice.pdfUrl" 
+                    class="btn btn-primary me-2" 
+                    (click)="downloadPdf()">
+              <i class="fas fa-download"></i> Download PDF
+            </button>
+            <button *ngIf="!invoice.pdfUrl" 
+                    class="btn btn-outline-primary me-2" 
+                    (click)="generatePdf()">
+              <i class="fas fa-file-pdf"></i> Generate PDF
+            </button>
+            <a routerLink="/admin/invoices" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice Info Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="info-card">
+          <h6>Status</h6>
+          <span class="badge" [ngClass]="getStatusClass(invoice.status)">
+            {{ invoice.status | titlecase }}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="info-card">
+          <h6>Total Amount</h6>
+          <h4 class="text-primary">{{ formatCurrency(invoice.amount.total) }}</h4>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="info-card">
+          <h6>Invoice Date</h6>
+          <p>{{ formatDate(invoice.invoiceDate) }}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="info-card">
+          <h6>Due Date</h6>
+          <p>{{ formatDate(invoice.dueDate) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-md-8">
+        <!-- Billing & Property Info -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Billing Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Bill To:</h6>
+                <p>
+                  <strong>{{ invoice.billingAddress.name }}</strong><br>
+                  {{ invoice.billingAddress.email }}<br>
+                  <span *ngIf="invoice.billingAddress.phone">{{ invoice.billingAddress.phone }}<br></span>
+                  <span *ngIf="invoice.billingAddress.address">
+                    {{ invoice.billingAddress.address }}<br>
+                    {{ invoice.billingAddress.city }}, {{ invoice.billingAddress.state }} {{ invoice.billingAddress.zipCode }}<br>
+                    {{ invoice.billingAddress.country }}
+                  </span>
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6>Property:</h6>
+                <p>
+                  <strong>{{ invoice.property?.title }}</strong><br>
+                  <small class="text-muted">{{ invoice.property?.address }}</small><br>
+                  <strong>Check-in:</strong> {{ formatDate(invoice.metadata.checkInDate) }}<br>
+                  <strong>Check-out:</strong> {{ formatDate(invoice.metadata.checkOutDate) }}<br>
+                  <strong>Nights:</strong> {{ invoice.metadata.nights }}<br>
+                  <strong>Guests:</strong> {{ invoice.metadata.guests }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invoice Items -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Invoice Items</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of invoice.items">
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ formatCurrency(item.unitPrice) }}</td>
+                    <td>{{ formatCurrency(item.total) }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+                    <td><strong>{{ formatCurrency(invoice.amount.subtotal) }}</strong></td>
+                  </tr>
+                  <tr *ngIf="invoice.amount.tax > 0">
+                    <td colspan="3" class="text-right"><strong>Tax:</strong></td>
+                    <td><strong>{{ formatCurrency(invoice.amount.tax) }}</strong></td>
+                  </tr>
+                  <tr *ngIf="invoice.amount.fees > 0">
+                    <td colspan="3" class="text-right"><strong>Fees:</strong></td>
+                    <td><strong>{{ formatCurrency(invoice.amount.fees) }}</strong></td>
+                  </tr>
+                  <tr class="table-primary">
+                    <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                    <td><strong>{{ formatCurrency(invoice.amount.total) }}</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-4">
+        <!-- Status Management -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h6>Status Management</h6>
+          </div>
+          <div class="card-body">
+            <div class="status-buttons">
+              <button *ngIf="invoice.status !== 'paid'" 
+                      class="btn btn-success btn-block mb-2" 
+                      (click)="updateStatus('paid')">
+                <i class="fas fa-check"></i> Mark as Paid
+              </button>
+              <button *ngIf="invoice.status === 'sent'" 
+                      class="btn btn-warning btn-block mb-2" 
+                      (click)="updateStatus('overdue')">
+                <i class="fas fa-exclamation-triangle"></i> Mark as Overdue
+              </button>
+              <button *ngIf="invoice.status !== 'cancelled'" 
+                      class="btn btn-danger btn-block mb-2" 
+                      (click)="updateStatus('cancelled')">
+                <i class="fas fa-times"></i> Cancel Invoice
+              </button>
+            </div>
+            
+            <div *ngIf="invoice.paymentDate" class="payment-info">
+              <hr>
+              <h6>Payment Information</h6>
+              <p>
+                <strong>Payment Method:</strong> {{ invoice.paymentMethod }}<br>
+                <strong>Payment Date:</strong> {{ formatDate(invoice.paymentDate) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF Management -->
+        <div class="card">
+          <div class="card-header">
+            <h6>PDF Management</h6>
+          </div>
+          <div class="card-body">
+            <!-- Current PDF -->
+            <div *ngIf="invoice.pdfUrl" class="current-pdf mb-3">
+              <p><i class="fas fa-file-pdf text-danger"></i> PDF Available</p>
+              <button class="btn btn-outline-primary btn-sm btn-block" (click)="downloadPdf()">
+                <i class="fas fa-download"></i> Download Current PDF
+              </button>
+            </div>
+
+            <!-- Upload New PDF -->
+            <div class="upload-section">
+              <label for="pdfFile" class="form-label">Upload New PDF:</label>
+              <input type="file" 
+                     id="pdfFile" 
+                     class="form-control mb-2" 
+                     accept=".pdf" 
+                     (change)="onFileSelected($event)">
+              
+              <button *ngIf="selectedFile" 
+                      class="btn btn-primary btn-sm btn-block" 
+                      (click)="uploadPdf()" 
+                      [disabled]="uploadingPdf">
+                <span *ngIf="uploadingPdf" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!uploadingPdf" class="fas fa-upload"></i>
+                {{ uploadingPdf ? 'Uploading...' : 'Upload PDF' }}
+              </button>
+            </div>
+
+            <hr>
+
+            <!-- Generate PDF -->
+            <button class="btn btn-outline-secondary btn-sm btn-block" (click)="generatePdf()">
+              <i class="fas fa-magic"></i> Generate New PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

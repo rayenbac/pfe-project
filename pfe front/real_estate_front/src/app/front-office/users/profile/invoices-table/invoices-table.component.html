@@ -1,0 +1,236 @@
+<div class="invoices-container">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="page-title">
+        <i class="fas fa-file-invoice me-2"></i>
+        My Invoices
+      </h2>
+      <p class="text-muted">Track payments and rental invoices</p>
+    </div>
+    <div class="filter-section">
+      <select class="form-select">
+        <option value="">All Invoices</option>
+        <option value="PENDING">Pending</option>
+        <option value="PAID">Paid</option>
+        <option value="OVERDUE">Overdue</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Message Alert -->
+  <div *ngIf="message" class="alert alert-dismissible fade show" 
+       [class.alert-success]="messageType === 'success'"
+       [class.alert-danger]="messageType === 'error'">
+    <i class="fas" [class.fa-check-circle]="messageType === 'success'" 
+       [class.fa-exclamation-circle]="messageType === 'error'"></i>
+    {{ message }}
+    <button type="button" class="btn-close" (click)="clearMessage()"></button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading invoices...</p>
+  </div>
+
+  <!-- Invoices Table -->
+  <div *ngIf="!loading" class="invoices-table-container">
+    <div class="table-responsive">
+      <table class="table invoices-table">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Property</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let invoice of invoices" (click)="openInvoiceDetails(invoice)" class="invoice-row">
+            <td>
+              <div class="invoice-number">#{{ invoice.invoiceNumber }}</div>
+              <div class="invoice-date">{{ formatDate(invoice.createdAt) }}</div>
+            </td>
+            <td>
+              <div class="property-cell">
+                <div class="property-title">{{ invoice.contract?.property?.title || 'N/A' }}</div>
+                <div class="property-address">{{ invoice.contract?.property?.address || 'N/A' }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="description-cell">{{ invoice.description }}</div>
+            </td>
+            <td>
+              <div class="amount-cell">{{ formatCurrency(invoice.amount) }}</div>
+            </td>
+            <td>
+              <div class="due-date-cell">
+                <div class="due-date">{{ formatDate(invoice.dueDate) }}</div>
+                <div *ngIf="invoice.status === 'pending'" class="due-info"
+                     [class.overdue]="isOverdue(invoice)"
+                     [class.urgent]="getDaysUntilDue(invoice.dueDate) <= 3 && getDaysUntilDue(invoice.dueDate) > 0">
+                  <span *ngIf="isOverdue(invoice)">
+                    {{ Math.abs(getDaysUntilDue(invoice.dueDate)) }} days overdue
+                  </span>
+                  <span *ngIf="!isOverdue(invoice) && getDaysUntilDue(invoice.dueDate) <= 3">
+                    {{ getDaysUntilDue(invoice.dueDate) }} days left
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(invoice.status)">
+                {{ invoice.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="openInvoiceDetails(invoice); $event.stopPropagation()"
+                  title="View Details">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button 
+                  *ngIf="invoice.status === 'pending'"
+                  class="btn btn-sm btn-success"
+                  (click)="payInvoice(invoice); $event.stopPropagation()"
+                  title="Pay Now">
+                  <i class="fas fa-credit-card"></i>
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="downloadInvoice(invoice); $event.stopPropagation()"
+                  title="Download">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="invoices.length === 0" class="empty-state">
+      <i class="fas fa-file-invoice"></i>
+      <h4>No Invoices Yet</h4>
+      <p>Your rental invoices will appear here when generated.</p>
+    </div>
+  </div>
+
+  <!-- Invoice Details Modal -->
+  <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" *ngIf="selectedInvoice">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-file-invoice me-2"></i>
+            Invoice #{{ selectedInvoice.invoiceNumber }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <!-- Invoice Header -->
+          <div class="invoice-header">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="section-title">Invoice Information</h6>
+                <div class="invoice-info">
+                  <div class="info-item">
+                    <label>Invoice Number</label>
+                    <div class="info-value">#{{ selectedInvoice.invoiceNumber }}</div>
+                  </div>
+                  <div class="info-item">
+                    <label>Issue Date</label>
+                    <div class="info-value">{{ formatDate(selectedInvoice.createdAt) }}</div>
+                  </div>
+                  <div class="info-item">
+                    <label>Due Date</label>
+                    <div class="info-value">{{ formatDate(selectedInvoice.dueDate) }}</div>
+                  </div>
+                  <div class="info-item" *ngIf="selectedInvoice.paidDate">
+                    <label>Paid Date</label>
+                    <div class="info-value">{{ formatDate(selectedInvoice.paidDate) }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h6 class="section-title">Status</h6>
+                <div class="status-info">
+                  <span class="badge" [ngClass]="getStatusClass(selectedInvoice.status)">
+                    {{ selectedInvoice.status }}
+                  </span>
+                  <div *ngIf="selectedInvoice.status === 'pending' && isOverdue(selectedInvoice)" class="overdue-warning">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    This invoice is {{ Math.abs(getDaysUntilDue(selectedInvoice.dueDate)) }} days overdue
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Property Information -->
+          <div class="property-section mb-4">
+            <h6 class="section-title">Property</h6>
+            <div class="property-details">
+              <h5>{{ selectedInvoice.contract?.property?.title || 'N/A' }}</h5>
+              <p class="text-muted">{{ selectedInvoice.contract?.property?.address || 'N/A' }}</p>
+            </div>
+          </div>
+
+          <!-- Invoice Details -->
+          <div class="invoice-details-section mb-4">
+            <h6 class="section-title">Invoice Details</h6>
+            <div class="invoice-description">
+              <p>{{ selectedInvoice.description }}</p>
+            </div>
+            <div class="amount-breakdown">
+              <div class="amount-row">
+                <span class="amount-label">Amount Due:</span>
+                <span class="amount-value">{{ formatCurrency(selectedInvoice.amount) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tenant Information -->
+          <div class="tenant-section">
+            <h6 class="section-title">Billed To</h6>
+            <div class="tenant-info">
+              <div class="tenant-name">{{ selectedInvoice.tenant.name }}</div>
+              <div class="tenant-email">{{ selectedInvoice.tenant.email }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            Close
+          </button>
+          <button 
+            *ngIf="selectedInvoice.status === 'pending'"
+            type="button" 
+            class="btn btn-success"
+            (click)="payInvoice(selectedInvoice)">
+            <i class="fas fa-credit-card me-1"></i>
+            Pay Now
+          </button>
+          <button type="button" class="btn btn-outline-primary" (click)="downloadInvoice(selectedInvoice)">
+            <i class="fas fa-download me-1"></i>
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backdrop -->
+  <div *ngIf="showModal" class="modal-backdrop fade show" (click)="closeModal()"></div>
+</div>

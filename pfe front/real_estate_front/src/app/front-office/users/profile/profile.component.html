@@ -1,0 +1,412 @@
+﻿<section class="our-dashbord dashbord bgc-f7 pb50">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar Navigation -->
+      <div class="col-lg-3">
+        <div class="user_profile_navbox">
+          <div class="dashboard_navigationbar">
+            <div class="dropdown">
+              <ul>
+                <li [class.active]="activeTab === 'profile'">
+                  <a href="javascript:void(0)" (click)="activeTab = 'profile'">
+                    <span class="flaticon-user"></span> Profile
+                  </a>
+                </li>
+                <li [class.active]="activeTab === 'dashboard'">
+                  <a href="javascript:void(0)" (click)="activeTab = 'dashboard'">
+                    <span class="flaticon-dashboard"></span> Dashboard
+                  </a>
+                </li>
+                <!-- Agency management - only for agents -->
+                <li *ngIf="isAgent()" [class.active]="activeTab === 'agency'">
+                  <a href="javascript:void(0)" (click)="activeTab = 'agency'">
+                    <span class="flaticon-home"></span> My Agency
+                  </a>
+                </li>
+                <!-- Signature management - only for agents -->
+                <li [class.active]="activeTab === 'signature'">
+                  <a href="javascript:void(0)" (click)="activeTab = 'signature'">
+                    <span class="flaticon-edit"></span> My Signature
+                  </a>
+                </li>
+                <!-- Add Property link - only for agents -->
+                <li *ngIf="isAgent()" [class.active]="activeTab === 'add-property'">
+                  <a [routerLink]="['/add-property']">
+                    <span class="flaticon-plus"></span> Add Property
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="col-lg-9">
+        <div class="col-lg-12 mb10">
+          <div class="breadcrumb_content style2">
+            <h2 class="breadcrumb_title">
+              <ng-container *ngIf="activeTab === 'profile'">My Profile</ng-container>
+              <ng-container *ngIf="activeTab === 'dashboard'">Dashboard</ng-container>
+              <ng-container *ngIf="activeTab === 'agency'">My Agency</ng-container>
+              <ng-container *ngIf="activeTab === 'signature'">Electronic Signature</ng-container>
+              <ng-container *ngIf="activeTab === 'favorites'">Favorites</ng-container>
+            </h2>
+            <p>We are glad to see you again!</p>
+          </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div class="col-lg-12" *ngIf="activeTab === 'dashboard'">
+          <app-user-dashboard 
+            [currentUser]="currentUser"
+            [activeTab]="'overview'"
+            (tabChanged)="onTabChanged($event)">
+          </app-user-dashboard>
+        </div>
+
+        <!-- Profile Tab -->
+        <div class="col-lg-12" *ngIf="activeTab === 'profile'">
+          <!-- Profile Information Section -->
+          <div class="my_dashboard_review">
+            <div class="row">
+              <div class="col-xl-2">
+                <h4>Profile Information</h4>
+              </div>
+              <div class="col-xl-10">
+                <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+                  <div class="row">
+                    <!-- Profile Image Upload -->
+                    <div class="col-lg-12">
+                      <div class="wrap-custom-file">
+                        <input type="file" 
+                               name="profileImage" 
+                               id="profileImage" 
+                               accept=".gif, .jpg, .png, .jpeg"
+                               (change)="onFileSelected($event)"/>
+                        <label for="profileImage">
+                          <div class="profile-image-preview">
+                            <img [src]="getProfileImageUrl()" 
+                                 alt="Profile Image"
+                                 class="profile-image">
+                          </div>
+                          <span class="btn btn-upload">
+                            <i class="flaticon-download"></i> Upload Photo
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="firstName"
+                               formControlName="firstName">
+                      </div>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="lastName"
+                               formControlName="lastName">
+                      </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="email">Email</label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="email"
+                               formControlName="email"
+                               [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                        <div class="invalid-feedback" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                          Please enter a valid email address
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="phone">Phone</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <select class="form-control" 
+                                    [value]="selectedCountryCode" 
+                                    (change)="onCountryCodeChange($event)"
+                                    style="max-width: 120px;">
+                              <option *ngFor="let country of countryCodes" [value]="country.code">
+                                {{ country.flag }} {{ country.code }}
+                              </option>
+                            </select>
+                          </div>
+                          <input type="tel" 
+                                 class="form-control" 
+                                 id="phone"
+                                 placeholder="12345678"
+                                 [value]="phoneNumber"
+                                 (input)="onPhoneNumberChange($event)"
+                                 [class.is-invalid]="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched"
+                                 maxlength="15"
+                                 pattern="[0-9]{6,15}">
+                        </div>
+                        <div class="invalid-feedback" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                          Please enter 6-15 digits for your phone number
+                        </div>
+                        <small class="form-text text-muted">Enter 6-15 digits after the country code</small>
+                      </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-lg-12">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="address">Address</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="address"
+                               formControlName="address">
+                      </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-lg-12">
+                      <div class="my_profile_setting_input form-group">
+                        <label for="description">About Me</label>
+                        <textarea class="form-control" 
+                                  id="description"
+                                  formControlName="description"
+                                  rows="4"></textarea>
+                      </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-xl-12">
+                      <div class="my_profile_setting_input">
+                        <button class="btn btn2 float-right" 
+                                type="submit"
+                                [disabled]="loading || profileForm.invalid">
+                          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                          {{ loading ? 'Updating...' : 'Update Profile' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password Change Section -->
+          <div class="my_dashboard_review mt-4">
+            <div class="row">
+              <div class="col-xl-2">
+                <h4>Change Password</h4>
+              </div>
+              <div class="col-xl-10">
+                <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label>Current Password</label>
+                        <input type="password" 
+                               class="form-control" 
+                               formControlName="currentPassword">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label>New Password</label>
+                        <input type="password" 
+                               class="form-control" 
+                               formControlName="newPassword">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="my_profile_setting_input form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" 
+                               class="form-control" 
+                               formControlName="confirmPassword">
+                      </div>
+                    </div>
+                    <div class="col-xl-12">
+                      <div class="my_profile_setting_input">
+                        <button class="btn btn2 float-right" 
+                                type="submit"
+                                [disabled]="loading || passwordForm.invalid">
+                          {{ loading ? 'Changing...' : 'Change Password' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agency Tab -->
+        <div class="col-lg-12" *ngIf="activeTab === 'agency' && isAgent()">
+          <div class="my_dashboard_review">
+            <div class="row">
+              <div class="col-xl-2">
+                <h4>My Agency</h4>
+              </div>
+              <div class="col-xl-10">
+                <div *ngIf="!selectedAgency" class="text-center py-5">
+                  <h5>No Agency Associated</h5>
+                  <p class="text-muted">Create or join an agency to start managing your real estate business.</p>
+                  <button class="btn btn-primary" (click)="openCreateAgencyModal()">
+                    <i class="fas fa-plus me-2"></i>Create Agency
+                  </button>
+                </div>
+                <div *ngIf="selectedAgency" class="agency-info">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>{{ selectedAgency.name }}</h5>
+                    <button class="btn btn-outline-primary" (click)="openEditAgencyModal(selectedAgency)">
+                      <i class="fas fa-edit me-2"></i>Edit Agency
+                    </button>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p><strong>Email:</strong> {{ selectedAgency.email }}</p>
+                      <p><strong>Phone:</strong> {{ selectedAgency.phone }}</p>
+                      <p><strong>Address:</strong> {{ selectedAgency.address }}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <p><strong>Website:</strong> {{ selectedAgency.website || 'Not provided' }}</p>
+                      <p><strong>Founded:</strong> {{ selectedAgency.createdAt | date:'shortDate' }}</p>
+                    </div>
+                  </div>
+                  <div *ngIf="selectedAgency.description">
+                    <p><strong>Description:</strong></p>
+                    <p>{{ selectedAgency.description }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Electronic Signature Tab -->
+        <div class="col-lg-12" *ngIf="activeTab === 'signature'">
+          <div class="my_dashboard_review">
+            <div class="row">
+              <div class="col-xl-2">
+                <h4>Electronic Signature</h4>
+              </div>
+              <div class="col-xl-10">
+                <div class="signature-management">
+                  <!-- Loading State -->
+                  <div *ngIf="loadingSignature" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading signature...</p>
+                  </div>
+
+                  <!-- Current Signature Display -->
+                  <div *ngIf="!loadingSignature && currentSignature" class="current-signature-section mb-4">
+                    <h5>Current Signature</h5>
+                    <div class="signature-preview border rounded p-3 mb-3" style="background-color: #f8f9fa;">
+                      <img [src]="currentSignature.signatureImage" 
+                           alt="Current Signature" 
+                           class="img-fluid" 
+                           style="max-height: 100px; max-width: 100%;">
+                    </div>
+                    <div class="signature-info">
+                      <p><strong>Type:</strong> {{ currentSignature.signatureType | titlecase }}</p>
+                      <p><strong>Created:</strong> {{ currentSignature.uploadedAt | date:'medium' }}</p>
+                      <p><strong>Status:</strong> 
+                        <span class="badge bg-success" *ngIf="currentSignature.isActive">Active</span>
+                        <span class="badge bg-secondary" *ngIf="!currentSignature.isActive">Inactive</span>
+                      </p>
+                    </div>
+                    <div class="signature-actions">
+                      <button class="btn btn-outline-danger me-2" (click)="deleteSignature()" [disabled]="loadingSignature">
+                        <i class="fas fa-trash me-2"></i>Delete Signature
+                      </button>
+                      <button class="btn btn-outline-primary" (click)="updateSignature()" [disabled]="loadingSignature">
+                        <i class="fas fa-edit me-2"></i>Update Signature
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Create/Upload Signature Section -->
+                  <div *ngIf="!loadingSignature && (!currentSignature || showCreateSignature)" class="create-signature-section">
+                    <h5 *ngIf="!currentSignature">Create Your Electronic Signature</h5>
+                    <h5 *ngIf="currentSignature && showCreateSignature">Update Your Electronic Signature</h5>
+                    
+                    <!-- Show current signature during update -->
+                    <div *ngIf="currentSignature && showCreateSignature" class="current-signature-preview mb-4">
+                      <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>Current Signature (will be replaced)</h6>
+                        <div class="signature-preview-small border rounded p-2" style="background-color: #ffffff;">
+                          <img [src]="currentSignature.signatureImage" 
+                               alt="Current Signature" 
+                               class="img-fluid" 
+                               style="max-height: 60px; max-width: 100%;">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p class="text-muted mb-4">
+                      <span *ngIf="!currentSignature">Your electronic signature will be automatically added to all contracts.</span>
+                      <span *ngIf="currentSignature && showCreateSignature">Create your new signature below. This will replace your current signature for all future contracts.</span>
+                      You can draw, type, or upload your signature.
+                    </p>
+                    
+                    <!-- Signature Pad Component -->
+                    <app-signature-pad 
+                      (signatureSaved)="onSignatureCreated($event)"
+                      [actionButtonText]="currentSignature ? 'Update Signature' : 'Save Signature'"
+                      [existingSignature]="currentSignature">
+                    </app-signature-pad>
+                    
+                    <div class="mt-3" *ngIf="showCreateSignature && currentSignature">
+                      <button class="btn btn-secondary me-2" (click)="cancelSignatureUpdate()" [disabled]="loadingSignature">
+                        <i class="fas fa-times me-2"></i>Cancel Update
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Help Section -->
+                  <div class="signature-help mt-4 p-3 bg-light rounded">
+                    <h6><i class="fas fa-info-circle me-2"></i>How Electronic Signatures Work</h6>
+                    <ul class="mb-0">
+                      <li>Your signature is securely stored and encrypted</li>
+                      <li>It will be automatically added to all property contracts</li>
+                      <li>Clients will sign contracts before making payments</li>
+                      <li>Both signatures are required for valid contracts</li>
+                      <li>You can update your signature anytime</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Agency Modal -->
+<app-agency-modal 
+  [isVisible]="showAgencyModal"
+  [agency]="selectedAgencyForEdit"
+  [isEditing]="isEditingAgencyModal"
+  (closed)="closeAgencyModal()"
+  (agencyCreated)="onAgencyCreated($event)"
+  (agencyUpdated)="onAgencyUpdated($event)"
+></app-agency-modal>

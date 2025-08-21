@@ -1,0 +1,142 @@
+<div class="natural-language-search">
+  <div class="search-container">
+    <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()" class="search-form">
+      <div class="input-group">
+        <div class="input-wrapper">
+          <textarea 
+            formControlName="naturalQuery"
+            class="search-input"
+            [placeholder]="placeholder"
+            (input)="onSearchInput($event)"
+            (focus)="showSuggestions = false"
+            rows="2"
+            maxlength="500">
+          </textarea>
+          
+          <!-- Service Status Indicator -->
+          <div class="service-status" [class.available]="isServiceAvailable" [class.unavailable]="!isServiceAvailable">
+            <i class="fas fa-circle"></i>
+            <span class="status-text">{{ isServiceAvailable ? 'AI Ready' : 'AI Offline' }}</span>
+          </div>
+          
+          <!-- Clear Button -->
+          <button 
+            type="button" 
+            class="clear-btn"
+            (click)="clearSearch()"
+            *ngIf="naturalQueryControl?.value"
+            title="Clear search">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <!-- Search Actions -->
+        <div class="search-actions">
+          <button 
+            type="button" 
+            class="suggestions-btn"
+            (click)="toggleSuggestions()"
+            title="Show suggestions">
+            <i class="fas fa-lightbulb"></i>
+          </button>
+          
+          <button 
+            type="submit" 
+            class="search-btn"
+            [disabled]="!isSearchValid"
+            [class.processing]="isProcessing">
+            <span *ngIf="!isProcessing">
+              <i class="fas fa-search"></i>
+              Search
+            </span>
+            <span *ngIf="isProcessing">
+              <i class="fas fa-spinner fa-spin"></i>
+              Processing...
+            </span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Form Validation Messages -->
+      <div class="validation-messages" *ngIf="naturalQueryControl?.touched && naturalQueryControl?.errors">
+        <div class="error-message" *ngIf="naturalQueryControl?.errors?.['minlength']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Please provide more details (minimum 10 characters)
+        </div>
+        <div class="error-message" *ngIf="naturalQueryControl?.errors?.['maxlength']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Query is too long (maximum 500 characters)
+        </div>
+      </div>
+    </form>
+    
+    <!-- Character Count -->
+    <div class="character-count" *ngIf="naturalQueryControl?.value">
+      {{ naturalQueryControl?.value?.length || 0 }}/500 characters
+    </div>
+    
+    <!-- Last Interpretation -->
+    <div class="interpretation" *ngIf="lastInterpretation">
+      <div class="interpretation-header">
+        <i class="fas fa-brain"></i>
+        <span>AI Interpretation:</span>
+      </div>
+      <p class="interpretation-text">{{ lastInterpretation }}</p>
+    </div>
+  </div>
+  
+  <!-- Suggestions Panel -->
+  <div class="suggestions-panel" *ngIf="showSuggestions" [@slideDown]>
+    <div class="suggestions-header">
+      <h4><i class="fas fa-lightbulb"></i> Try these examples:</h4>
+      <button type="button" class="close-btn" (click)="showSuggestions = false">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="suggestions-grid">
+      <div 
+        class="suggestion-item" 
+        *ngFor="let suggestion of suggestions"
+        (click)="onSuggestionClick(suggestion)">
+        <i class="fas fa-quote-left"></i>
+        <span>{{ suggestion }}</span>
+      </div>
+    </div>
+    
+    <!-- Search History -->
+    <div class="search-history" *ngIf="searchHistory.length > 0">
+      <h5><i class="fas fa-history"></i> Recent searches:</h5>
+      <div class="history-items">
+        <div 
+          class="history-item"
+          *ngFor="let item of searchHistory"
+          (click)="onHistoryClick(item)">
+          <i class="fas fa-clock"></i>
+          <span>{{ item }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Service Unavailable Warning -->
+  <div class="service-warning" *ngIf="!isServiceAvailable">
+    <div class="warning-content">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div class="warning-text">
+        <strong>AI Service Offline</strong>
+        <p>Natural language search is using basic parsing. For better results, please ensure Ollama is running.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Processing Overlay -->
+  <div class="processing-overlay" *ngIf="isProcessing">
+    <div class="processing-content">
+      <div class="spinner">
+        <i class="fas fa-brain fa-spin"></i>
+      </div>
+      <p>AI is analyzing your request...</p>
+    </div>
+  </div>
+</div>
