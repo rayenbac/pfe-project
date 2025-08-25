@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { PropertyManagerComponent } from '../property-manager/property-manager.component';
@@ -16,7 +17,10 @@ import { BookingService } from '../../../../core/services/booking.service';
 import { PropertyService } from '../../../../core/services/property.service';
 import { ReviewService } from '../../../../core/services/review.service';
 import { FavoriteService } from '../../../../core/services/favorite.service';
+import { AgencyService } from '../../../../core/services/agency.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { User } from '../../../../core/models/user.model';
+import { Agency } from '../../../../core/models/agency.model';
 
 interface Activity {
   icon: string;
@@ -24,11 +28,20 @@ interface Activity {
   time: string;
 }
 
+interface AgencyOption {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  selected: boolean;
+}
+
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ProfileSettingsComponent,
     PropertyManagerComponent,
     FavoritesGridComponent,
@@ -49,6 +62,34 @@ export class UserDashboardComponent implements OnInit {
   
   user: User | null = null;
   loading = true;
+  
+  // Agency related properties
+  userAgency: Agency | null = null;
+  loadingAgency = false;
+  agencyOptions: AgencyOption[] = [
+    {
+      id: 'create',
+      title: 'Create Agency',
+      description: 'Start your own real estate agency',
+      icon: 'fas fa-plus-circle',
+      selected: false
+    },
+    {
+      id: 'join',
+      title: 'Join Agency',
+      description: 'Join an existing real estate agency',
+      icon: 'fas fa-handshake',
+      selected: false
+    },
+    {
+      id: 'independent',
+      title: 'Stay Independent',
+      description: 'Work as an independent agent',
+      icon: 'fas fa-user-tie',
+      selected: false
+    }
+  ];
+  selectedAgencyOption = '';
 
   // Dashboard statistics
   stats = {
@@ -63,22 +104,8 @@ export class UserDashboardComponent implements OnInit {
   // Recent activities
   recentActivities: Activity[] = [];
 
-  dashboardTabs = [
-    // Common tabs for both roles
-    { id: 'overview', label: 'Overview', icon: 'fas fa-tachometer-alt', roles: ['USER', 'AGENT'] },
-    { id: 'notifications', label: 'Notifications', icon: 'fas fa-bell', roles: ['USER', 'AGENT'] },
-    { id: 'reservations', label: 'Reservations', icon: 'fas fa-calendar-alt', roles: ['USER', 'AGENT'] },
-    { id: 'contracts', label: 'Contracts', icon: 'fas fa-file-contract', roles: ['USER', 'AGENT'] },
-    { id: 'reviews', label: 'Reviews', icon: 'fas fa-star', roles: ['USER', 'AGENT'] },
-    { id: 'profile', label: 'Profile Settings', icon: 'fas fa-user-cog', roles: ['USER', 'AGENT'] },
-    
-    // Agent-specific tabs
-    { id: 'properties', label: 'My Properties', icon: 'fas fa-building', roles: ['AGENT'] },
-    
-    // User-specific tabs
-    { id: 'favorites', label: 'Favorites', icon: 'fas fa-heart', roles: ['USER'] },
-    { id: 'invoices', label: 'Invoices', icon: 'fas fa-file-invoice', roles: ['USER'] }
-  ];
+  // Sidebar navigation for different user roles
+  sidebarItems: any[] = [];
 
   constructor(
     private userService: UserService,
@@ -86,7 +113,9 @@ export class UserDashboardComponent implements OnInit {
     private bookingService: BookingService,
     private propertyService: PropertyService,
     private reviewService: ReviewService,
-    private favoriteService: FavoriteService
+    private favoriteService: FavoriteService,
+    private agencyService: AgencyService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -96,9 +125,40 @@ export class UserDashboardComponent implements OnInit {
     if (this.currentUser) {
       this.user = this.currentUser;
       this.loading = false;
+      this.initializeSidebar();
       this.loadDashboardData();
+      if (this.isAgent()) {
+        this.loadAgencyData();
+      }
     } else {
       this.loadUserProfile();
+    }
+  }
+
+  initializeSidebar(): void {
+    const commonItems = [
+      { id: 'overview', label: 'Overview', icon: 'fas fa-tachometer-alt' },
+      { id: 'notifications', label: 'Notifications', icon: 'fas fa-bell' },
+      { id: 'reservations', label: 'Reservations', icon: 'fas fa-calendar-alt' },
+      { id: 'contracts', label: 'Contracts', icon: 'fas fa-file-contract' },
+      { id: 'reviews', label: 'Reviews', icon: 'fas fa-star' },
+      { id: 'profile', label: 'Profile Settings', icon: 'fas fa-user-cog' }
+    ];
+
+    if (this.isAgent()) {
+      this.sidebarItems = [
+        ...commonItems.slice(0, 1), // Overview
+        { id: 'properties', label: 'My Properties', icon: 'fas fa-building' },
+        { id: 'agency', label: 'Agency Management', icon: 'fas fa-store' },
+        ...commonItems.slice(1) // Rest of common items
+      ];
+    } else {
+      this.sidebarItems = [
+        ...commonItems.slice(0, 1), // Overview
+        { id: 'favorites', label: 'Favorites', icon: 'fas fa-heart' },
+        { id: 'invoices', label: 'Invoices', icon: 'fas fa-file-invoice' },
+        ...commonItems.slice(1) // Rest of common items
+      ];
     }
   }
 
@@ -107,11 +167,31 @@ export class UserDashboardComponent implements OnInit {
       next: (user: User) => {
         this.user = user;
         this.loading = false;
+        this.initializeSidebar();
         this.loadDashboardData();
+        if (this.isAgent()) {
+          this.loadAgencyData();
+        }
       },
       error: (error: any) => {
         console.error('Failed to load user profile:', error);
         this.loading = false;
+      }
+    });
+  }
+
+  loadAgencyData(): void {
+    if (!this.user?.agencyId) return;
+    
+    this.loadingAgency = true;
+    this.agencyService.getAgency(this.user.agencyId).subscribe({
+      next: (agency: Agency) => {
+        this.userAgency = agency;
+        this.loadingAgency = false;
+      },
+      error: (error: any) => {
+        console.error('Failed to load agency data:', error);
+        this.loadingAgency = false;
       }
     });
   }
@@ -269,29 +349,128 @@ export class UserDashboardComponent implements OnInit {
     this.tabChanged.emit(tabId);
   }
 
-  getVisibleTabs(): any[] {
-    if (!this.user) return [];
-    // Convert user role to uppercase for comparison
-    const userRole = this.user.role.toUpperCase();
-    return this.dashboardTabs.filter(tab => tab.roles.includes(userRole));
+  isAgent(): boolean {
+    return this.user?.role?.toLowerCase() === 'agent';
   }
 
-  isTabVisible(tabId: string): boolean {
-    if (!this.user) return false;
-    const tab = this.dashboardTabs.find(t => t.id === tabId);
-    if (!tab) return false;
-    // Convert user role to uppercase for comparison
-    const userRole = this.user.role.toUpperCase();
-    return tab.roles.includes(userRole);
+  isUser(): boolean {
+    return this.user?.role?.toLowerCase() === 'user';
   }
 
+  isProfessionalAgent(): boolean {
+    return this.isAgent() && this.user?.agentType === 'professional' && !!this.user?.agencyId;
+  }
+
+  getDisplayName(): string {
+    if (!this.user) return '';
+    return this.user.name || `${this.user.firstName} ${this.user.lastName}`;
+  }
+
+  getProfileImage(): string {
+    return this.user?.profileImage || this.user?.avatar || 'assets/images/default-avatar.jpg';
+  }
+
+  getSelectedAgencyOptionTitle(): string {
+    const option = this.agencyOptions.find(o => o.id === this.selectedAgencyOption);
+    return option?.title || '';
+  }
+
+  getEmptyActivityText(): string {
+    return this.isAgent() ? 'adding a property' : 'browsing properties';
+  }
+
+  getReservationsTitle(): string {
+    return this.isAgent() ? 'Property Bookings' : 'My Reservations';
+  }
+
+  getReviewsTitle(): string {
+    return this.isAgent() ? 'My Reviews' : 'Reviews I\'ve Written';
+  }
+
+  isActiveTab(tab: string): boolean {
+    return this.activeTab === tab;
+  }
+
+  hasNoActivities(): boolean {
+    return this.recentActivities.length === 0;
+  }
+
+  // Agency Management Methods
+  selectAgencyOption(optionId: string): void {
+    this.selectedAgencyOption = optionId;
+    this.agencyOptions.forEach(option => {
+      option.selected = option.id === optionId;
+    });
+  }
+
+  proceedWithAgencyOption(): void {
+    switch (this.selectedAgencyOption) {
+      case 'create':
+        this.navigateToCreateAgency();
+        break;
+      case 'join':
+        this.navigateToJoinAgency();
+        break;
+      case 'independent':
+        this.setAsIndependentAgent();
+        break;
+    }
+  }
+
+  navigateToCreateAgency(): void {
+    this.router.navigate(['/profile'], { queryParams: { tab: 'agency', action: 'create' } });
+  }
+
+  navigateToJoinAgency(): void {
+    this.router.navigate(['/agencies']);
+  }
+
+  setAsIndependentAgent(): void {
+    // Update user profile to set as independent agent
+    const updateData = { agentType: 'particular' };
+    this.userService.updateProfile(updateData).subscribe({
+      next: (updatedUser) => {
+        this.user = updatedUser;
+        console.log('Set as independent agent');
+      },
+      error: (error) => {
+        console.error('Error setting as independent agent:', error);
+      }
+    });
+  }
+
+  editAgency(): void {
+    if (this.userAgency) {
+      this.router.navigate(['/profile'], { 
+        queryParams: { tab: 'agency', action: 'edit', agencyId: this.userAgency._id } 
+      });
+    }
+  }
+
+  viewAgencyDetails(): void {
+    if (this.userAgency) {
+      this.router.navigate(['/agencies', this.userAgency._id]);
+    }
+  }
+
+  // Navigation Methods
   navigateToAddProperty(): void {
-    // Navigate to add property form
     this.router.navigate(['/add-property']);
   }
 
   navigateToSearchProperties(): void {
-    // Navigate to properties search page
     this.router.navigate(['/properties']);
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  getVisibleTabs(): any[] {
+    return this.sidebarItems;
+  }
+
+  isTabVisible(tabId: string): boolean {
+    return this.sidebarItems.some(item => item.id === tabId);
   }
 }
